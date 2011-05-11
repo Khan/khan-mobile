@@ -3,15 +3,17 @@
 	<head> 
 	<title>Khan Academy</title> 
 	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0a4.1/jquery.mobile-1.0a4.1.min.css" />
+	<link rel="stylesheet" href="khan.css" />
 	<script type="text/javascript" src="http://code.jquery.com/jquery-1.5.2.min.js"></script>
 	<script type="text/javascript" src="http://code.jquery.com/mobile/1.0a4.1/jquery.mobile-1.0a4.1.min.js"></script>
+	<script src="tmpl.js"></script>
 	<script src="khan.js"></script>
 </head> 
 <body> 
 
 <div data-role="page">
 
-	<div data-role="header">
+	<div data-role="header" data-theme="b">
 		<h1>Khan Academy</h1>
 	</div>
 
@@ -21,5 +23,22 @@
 	</div>
 </div>
 
+<script type="text/html" id="video">
+	<% each video in videos %>
+	<li class="ui-li-has-thumb ui-btn ui-btn-icon-right ui-li ui-btn-up-c" data-theme="c">
+		<div class="ui-btn-inner ui-li">
+			<div class="ui-btn-text">
+				<img src="http://img.youtube.com/vi/<%= video.youtube_id %>/2.jpg" class="ui-li-thumb">
+				<a href="<%= video.youtube_url %>" class="ui-link-inherit">
+					<p class="ui-li-aside ui-li-desc"><%= Math.floor( video.duration / 60 ) + ":" + (video.duration % 60 < 10 ? "0" : "") + video.duration % 60 %></p>
+					<h3 class="ui-li-heading"><%= video.title %></h3>
+					<p class="ui-li-desc"><%= video.description %></p>
+				</a>
+			</div>
+			<span class="ui-icon ui-icon-arrow-r"></span>
+		</div>
+	</li>
+	<% } %>
+</script>
 </body>
 </html>

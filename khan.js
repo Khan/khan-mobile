@@ -5,13 +5,15 @@ $(function() {
 		videos = data;
 		ready();
 	});
+
+	$(".ui-btn").live("hover", function() {
+		$(this).toggleClass( "ui-btn-up-c ui-btn-hover-c" );
+	});
 });
 
 function ready() {
 	$("#playlist")
-		.html( $.map( videos, function( video ) {
-			return "<li><img src='http://img.youtube.com/vi/" + video.youtube_id + "/2.jpg'/>" +
-				"<a href=''><h3>" + video.title + "</h3><p>" + video.description + "</p></a></li>";
-		}).join("") )
-		.listview( "refresh" );
+		.html( "<li></li>" + tmpl( "video", videos ) )
+		.listview( "refresh" )
+		.children().first().remove();
 }
