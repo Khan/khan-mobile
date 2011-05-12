@@ -1,4 +1,22 @@
 #playlist img.ui-li-thumb {
 	left: 10px;
 	top: 10px;
+	z-index: 10;
+}
+
+#playlist .ui-li .ui-btn-inner a.ui-link-inherit {
+	padding-right: 0px;
+}
+
+#playlist .ui-btn-icon-right .ui-icon {
+	left: 42px; /* 10px padding + (80px img width / 2) + (16px icon width / 2) */
+	z-index: 20;
+}
+
+.ui-mobile-viewport.panel-popover {
+	width: 50% !important;
+}
+
+.ui-mobile-viewport.ui-panel-left {
+	width: 33% !important;
 }
