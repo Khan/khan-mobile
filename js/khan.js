@@ -6,9 +6,11 @@ $(function() {
 		ready();
 	});
 
+/*
 	$(".ui-btn").live("hover", function() {
 		$(this).toggleClass( "ui-btn-up-c ui-btn-hover-c" );
 	});
+*/
 });
 
 function ready() {
