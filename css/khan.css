@@ -1,16 +1,24 @@
-#playlist img.ui-li-thumb {
+ul.playlist img.ui-li-thumb {
 	left: 10px;
 	top: 10px;
 	z-index: 10;
 }
 
-#playlist .ui-li .ui-btn-inner a.ui-link-inherit {
+ul.playlist .ui-li .ui-btn-inner a.ui-link-inherit {
 	padding-right: 0px;
 }
 
-#playlist .ui-btn-icon-right .ui-icon {
+ul.playlist .ui-btn-icon-right .ui-icon {
 	left: 42px; /* 10px padding + (80px img width / 2) + (16px icon width / 2) */
 	z-index: 20;
+}
+
+#main .ui-header .ui-btn, #playlists-page .ui-header .ui-btn {
+	display: none !important;
+}
+
+#main .ui-header .popover-btn {
+	display: block !important;
 }
 
 .ui-mobile-viewport.panel-popover {

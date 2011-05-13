@@ -1,50 +1,70 @@
-var videos;
+var data,
+	playlists = {},
+	videos = {};
 
-$(document).delegate( "#playlist a", "mousedown", function() {
-	// Grab the Youtube ID for the video
-	genVideoPage( this.href.substr( this.href.indexOf("#video-") + 7 ) );
-});
+// Temporarily disable loading of pages based upon URL
+// TODO: Make this relevant, possibly delay loading of jQuery Mobile until
+//       the data has been loaded from the server.
+$.mobile.hashListeningEnabled = false;
 
 $(function() {
-	$.getJSON( "http://www.khanacademy.org/api/playlistvideos?playlist=Algebra&callback=?", function( data ) {
-		videos = data;
-		ready();
+	// Pull in all the playlist and video data
+	$.getJSON( "http://www.khanacademy.org/api/videolibrary?callback=?", function( result ) {
+		// Sort the playlists by name
+		// XXX: Why aren't they sorted now?
+		data = result.sort(function( a, b ) {
+			return a.title > b.title ? 1 : -1;
+		});
+		
+		// Build up an index of the playlists for fast reference
+		for ( var p = 0, pl = data.length; p < pl; p++ ) {
+			playlists[ data[p].youtube_id ] = data[p];
+			
+			// Do the same thing for the videos
+			var vids = data[p].videos;
+			
+			for ( var v = 0, vl = vids.length; v < vl; v++ ) {
+				videos[ vids[v].youtube_id ] = vids[v];
+			}
+		}
+		
+		// Inject the markup for the playlists into the site
+		$("#playlists-content").html( tmpl( "playlists-tmpl", { playlists: data } ) );
 	});
-
-/*
-	$(".ui-btn").live("hover", function() {
-		$(this).toggleClass( "ui-btn-up-c ui-btn-hover-c" );
-	});
-*/
 });
 
-function ready() {
-	$("#playlist")
-		.html( "<li></li>" + tmpl( "videos", videos ) )
-		.listview( "refresh" )
-		.children().first().remove();
-}
+// Watch for clicks on playlists in the main Playlist menu
+$(document).delegate( "#playlists a", "mousedown", function() {
+	// Grab the Youtube ID for the playlist
+	var id = this.href.substr( this.href.indexOf("#list-") + 6 );
 
-function genVideoPage( id ) {
-	var video;
+	// Generated page already exists
+	if ( $("#list-" + id).length ) {
+		return;
+	}
+	
+	// If we found it, add it to the page
+	if ( playlists[ id ] ) {
+		$( tmpl( "playlist-tmpl", playlists[ id ] ) )
+			.appendTo( "#menu" )
+			.page();
+	}
+});
+
+// Watch for clicks on videos in a playlist meny
+$(document).delegate( "ul.playlist a", "mousedown", function() {
+	// Grab the Youtube ID for the video
+	var id = this.href.substr( this.href.indexOf("#video-") + 7 );
 	
 	// Generated page already exists
 	if ( $("#video-" + id).length ) {
 		return;
 	}
-
-	// Find the associated data blob
-	for ( var i = 0, l = videos.length; i < l; i++ ) {
-		if ( videos[i].youtube_id === id ) {
-			video = videos[i];
-			break;
-		}
-	}
 	
 	// If we found it, add it to the page
-	if ( video ) {
-		$( tmpl( "video", video ) )
+	if ( videos[ id ] ) {
+		$( tmpl( "video-tmpl", videos[ id ] ) )
 			.appendTo( "#main" )
 			.page();
 	}
-}
+});

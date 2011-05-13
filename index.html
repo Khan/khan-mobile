@@ -9,30 +9,36 @@
 	<link rel="stylesheet" href="css/khan.css" />
 	
 	<script type="text/javascript" src="http://code.jquery.com/jquery-1.5.2.min.js"></script>
-	<script type="text/javascript" src="js/tmpl.js"></script>
-	<script type="text/javascript" src="js/khan.js"></script>
-	<script type="text/javascript" src="js/jquery.mobile.splitview.js"></script>
-	<script type="text/javascript" src="js/jquery.mobile-1.0a4.1.js"></script>
+	
+	<!-- Needed for browsers that don't support fixed positioning. -->
 	<script type="text/javascript" src="js/jquery.easing.1.3.js"></script>
 	<script type="text/javascript" src="js/jquery.mobile.scrollview.js"></script>
+	
+	<!-- Support simulated, iPad-like, menus -->
+	<script type="text/javascript" src="js/jquery.mobile.splitview.js"></script>
+	
+	<!-- Load jQuery Mobile itself -->
+	<script type="text/javascript" src="js/jquery.mobile-1.0a4.1.js"></script>
+	
+	<!-- Main application logic -->
+	<script type="text/javascript" src="js/tmpl.js"></script>
+	<script type="text/javascript" src="js/khan.js"></script>
 </head> 
-<body> 
-	<div data-role="panel" data-id="menu" data-hash="crumbs" data-context="a#default">
-		<div data-role="page">
-
+<body>
+	<!-- The menu panel, will hold all navigation. -->
+	<div data-role="panel" id="menu" data-id="menu" data-hash="crumbs">
+		<div data-role="page" id="playlists-page">
 			<div data-role="header" data-theme="b">
-				<h1>Videos</h1>
+				<h1>Playlists</h1>
 			</div>
 
-			<div data-role="content">	
-				<ul data-role="listview" id="playlist">
-				</ul>
-			</div>
+			<div data-role="content" id="playlists-content"></div>
 		</div>
 	</div>
-	<div data-role="panel" data-id="main" id="main">
+	
+	<!-- The main panel, will show videos and exercises. -->
+	<div data-role="panel" data-id="main" id="main" data-hash="false">
 		<div data-role="page">
-
 			<div data-role="header" data-theme="b">
 				<h1>Khan Academy</h1>
 			</div>
@@ -46,37 +52,68 @@
 		</div>
 	</div>
 
-<script type="text/html" id="videos">
-	<% each video in videos %>
-	<li class="ui-li-has-thumb ui-btn ui-btn-icon-right ui-li ui-btn-up-c" data-theme="c">
-		<div class="ui-btn-inner ui-li">
-			<div class="ui-btn-text">
-				<img src="http://img.youtube.com/vi/<%= video.youtube_id %>/2.jpg" class="ui-li-thumb">
-				<a href="#video-<%= video.youtube_id %>" class="ui-link-inherit" data-panel="main">
-					<!--<p class="ui-li-aside ui-li-desc"><%= Math.floor( video.duration / 60 ) + ":" + (video.duration % 60 < 10 ? "0" : "") + video.duration % 60 %></p>-->
-					<h3 class="ui-li-heading"><%= video.title %></h3>
-					<p class="ui-li-desc"><%= video.description %></p>
-				</a>
-			</div>
-			<span class="ui-icon ui-icon-arrow-r"></span>
-		</div>
-	</li>
-	<% } %>
-</script>
-<script type="text/html" id="video">
-	<div data-role="page" id="video-<%= youtube_id %>" data-url="video-<%= youtube_id %>">
-		<div data-role="header" data-theme="b">
-			<h1><%= title %></h1>
-		</div>
+	<!-- Template for constructing a listview of playlists. -->
+	<script type="text/html" id="playlists-tmpl">
+		<ul data-role="listview" class="ui-listview" id="playlists">
+			<% each list in playlists %>
+			<li class="ui-btn ui-btn-icon-right ui-li ui-btn-up-c" data-theme="c">
+				<div class="ui-btn-inner ui-li">
+					<div class="ui-btn-text">
+						<a href="#list-<%= list.youtube_id %>" class="ui-link-inherit">
+							<h3 class="ui-li-heading"><%= list.title %></h3>
+							<p class="ui-li-desc"><%= list.description %></p>
+						</a>
+					</div>
+					<span class="ui-icon ui-icon-arrow-r"></span>
+				</div>
+			</li>
+			<% } %>
+		</ul>
+	</script>
 
-		<div data-role="content">	
-			<center>
-				<iframe class="youtube-player" type="text/html" width="480" height="380" src="http://www.youtube.com/embed/<%= youtube_id %>" frameborder="0"></iframe>
-				<p><%= description %></p>
-			</center>
-		</center>
+	<!-- Template for constructing a page (w/ listview) of videos. -->
+	<script type="text/html" id="playlist-tmpl">
+		<div data-role="page" id="list-<%= youtube_id %>" data-url="list-<%= youtube_id %>">
+			<div data-role="header" data-theme="b">
+				<h1><%= title %></h1>
+			</div>
+
+			<div data-role="content">	
+				<ul data-role="listview" class="playlist">
+					<% each video in videos %>
+					<li class="ui-li-has-thumb ui-btn ui-btn-icon-right ui-li ui-btn-up-c" data-theme="c">
+						<div class="ui-btn-inner ui-li">
+							<div class="ui-btn-text">
+								<img src="http://img.youtube.com/vi/<%= video.youtube_id %>/2.jpg" class="ui-li-thumb">
+								<a href="#video-<%= video.youtube_id %>" class="ui-link-inherit" data-panel="main" data-transition="slideup">
+									<h3 class="ui-li-heading"><%= video.title %></h3>
+									<p class="ui-li-desc"><%= video.description %></p>
+								</a>
+							</div>
+							<span class="ui-icon ui-icon-arrow-r"></span>
+						</div>
+					</li>
+					<% } %>
+				</ul>
+			</div>
 		</div>
-	</div>
-</script>
+	</script>
+
+	<!-- Template for constructing a single video page. -->
+	<script type="text/html" id="video-tmpl">
+		<div data-role="page" id="video-<%= youtube_id %>" data-url="video-<%= youtube_id %>">
+			<div data-role="header" data-theme="b">
+				<h1><%= title %></h1>
+			</div>
+
+			<div data-role="content">	
+				<center>
+					<iframe class="youtube-player" type="text/html" width="480" height="380" src="http://www.youtube.com/embed/<%= youtube_id %>" frameborder="0"></iframe>
+					<p><%= description %></p>
+				</center>
+			</center>
+			</div>
+		</div>
+	</script>
 </body>
 </html>
