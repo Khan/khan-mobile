@@ -31,7 +31,9 @@ $(function() {
 		}
 		
 		// Inject the markup for the playlists into the site
-		$("#playlists-content").html( tmpl( "playlists-tmpl", { playlists: data } ) );
+		$("#playlists-content")
+			.html( tmpl( "playlists-tmpl", { playlists: data } ) )
+			.scrollview({ direction: "y" });
 	});
 });
 

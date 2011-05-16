@@ -349,7 +349,7 @@
         if ($.support.touch) {
           var $page = $(this);
           $page.find('div[data-role="content"]').attr('data-scroll', 'y');
-          $page.find("[data-scroll]:not(.ui-scrollview-clip)").each(function(){
+          $page.find("[data-scroll]:not(.ui-scrollview-clip):not([data-loading])").each(function(){
             var $this = $(this);
             // XXX: Remove this check for ui-scrolllistview once we've
             //      integrated list divider support into the main scrollview class.
