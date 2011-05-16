@@ -23,8 +23,10 @@ $(function() {
 			// Do the same thing for the videos
 			var vids = data[p].videos;
 			
-			for ( var v = 0, vl = vids.length; v < vl; v++ ) {
-				videos[ vids[v].youtube_id ] = vids[v];
+			if ( vids ) {
+				for ( var v = 0, vl = vids.length; v < vl; v++ ) {
+					videos[ vids[v].youtube_id ] = vids[v];
+				}
 			}
 		}
 		
