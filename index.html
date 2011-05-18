@@ -1,6 +1,9 @@
 <!DOCTYPE html> 
 <html> 
-	<head> 
+<head>
+	<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="black" />
 	<title>Khan Academy</title> 
 	<link rel="stylesheet" href="css/jquery.mobile-1.0a4.1.css" />
 	<link rel="stylesheet" href="css/jquery.mobile.splitview.css" />
@@ -32,7 +35,7 @@
 				<h1>Playlists</h1>
 			</div>
 
-			<div data-role="content" id="playlists-content"></div>
+			<div data-role="content" id="playlists-content" data-loading="true"></div>
 		</div>
 	</div>
 	
@@ -73,7 +76,7 @@
 
 	<!-- Template for constructing a page (w/ listview) of videos. -->
 	<script type="text/html" id="playlist-tmpl">
-		<div data-role="page" id="list-<%= youtube_id %>" data-url="list-<%= youtube_id %>">
+		<div data-role="page" id="list-<%= youtube_id %>" data-url="list-<%= youtube_id %>" class="playlist">
 			<div data-role="header" data-theme="b">
 				<h1><%= title %></h1>
 			</div>

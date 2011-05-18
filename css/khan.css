@@ -28,3 +28,7 @@ ul.playlist .ui-btn-icon-right .ui-icon {
 .ui-mobile-viewport.ui-panel-left {
 	width: 33% !important;
 }
+
+#menu div.playlist .ui-header .ui-title {
+	margin: .6em 8px .8em 108px;
+}

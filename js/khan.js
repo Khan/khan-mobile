@@ -31,7 +31,15 @@ $(function() {
 		}
 		
 		// Inject the markup for the playlists into the site
-		$("#playlists-content").html( tmpl( "playlists-tmpl", { playlists: data } ) );
+		var content = $("#playlists-content")
+			.html( tmpl( "playlists-tmpl", { playlists: data } ) );
+		
+		// Only turn on the custom scrolling logic if we're on a touch device
+		if ( $.support.touch ) {
+			// We need to enable it explicitly for the playlists
+			// as we're loading it dynamically
+			content.scrollview({ direction: "y" });
+		}
 	});
 });
 
