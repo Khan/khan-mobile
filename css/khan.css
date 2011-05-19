@@ -154,12 +154,10 @@ ul.playlist .ui-btn-icon-right .ui-icon {
 	text-decoration: none;
 }
 
-.ui-header .ui-btn-up-k.ui-shadow,
-.ui-header .ui-btn-hover-k.ui-shadow,
-.ui-header .ui-btn-down-k.ui-shadow {
-    -moz-box-shadow: none;
-    -webkit-box-shadow: none;
-    box-shadow: none;
+.ui-bar-k .ui-shadow {
+    -moz-box-shadow: 0 1px 0 rgba(255,255,255, .3);
+    -webkit-box-shadow: 0 1px 0 rgba(255,255,255, .3);
+    box-shadow: 0 1px 0 rgba(255,255,255, .3);
 }
 
 /* jQuery Mobile Split View Customizations
