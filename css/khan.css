@@ -33,6 +33,12 @@ ul.playlist .ui-btn-icon-right .ui-icon {
 	margin: .6em 8px .8em 108px;
 }
 
+.splitview.min-width-480px .ui-content {
+    top: 42px;
+}
+.splitview.min-width-480px .ui-header {
+    height: 40px;
+}
 
 /* JQuery Mobile Khan Skin
 -----------------------------------------------------------------------------------------------------------*/
