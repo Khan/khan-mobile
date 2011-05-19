@@ -156,6 +156,9 @@ ul.playlist .ui-btn-icon-right .ui-icon {
     box-shadow: none;
 }
 
+/* jQuery Mobile Split View Customizations
+------------------------------------------------------------------------------------------------------------*/
+
 .panel-popover {
     border: 2px solid #415E08;
 }
