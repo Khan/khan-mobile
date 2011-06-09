@@ -169,3 +169,11 @@ ul.playlist .ui-btn-icon-right .ui-icon {
 .panel-popover > .popover_triangle {
     border-bottom-color: #415E08;
 }
+
+html.no-sidebar div.ui-header {
+	display: none;
+}
+
+html.no-sidebar.ui-mobile body {
+	height: auto;
+}
