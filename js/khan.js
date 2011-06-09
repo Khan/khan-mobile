@@ -1,10 +1,11 @@
 var data,
 	playlists = {},
 	videos = {},
-	query = {};
+	query = {},
+	queryWatch = {};
 
 // Load in query string from URL
-queryString( window.location.search.substring(1) );
+updateQuery( window.location.search.substring(1) );
 
 // Temporarily disable loading of pages based upon URL
 // TODO: Make this relevant, possibly delay loading of jQuery Mobile until
@@ -54,6 +55,18 @@ if ( query.sidebar !== "no" ) {
 		$("#main > div").unwrap();
 		$("html").removeClass("splitview").addClass("no-sidebar");
 		
+		$.mobile.activePage = $("#home");
+		
+		addQueryWatch( "video", function( json ) {
+			json = JSON.parse( json );
+			console.log( json );
+			
+			$( tmpl( "video-tmpl", json ) )
+				.appendTo( "body" )
+				.page();
+			
+			$.mobile.changePage( $("#video-" + json.youtube_id), "none", false, false );
+		});
 	});
 }
 
@@ -96,17 +109,27 @@ $(document).delegate( "ul.playlist a", "mousedown", function() {
 // Query String Parser
 // Original from:
 // http://stackoverflow.com/questions/901115/get-querystring-values-in-javascript/2880929#2880929
-function queryString( q ) {
+function updateQuery( q ) {
 	var e,
 		a = /\+/g,  // Regex for replacing addition symbol with a space
 		r = /([^&=]+)=?([^&]*)/g,
-		d = function (s) { return decodeURIComponent(s.replace(a, " ")); };
+		d = function (s) { return decodeURIComponent(s.replace(a, " ")); },
+		name;
 
 	while ( (e = r.exec(q)) ) {
-		query[d(e[1])] = d(e[2]);
+		name = d(e[1]);
+		query[ name ] = d(e[2]);
+		
+		if ( queryWatch[ name ] ) {
+			queryWatch[ name ]( query[ name ] );
+		}
 	}
 }
 
-function updateQuery( q ) {
-	queryString( q );
+function addQueryWatch( name, fn ) {
+	queryWatch[ name ] = fn;
+	
+	if ( query[ name ] ) {
+		queryWatch[ name ]( query[ name ] );
+	}
 }
