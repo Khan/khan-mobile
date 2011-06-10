@@ -2,6 +2,7 @@ var data,
 	playlists = {},
 	videos = {},
 	query = {},
+	queryProcess = {},
 	queryWatch = {},
 	YTReady,
 	curPlaylist;
@@ -42,9 +43,12 @@ if ( query.sidebar !== "no" ) {
 		
 		$.mobile.activePage = $("#home");
 		
-		addQueryWatch( "playlist", function( json ) {
+		addQueryProcess( "playlist", function( json ) {
 			// Load the playlist data for later use
-			loadPlaylists( [ JSON.parse( json ) ] );
+			var playlist = JSON.parse( json );
+			loadPlaylists( [ playlist ] );
+			
+			return playlist;
 		});
 		
 		addQueryWatch( "video", function( id ) {
@@ -93,18 +97,34 @@ function updateQuery( q ) {
 		a = /\+/g,  // Regex for replacing addition symbol with a space
 		r = /([^&=]+)=?([^&]*)/g,
 		d = function (s) { return decodeURIComponent(s.replace(a, " ")); },
-		name;
+		name,
+		value,
+		added = {};
 
 	while ( (e = r.exec(q)) ) {
 		name = d(e[1]);
-		query[ name ] = d(e[2]);
+		value = d(e[2]);
 		
+		added[ name ] = query[ name ] = queryProcess[ name ] ? 
+			queryProcess[ name ]( value ) :
+			value;
+	}
+	
+	for ( name in added ) {
 		if ( queryWatch[ name ] ) {
-			queryWatch[ name ]( query[ name ] );
+			queryWatch[ name ]( added[ name ] );
 		}
 	}
 	
 	return true;
+}
+
+function addQueryProcess( name, fn ) {
+	queryProcess[ name ] = fn;
+	
+	if ( query[ name ] ) {
+		query[ name ] = queryProcess[ name ]( query[ name ] );
+	}
 }
 
 function addQueryWatch( name, fn ) {
