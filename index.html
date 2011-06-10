@@ -23,6 +23,9 @@
 	<script type="text/javascript" src="js/jquery.easing.1.3.js"></script>
 	<script type="text/javascript" src="js/jquery.mobile.scrollview.js"></script>
 	
+	<!-- Youtube Player API -->
+	<script type="text/javascript" src="http://www.youtube.com/player_api"></script>
+	
 	<!-- Main application logic -->
 	<script type="text/javascript" src="js/tmpl.js"></script>
 	<script type="text/javascript" src="js/khan.js"></script>
@@ -48,7 +51,7 @@
 
 			<div data-role="content">	
 				<center>
-					<iframe class="youtube-player" type="text/html" width="480" height="380" src="http://www.youtube.com/embed/gM95HHI4gLk?wmode=opaque" frameborder="0"></iframe>
+					<iframe class="youtube-player" type="text/html" width="480" height="380" src="http://www.youtube.com/embed/gM95HHI4gLk?wmode=opaque&enablejsapi=1" frameborder="0"></iframe>
 					<p>Learn more about Khan Academy.</p>
 				</center>
 			</div>
@@ -111,7 +114,7 @@
 
 			<div data-role="content">	
 				<center>
-					<iframe class="youtube-player" type="text/html" width="480" height="380" src="http://www.youtube.com/embed/<%= youtube_id %>?wmode=opaque" frameborder="0"></iframe>
+					<iframe class="youtube-player" type="text/html" width="480" height="380" src="http://www.youtube.com/embed/<%= youtube_id %>?wmode=opaque&enablejsapi=1" frameborder="0"></iframe>
 					<p><%= description %></p>
 				</center>
 			</center>

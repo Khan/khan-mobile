@@ -2,7 +2,8 @@ var data,
 	playlists = {},
 	videos = {},
 	query = {},
-	queryWatch = {};
+	queryWatch = {},
+	YTReady;
 
 // Load in query string from URL
 updateQuery( window.location.search.substring(1) );
@@ -59,15 +60,30 @@ if ( query.sidebar !== "no" ) {
 		
 		addQueryWatch( "video", function( json ) {
 			json = JSON.parse( json );
-			console.log( json );
 			
-			$( tmpl( "video-tmpl", json ) )
-				.appendTo( "body" )
-				.page();
+			// Generated page doesn't exist so make it
+			if ( !$("#video-" + json.youtube_id).length ) {
+				$( tmpl( "video-tmpl", json ) )
+					.appendTo( "body" )
+					.page();
+			}
 			
+			if ( YTReady ) {
+				var oldIframe = $.mobile.activePage.find("iframe")[0];
+			
+				if ( oldIframe ) {
+					(new YT.Player( oldIframe )).pauseVideo();
+				}
+			}
+			
+			// Swap to the new page
 			$.mobile.changePage( $("#video-" + json.youtube_id), "none", false, false );
 		});
 	});
+}
+
+function onYouTubePlayerAPIReady() {
+	YTReady = true;
 }
 
 // Watch for clicks on playlists in the main Playlist menu
@@ -124,6 +140,8 @@ function updateQuery( q ) {
 			queryWatch[ name ]( query[ name ] );
 		}
 	}
+	
+	return true;
 }
 
 function addQueryWatch( name, fn ) {
