@@ -54,6 +54,7 @@ if ( query.sidebar !== "no" ) {
 		};
 		$("#home video").error(function(e) {
 			lg("error " + e.target.error.code, true);
+			pendingSeek = null;
 		}).bind( "loadstart progress suspend abort emptied stalled loadedmetadata loadeddata canplay canplaythrough playing waiting seeking seeked ended durationchange play pause ratechange" , function(ev){ 
 			lg(ev.type, true);
 		}).bind( "loadstart progress stalled loadedmetadata loadeddata canplay canplaythrough playing waiting durationchange" , function( ev ) {
