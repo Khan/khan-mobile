@@ -201,6 +201,8 @@ function updateVideo( id ) {
 	player.src = "http://www.itrans.info/khan.mp4";
 	if ( id in lastPlayhead ) {
 		pendingSeek = lastPlayhead[id];
+	} else {
+		pendingSeek = null;
 	}
 	curVideoId = id;
 	player.load();
