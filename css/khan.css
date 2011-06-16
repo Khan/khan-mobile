@@ -214,6 +214,14 @@ html.no-sidebar div.ui-header {
 	display: none;
 }
 
-html.no-sidebar.ui-mobile body {
+html.no-sidebar.ui-mobile .ui-body-k {
 	height: auto;
+	background-image: none;
+	background-color: #e3e3e3; /* Solid bgcolor so we can match background in hosting view, so rotations don't look crappy */
+}
+
+html.no-sidebar.ui-mobile body {
+    /* If we don't set the body's background color to the same as .ui-body-k,
+       an artifact (with body's color) appears when rotating the device. */
+    background-color: #e3e3e3;
 }
