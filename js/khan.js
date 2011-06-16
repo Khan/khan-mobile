@@ -51,7 +51,7 @@ if ( query.sidebar !== "no" ) {
 				msg += " (readyState " + v.readyState + ", networkState " + v.networkState + ", currentTime " + v.currentTime + ")";
 			}
 			$("#home .log").prepend("<li>" + msg + "</li>");
-		}
+		};
 		$("#home video").error(function(e) {
 			lg("error " + e.target.error.code, true);
 		}).bind( "loadstart progress suspend abort emptied stalled loadedmetadata loadeddata canplay canplaythrough playing waiting seeking seeked ended durationchange play pause ratechange" , function(ev){ 
@@ -76,6 +76,13 @@ if ( query.sidebar !== "no" ) {
 		}).bind( "timeupdate" , function(ev){
 			lastPlayhead[ curVideoId ] = ev.target.currentTime;
 		});
+		
+		var updateVideoHeight = function() {
+			var height = $(window).width() / 16.0 * 9.0;
+			$("#home video").height(height);
+		};
+		$(window).resize(updateVideoHeight);
+		updateVideoHeight(); // Also update immediately
 		
 		$.mobile.activePage = $("#home");
 		
