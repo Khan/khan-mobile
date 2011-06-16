@@ -34,75 +34,75 @@ ul.playlist .ui-btn-icon-right .ui-icon {
 }
 
 .splitview.min-width-480px .ui-content {
-    top: 42px;
+	top: 42px;
 }
 .splitview.min-width-480px .ui-header {
-    height: 40px;
+	height: 40px;
 }
 
 .content-video {
-    position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    padding: 0;
+	position: absolute;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	padding: 0;
 }
 
 .content-video video, .content-video .error {
-    width: 100%;
-    /* Video element has a phantom bottom border that can't be removed unless
-       you set display: block. See:
-       http://css-tricks.com/forums/discussion/6346/solved-unusual-bottom-margin-on-html5-video-element/p1 */
-    display: block;
-    background-color: #000;
-    padding: 0;
-    margin: 0;
+	width: 100%;
+	/* Video element has a phantom bottom border that can't be removed unless
+	   you set display: block. See:
+	   http://css-tricks.com/forums/discussion/6346/solved-unusual-bottom-margin-on-html5-video-element/p1 */
+	display: block;
+	background-color: #000;
+	padding: 0;
+	margin: 0;
 }
 
 .content-video .error {
-    color: #ddd;
-    text-shadow: none;
-    display: table; /* Vertically center the h2 */
+	color: #ddd;
+	text-shadow: none;
+	display: table; /* Vertically center the h2 */
 }
 
 .error h2 {
-    display: block;
-    text-align: center;
-    display: table-cell;
-    vertical-align: middle;
+	display: block;
+	text-align: center;
+	display: table-cell;
+	vertical-align: middle;
 }
 
 .error h2 img {
-    display: block;
-    margin: 0 auto 0.5em auto;
+	display: block;
+	margin: 0 auto 0.5em auto;
 }
 
 .content-video .below-video {
-    margin: 15px;
+	margin: 15px;
 }
 
 .content-video .below-video h1 {
-    /* Hide h1 below video, unless it's inside .no-sidebar */
-    display: none;
+	/* Hide h1 below video, unless it's inside .no-sidebar */
+	display: none;
 }
 
 html.no-sidebar .content-video .below-video h1 {
-    display: block;
-    font-size: 1.2em;
-    margin: 0.2em 0;
+	display: block;
+	font-size: 1.2em;
+	margin: 0.2em 0;
 }
 
 .content-video .below-video h1 + p {
-    margin-top: 0;
+	margin-top: 0;
 }
 
 .log {
-    float: right;
-    display: block;
-    width: 300px;
-    height: 200px;
-    overflow: scroll;
+	float: right;
+	display: block;
+	width: 300px;
+	height: 200px;
+	overflow: scroll;
 }
 
 /* JQuery Mobile Khan Skin
@@ -220,19 +220,19 @@ html.no-sidebar .content-video .below-video h1 {
 }
 
 .ui-bar-k .ui-shadow {
-    -moz-box-shadow: 0 1px 0 rgba(255,255,255, .3);
-    -webkit-box-shadow: 0 1px 0 rgba(255,255,255, .3);
-    box-shadow: 0 1px 0 rgba(255,255,255, .3);
+	-moz-box-shadow: 0 1px 0 rgba(255,255,255, .3);
+	-webkit-box-shadow: 0 1px 0 rgba(255,255,255, .3);
+	box-shadow: 0 1px 0 rgba(255,255,255, .3);
 }
 
 /* jQuery Mobile Split View Customizations
 ------------------------------------------------------------------------------------------------------------*/
 
 .panel-popover {
-    border: 2px solid #415E08;
+	border: 2px solid #415E08;
 }
 .panel-popover > .popover_triangle {
-    border-bottom-color: #415E08;
+	border-bottom-color: #415E08;
 }
 
 html.no-sidebar div.ui-header {
@@ -246,7 +246,7 @@ html.no-sidebar.ui-mobile .ui-body-k {
 }
 
 html.no-sidebar.ui-mobile body {
-    /* If we don't set the body's background color to the same as .ui-body-k,
-       an artifact (with body's color) appears when rotating the device. */
-    background-color: #e3e3e3;
+	/* If we don't set the body's background color to the same as .ui-body-k,
+	   an artifact (with body's color) appears when rotating the device. */
+	background-color: #e3e3e3;
 }
