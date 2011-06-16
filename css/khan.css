@@ -49,8 +49,20 @@ ul.playlist .ui-btn-icon-right .ui-icon {
     padding: 0;
 }
 
-.content-video video {
+.content-video video, .content-video .error {
     width: 100%;
+    /* Video element has a phantom bottom border that can't be removed unless
+       you set display: block. See:
+       http://css-tricks.com/forums/discussion/6346/solved-unusual-bottom-margin-on-html5-video-element/p1 */
+    display: block;
+    background-color: #000;
+    padding: 0;
+    margin: 0;
+}
+
+.content-video .error {
+    color: #ddd;
+    text-shadow: none;
 }
 
 .content-video .below-video {

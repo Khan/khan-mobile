@@ -55,6 +55,8 @@ if ( query.sidebar !== "no" ) {
 		$("#home video").error(function(e) {
 			lg("error " + e.target.error.code, true);
 			pendingSeek = null;
+			$("#home video").hide();
+			$("#home .error").show();
 		}).bind( "loadstart progress suspend abort emptied stalled loadedmetadata loadeddata canplay canplaythrough playing waiting seeking seeked ended durationchange play pause ratechange" , function(ev){ 
 			lg(ev.type, true);
 		}).bind( "loadstart progress stalled loadedmetadata loadeddata canplay canplaythrough playing waiting durationchange" , function( ev ) {
@@ -80,7 +82,7 @@ if ( query.sidebar !== "no" ) {
 		
 		var updateVideoHeight = function() {
 			var height = $(window).width() / 16.0 * 9.0;
-			$("#home video").height(height);
+			$("#home video, #home .error").height(height);
 		};
 		$(window).resize(updateVideoHeight);
 		updateVideoHeight(); // Also update immediately
@@ -205,6 +207,8 @@ function updateVideo( id ) {
 		pendingSeek = null;
 	}
 	curVideoId = id;
+	$(player).show();
+	$("#home .error").hide();
 	player.load();
 	
 	$("#home h1").text( video[ "title" ] );
