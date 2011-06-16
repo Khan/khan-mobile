@@ -7,8 +7,8 @@
 	<title>Khan Academy</title> 
 	<link rel="stylesheet" href="css/jquery.mobile-1.0a4.1.css" />
 	<link rel="stylesheet" href="css/jquery.mobile.splitview.css" />
-  <link rel="stylesheet" href="css/jquery.mobile.scrollview.css" />
-  <link rel="stylesheet" href="css/jquery.mobile.grids.collapsible.css" />
+	<link rel="stylesheet" href="css/jquery.mobile.scrollview.css" />
+	<link rel="stylesheet" href="css/jquery.mobile.grids.collapsible.css" />
 	<link rel="stylesheet" href="css/khan.css" />
 	
 	<script type="text/javascript" src="http://code.jquery.com/jquery-1.5.2.min.js"></script>
@@ -22,9 +22,6 @@
 	<!-- Needed for browsers that don't support fixed positioning. -->
 	<script type="text/javascript" src="js/jquery.easing.1.3.js"></script>
 	<script type="text/javascript" src="js/jquery.mobile.scrollview.js"></script>
-	
-	<!-- Youtube Player API -->
-	<script type="text/javascript" src="http://www.youtube.com/player_api"></script>
 	
 	<!-- Main application logic -->
 	<script type="text/javascript" src="js/tmpl.js"></script>
@@ -49,11 +46,13 @@
 				<h1>Khan Academy</h1>
 			</div>
 
-			<div data-role="content">	
-				<center>
-					<iframe class="youtube-player" type="text/html" width="480" height="380" src="http://www.youtube.com/embed/gM95HHI4gLk?wmode=opaque&enablejsapi=1" frameborder="0"></iframe>
-					<p>Learn more about Khan Academy.</p>
-				</center>
+			<div data-role="content" class="content-video">
+				<video x-webkit-airplay="allow" controls></video>
+				<div class="below-video">
+					<ul class="log"></ul>
+					<h1>Khan Academy</h1>
+					<p></p>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -101,23 +100,6 @@
 					</li>
 					<% } %>
 				</ul>
-			</div>
-		</div>
-	</script>
-
-	<!-- Template for constructing a single video page. -->
-	<script type="text/html" id="video-tmpl">
-		<div data-role="page" id="video-<%= youtube_id %>" data-url="video-<%= youtube_id %>">
-			<div data-role="header" data-theme="k">
-				<h1><%= title %></h1>
-			</div>
-
-			<div data-role="content">	
-				<center>
-					<iframe class="youtube-player" type="text/html" width="480" height="380" src="http://www.youtube.com/embed/<%= youtube_id %>?wmode=opaque&enablejsapi=1" frameborder="0"></iframe>
-					<p><%= description %></p>
-				</center>
-			</center>
 			</div>
 		</div>
 	</script>

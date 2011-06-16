@@ -40,6 +40,46 @@ ul.playlist .ui-btn-icon-right .ui-icon {
     height: 40px;
 }
 
+.content-video {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    padding: 0;
+}
+
+.content-video video {
+    width: 100%;
+}
+
+.content-video .below-video {
+    margin: 15px;
+}
+
+.content-video .below-video h1 {
+    /* Hide h1 below video, unless it's inside .no-sidebar */
+    display: none;
+}
+
+html.no-sidebar .content-video .below-video h1 {
+    display: block;
+    font-size: 1.2em;
+    margin: 0.2em 0;
+}
+
+.content-video .below-video h1 + p {
+    margin-top: 0;
+}
+
+.log {
+    float: right;
+    display: block;
+    width: 300px;
+    height: 200px;
+    overflow: scroll;
+}
+
 /* JQuery Mobile Khan Skin
 -----------------------------------------------------------------------------------------------------------*/
 

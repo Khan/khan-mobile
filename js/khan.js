@@ -4,8 +4,9 @@ var data,
 	query = {},
 	queryProcess = {},
 	queryWatch = {},
-	YTReady,
-	curPlaylist;
+	lastPlayhead = {}, // TODO needs to be persistent
+	pendingSeek, // http://adamernst.com/post/6570213273/seeking-an-html5-video-player-on-the-ipad
+	curVideoId;
 
 // Load in query string from URL
 updateQuery( window.location.search.substring(1) );
@@ -39,7 +40,42 @@ if ( query.sidebar !== "no" ) {
 	$(function() {
 		$("#menu").remove();
 		$("#main > div").unwrap();
+		// unwrap breaks the video tag in #home on iPad (bug). Fix it.
+		$("#home video").replaceWith(function() {return $(this).clone();});
 		$("html").removeClass("splitview").addClass("no-sidebar");
+		$(document).bind( "touchmove", false );
+		
+		var lg = function(msg, states) {
+			var v = $("video").get(0);
+			if (states) {
+				msg += " (readyState " + v.readyState + ", networkState " + v.networkState + ", currentTime " + v.currentTime + ")";
+			}
+			$("#home .log").prepend("<li>" + msg + "</li>");
+		}
+		$("#home video").error(function(e) {
+			lg("error " + e.target.error.code, true);
+		}).bind( "loadstart progress suspend abort emptied stalled loadedmetadata loadeddata canplay canplaythrough playing waiting seeking seeked ended durationchange play pause ratechange" , function(ev){ 
+			lg(ev.type, true);
+		}).bind( "loadstart progress stalled loadedmetadata loadeddata canplay canplaythrough playing waiting durationchange" , function( ev ) {
+			if ( pendingSeek !== null ) {
+				var seekableRanges = ev.target.seekable;
+				var isSeekable = function() {
+					for ( var i = 0; i < seekableRanges.length; i++ )
+						if ( seekableRanges.start(i) <= pendingSeek )
+							if ( pendingSeek <= seekableRanges.end(i) )
+								return true;
+					return false;
+				}
+				if ( isSeekable() ) {
+					// Copy to a local variable, in case setting currentTime triggers further events.
+					var seekTo = pendingSeek;
+					pendingSeek = null;
+					ev.target.currentTime = seekTo;
+				}
+			}
+		}).bind( "timeupdate" , function(ev){
+			lastPlayhead[ curVideoId ] = ev.target.currentTime;
+		});
 		
 		$.mobile.activePage = $("#home");
 		
@@ -52,17 +88,9 @@ if ( query.sidebar !== "no" ) {
 		});
 		
 		addQueryWatch( "video", function( id ) {
-			// Create the page if it doesn't already exist
-			genVideoPage( id );
-			
-			// Swap to the new page
-			$.mobile.changePage( $("#video-" + id), "none", false, false );
+			updateVideo( id );
 		});
 	});
-}
-
-function onYouTubePlayerAPIReady() {
-	YTReady = true;
 }
 
 // Watch for clicks on playlists in the main Playlist menu
@@ -86,7 +114,7 @@ $(document).delegate( "#playlists a", "mousedown", function() {
 // Watch for clicks on videos in a playlist meny
 $(document).delegate( "ul.playlist a", "mousedown", function() {
 	// Grab the Youtube ID for the video and generate the page
-	genVideoPage( this.href.substr( this.href.indexOf("#video-") + 7 ) );
+	updateVideo( this.href.substr( this.href.indexOf("#video-") + 7 ) );
 });
 
 // Query String Parser
@@ -157,27 +185,18 @@ function loadPlaylists( result ) {
 	}
 }
 
-function genVideoPage( id ) {
-	// If we found it, add it to the page
-	if ( videos[ id ] ) {
-		// Generated page doesn't exist so make it
-		if ( !$("#video-" + id).length ) {
-			$( tmpl( "video-tmpl", videos[ id ] ) )
-				.appendTo( "body" )
-				.page();
-		}
+function updateVideo( id ) {
+	var player = $("#home video").get(0);
+	var video = videos[id];
 	
-		// If the YouTube API is ready
-		if ( YTReady ) {
-			// Find the YouTube video on the previous page
-			var oldIframe = $.mobile.activePage.find("iframe")[0];
-			
-			// And pause the video
-			// TODO: Determine if it's already playing and only pause if that's the case
-			if ( oldIframe ) {
-				(new YT.Player( oldIframe )).pauseVideo();
-				// TODO: Send back play details to server
-			}
-		}
+	if ( !player.paused ) player.pause();
+	player.src = "http://www.itrans.info/khan.mp4";
+	if ( id in lastPlayhead ) {
+		pendingSeek = lastPlayhead[id];
 	}
+	curVideoId = id;
+	player.load();
+	
+	$("#home h1").text( video[ "title" ] );
+	$("#home p").text( video[ "description" ] );
 }
