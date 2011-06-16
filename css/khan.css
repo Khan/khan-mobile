@@ -63,6 +63,19 @@ ul.playlist .ui-btn-icon-right .ui-icon {
 .content-video .error {
     color: #ddd;
     text-shadow: none;
+    display: table; /* Vertically center the h2 */
+}
+
+.error h2 {
+    display: block;
+    text-align: center;
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.error h2 img {
+    display: block;
+    margin: 0 auto 0.5em auto;
 }
 
 .content-video .below-video {
