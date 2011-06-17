@@ -34,6 +34,8 @@ if ( query.sidebar !== "no" ) {
 				content.scrollview({ direction: "y" });
 			}
 		});
+		
+		$(".save").hide(); // Can't save offline if you're not in native app
 	});
 
 } else {
@@ -57,6 +59,10 @@ if ( query.sidebar !== "no" ) {
 		
 		addQueryWatch( "video", function( id ) {
 			updateVideo( id );
+		});
+		
+		$(".save").click(function(){
+			updateNativeHost("download=" + curVideoId);
 		});
 	});
 }
@@ -201,12 +207,16 @@ function loadPlaylists( result ) {
 	}
 }
 
+function updateNativeHost(qs) {
+	window.location = "khan://update?" + qs;
+}
+
 function updateVideo( id ) {
 	var player = $("video").get(0);
 	var video = videos[id];
 	
 	if ( !player.paused ) player.pause();
-	player.src = "http://www.itrans.info/khan.mp4";
+	player.src = "http://s3.amazonaws.com/KA-youtube-converted/jxA8MffVmPs/jxA8MffVmPs.mp4";
 	if ( id in lastPlayhead ) {
 		pendingSeek = lastPlayhead[id];
 	} else {
