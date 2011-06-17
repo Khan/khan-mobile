@@ -61,6 +61,15 @@ if ( query.sidebar !== "no" ) {
 			updateVideo( id );
 		});
 		
+		addQueryWatch( "playing", function( b ) {
+			// This seems inelegant, TODO make it cleaner
+			if ( b !== "no" ) {
+				$("video").get(0).play();
+			} else {
+				$("video").get(0).pause();
+			}
+		});
+		
 		$(".save").click(function(){
 			updateNativeHost("download=" + curVideoId);
 		});
