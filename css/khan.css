@@ -49,7 +49,7 @@ ul.playlist .ui-btn-icon-right .ui-icon {
 	padding: 0;
 }
 
-.content-video video, .content-video .error {
+video, .error {
 	width: 100%;
 	/* Video element has a phantom bottom border that can't be removed unless
 	   you set display: block. See:
@@ -60,48 +60,66 @@ ul.playlist .ui-btn-icon-right .ui-icon {
 	margin: 0;
 }
 
-.content-video .error {
+.error {
 	color: #ddd;
 	text-shadow: none;
 	display: table; /* Vertically center the h2 */
 }
 
-.error h2 {
+.error .details {
 	display: block;
 	text-align: center;
 	display: table-cell;
 	vertical-align: middle;
+	opacity: 1.0;
+	-webkit-transition: opacity 0.3s ease-in;
 }
 
-.error h2 img {
+.error img {
 	display: block;
 	margin: 0 auto 0.5em auto;
 }
 
-.content-video .below-video {
+.error h2 {
+	margin-bottom: 0.2em;
+}
+
+.error h2 + p {
+	margin-top: 0;
+}
+
+.below-video {
 	margin: 15px;
 }
 
-.content-video .below-video h1 {
+.below-video h1 {
 	/* Hide h1 below video, unless it's inside .no-sidebar */
 	display: none;
 }
 
-html.no-sidebar .content-video .below-video h1 {
+html.no-sidebar .below-video h1 {
 	display: block;
 	font-size: 1.2em;
 	margin: 0.2em 0;
 }
 
-.content-video .below-video h1 + p {
+.below-video h1 + p {
 	margin-top: 0;
 }
 
-.log {
+.actions {
 	float: right;
+	margin-top: -0.5em;
+	margin-right: -5px;
+}
+
+.log {
+	position: absolute;
+	bottom: 0px;
 	display: block;
-	width: 300px;
-	height: 200px;
+	left: 0;
+	right: 0;
+	height: 40px;
 	overflow: scroll;
 }
 
@@ -241,12 +259,24 @@ html.no-sidebar div.ui-header {
 
 html.no-sidebar.ui-mobile .ui-body-k {
 	height: auto;
+}
+
+/* Style customizations for no-sidebar
+------------------------------------------------------------------------------------------------------------*/
+
+html.no-sidebar .ui-body-k {
 	background-image: none;
 	background-color: #e3e3e3; /* Solid bgcolor so we can match background in hosting view, so rotations don't look crappy */
 }
 
-html.no-sidebar.ui-mobile body {
+html.no-sidebar body {
 	/* If we don't set the body's background color to the same as .ui-body-k,
 	   an artifact (with body's color) appears when rotating the device. */
 	background-color: #e3e3e3;
+}
+
+* {
+	-webkit-user-select: none;
+	-webkit-touch-callout: none;
+	-webkit-tap-highlight-color: rgba(0,0,0,0);
 }

@@ -49,10 +49,18 @@
 			<div data-role="content" class="content-video">
 				<video x-webkit-airplay="allow" controls></video>
 				<div class="error">
-					<h2><img src="img/error.png">Error</h2>
+					<div class="details">
+						<img src="img/error.png">
+						<h2>Network Error</h2>
+						<p>Try saving videos for offline viewing.</p>
+						<a data-role="button" data-inline="true" data-theme="a" data-icon="refresh">Retry</a>
+					</div>
 				</div>
 				<div class="below-video">
 					<ul class="log"></ul>
+					<div class="actions">
+						<a data-role="button" data-inline="true" data-theme="c" data-icon="arrow-d">Save for Offline</a>
+					</div>
 					<h1>Khan Academy</h1>
 					<p></p>
 				</div>

@@ -40,8 +40,8 @@ if ( query.sidebar !== "no" ) {
 	$(function() {
 		$("#menu").remove();
 		$("#main > div").unwrap();
-		// unwrap breaks the video tag in #home on iPad (bug). Fix it.
-		$("#home video").replaceWith(function() {return $(this).clone();});
+		// unwrap breaks the video tag on iPad (bug). Fix it.
+		$("video").replaceWith(function() {return $(this).clone();});
 		$("html").removeClass("splitview").addClass("no-sidebar");
 		$(document).bind( "touchmove", false );
 		
@@ -50,13 +50,17 @@ if ( query.sidebar !== "no" ) {
 			if (states) {
 				msg += " (readyState " + v.readyState + ", networkState " + v.networkState + ", currentTime " + v.currentTime + ")";
 			}
-			$("#home .log").prepend("<li>" + msg + "</li>");
+			$(".log").prepend("<li>" + msg + "</li>");
 		};
-		$("#home video").error(function(e) {
+		$("video").error(function(e) {
 			lg("error " + e.target.error.code, true);
 			pendingSeek = null;
-			$("#home video").hide();
-			$("#home .error").show();
+			$("video").hide();
+			$(".error").show();
+			// You can't immediately animate an object that's just been shown.
+			// http://www.greywyvern.com/?post=337
+			// If you can find a better way, please do.
+			setTimeout(function() { $(".error .details").css("opacity", 1.0); }, 0);
 		}).bind( "loadstart progress suspend abort emptied stalled loadedmetadata loadeddata canplay canplaythrough playing waiting seeking seeked ended durationchange play pause ratechange" , function(ev){ 
 			lg(ev.type, true);
 		}).bind( "loadstart progress stalled loadedmetadata loadeddata canplay canplaythrough playing waiting durationchange" , function( ev ) {
@@ -82,7 +86,7 @@ if ( query.sidebar !== "no" ) {
 		
 		var updateVideoHeight = function() {
 			var height = $(window).width() / 16.0 * 9.0;
-			$("#home video, #home .error").height(height);
+			$("video, .error").height(height);
 		};
 		$(window).resize(updateVideoHeight);
 		updateVideoHeight(); // Also update immediately
@@ -196,7 +200,7 @@ function loadPlaylists( result ) {
 }
 
 function updateVideo( id ) {
-	var player = $("#home video").get(0);
+	var player = $("video").get(0);
 	var video = videos[id];
 	
 	if ( !player.paused ) player.pause();
@@ -208,9 +212,10 @@ function updateVideo( id ) {
 	}
 	curVideoId = id;
 	$(player).show();
-	$("#home .error").hide();
+	$(".error").hide();
+	$(".error .details").css("opacity", 0.0);
 	player.load();
 	
-	$("#home h1").text( video[ "title" ] );
-	$("#home p").text( video[ "description" ] );
+	$(".below-video h1").text( video[ "title" ] );
+	$(".below-video p").text( video[ "description" ] );
 }
