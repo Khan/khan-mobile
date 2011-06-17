@@ -73,6 +73,12 @@ if ( query.sidebar !== "no" ) {
 		$(".save").click(function(){
 			updateNativeHost("download=" + curVideoId);
 		});
+		
+		$( "video" ).bind( "play" , function(ev) {
+			updateNativeHost( "playing=yes" );
+		}).bind( "pause" , function(ev) {
+			updateNativeHost( "playing=no" );
+		});
 	});
 }
 
