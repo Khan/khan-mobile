@@ -45,52 +45,6 @@ if ( query.sidebar !== "no" ) {
 		$("html").removeClass("splitview").addClass("no-sidebar");
 		$(document).bind( "touchmove", false );
 		
-		var lg = function(msg, states) {
-			var v = $("video").get(0);
-			if (states) {
-				msg += " (readyState " + v.readyState + ", networkState " + v.networkState + ", currentTime " + v.currentTime + ")";
-			}
-			$(".log").prepend("<li>" + msg + "</li>");
-		};
-		$("video").error(function(e) {
-			lg("error " + e.target.error.code, true);
-			pendingSeek = null;
-			$("video").hide();
-			$(".error").show();
-			// You can't immediately animate an object that's just been shown.
-			// http://www.greywyvern.com/?post=337
-			// If you can find a better way, please do.
-			setTimeout(function() { $(".error .details").css("opacity", 1.0); }, 0);
-		}).bind( "loadstart progress suspend abort emptied stalled loadedmetadata loadeddata canplay canplaythrough playing waiting seeking seeked ended durationchange play pause ratechange" , function(ev){ 
-			lg(ev.type, true);
-		}).bind( "loadstart progress stalled loadedmetadata loadeddata canplay canplaythrough playing waiting durationchange" , function( ev ) {
-			if ( pendingSeek !== null ) {
-				var seekableRanges = ev.target.seekable;
-				var isSeekable = function() {
-					for ( var i = 0; i < seekableRanges.length; i++ )
-						if ( seekableRanges.start(i) <= pendingSeek )
-							if ( pendingSeek <= seekableRanges.end(i) )
-								return true;
-					return false;
-				}
-				if ( isSeekable() ) {
-					// Copy to a local variable, in case setting currentTime triggers further events.
-					var seekTo = pendingSeek;
-					pendingSeek = null;
-					ev.target.currentTime = seekTo;
-				}
-			}
-		}).bind( "timeupdate" , function(ev){
-			lastPlayhead[ curVideoId ] = ev.target.currentTime;
-		});
-		
-		var updateVideoHeight = function() {
-			var height = $(window).width() / 16.0 * 9.0;
-			$("video, .error").height(height);
-		};
-		$(window).resize(updateVideoHeight);
-		updateVideoHeight(); // Also update immediately
-		
 		$.mobile.activePage = $("#home");
 		
 		addQueryProcess( "playlist", function( json ) {
@@ -106,6 +60,54 @@ if ( query.sidebar !== "no" ) {
 		});
 	});
 }
+
+$(function() {
+	var lg = function(msg, states) {
+		var v = $("video").get(0);
+		if (states) {
+			msg += " (readyState " + v.readyState + ", networkState " + v.networkState + ", currentTime " + v.currentTime + ")";
+		}
+		$(".log").prepend("<li>" + msg + "</li>");
+	};
+	$("video").error(function(e) {
+		lg("error " + e.target.error.code, true);
+		pendingSeek = null;
+		$("video").hide();
+		$(".error").show();
+		// You can't immediately animate an object that's just been shown.
+		// http://www.greywyvern.com/?post=337
+		// If you can find a better way, please do.
+		setTimeout(function() { $(".error .details").css("opacity", 1.0); }, 0);
+	}).bind( "loadstart progress suspend abort emptied stalled loadedmetadata loadeddata canplay canplaythrough playing waiting seeking seeked ended durationchange play pause ratechange" , function(ev){ 
+		lg(ev.type, true);
+	}).bind( "loadstart progress stalled loadedmetadata loadeddata canplay canplaythrough playing waiting durationchange" , function( ev ) {
+		if ( pendingSeek !== null ) {
+			var seekableRanges = ev.target.seekable;
+			var isSeekable = function() {
+				for ( var i = 0; i < seekableRanges.length; i++ )
+					if ( seekableRanges.start(i) <= pendingSeek )
+						if ( pendingSeek <= seekableRanges.end(i) )
+							return true;
+				return false;
+			}
+			if ( isSeekable() ) {
+				// Copy to a local variable, in case setting currentTime triggers further events.
+				var seekTo = pendingSeek;
+				pendingSeek = null;
+				ev.target.currentTime = seekTo;
+			}
+		}
+	}).bind( "timeupdate" , function(ev){
+		lastPlayhead[ curVideoId ] = ev.target.currentTime;
+	});
+	
+	var updateVideoHeight = function() {
+		var height = $(window).width() / 16.0 * 9.0;
+		$("video, .error").height(height);
+	};
+	$(window).resize(updateVideoHeight);
+	updateVideoHeight(); // Also update immediately
+});
 
 // Watch for clicks on playlists in the main Playlist menu
 $(document).delegate( "#playlists a", "mousedown", function() {
