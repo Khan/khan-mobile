@@ -231,7 +231,7 @@ function updateVideo( id ) {
 	var video = videos[id];
 	
 	if ( !player.paused ) player.pause();
-	player.src = "http://s3.amazonaws.com/KA-youtube-converted/jxA8MffVmPs/jxA8MffVmPs.mp4";
+	player.src = video[ "download_urls" ][ "mp4" ];
 	if ( id in lastPlayhead ) {
 		pendingSeek = lastPlayhead[id];
 	} else {
