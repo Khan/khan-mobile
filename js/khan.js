@@ -231,7 +231,11 @@ function updateVideo( id ) {
 	var video = videos[id];
 	
 	if ( !player.paused ) player.pause();
-	player.src = video[ "download_urls" ][ "mp4" ];
+	if ( "download_urls" in video && "mp4" in video["download_urls"] ) {
+		player.src = video[ "download_urls" ][ "mp4" ];
+	} else {
+		player.src = "";
+	}
 	if ( id in lastPlayhead ) {
 		pendingSeek = lastPlayhead[id];
 	} else {
