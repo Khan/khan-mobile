@@ -1,6 +1,7 @@
 var data,
 	playlists = {},
 	videos = {},
+	videoStatus = {},
 	query = {},
 	queryProcess = {},
 	queryWatch = {},
@@ -58,7 +59,18 @@ if ( query.sidebar !== "no" ) {
 		});
 		
 		addQueryWatch( "video", function( id ) {
-			updateVideo( id );
+			setCurrentVideo( id );
+		});
+		
+		addQueryWatch( "video_status", function( json ) {
+			var updatedVideos = JSON.parse( json );
+			// Merge into videoStatus
+			$.each( updatedVideos, function( id, status ) {
+				videoStatus[ id ] = status;
+			});
+			if ( curVideoId in updatedVideos ) {
+				updateStatus();
+			}
 		});
 		
 		addQueryWatch( "playing", function( b ) {
@@ -83,13 +95,6 @@ if ( query.sidebar !== "no" ) {
 }
 
 $(function() {
-	var lg = function(msg, states) {
-		var v = $("video").get(0);
-		if (states) {
-			msg += " (readyState " + v.readyState + ", networkState " + v.networkState + ", currentTime " + v.currentTime + ")";
-		}
-		$(".log").prepend("<li>" + msg + "</li>");
-	};
 	$("video").error(function(e) {
 		lg("error " + e.target.error.code, true);
 		pendingSeek = null;
@@ -151,7 +156,7 @@ $(document).delegate( "#playlists a", "mousedown", function() {
 // Watch for clicks on videos in a playlist meny
 $(document).delegate( "ul.playlist a", "mousedown", function() {
 	// Grab the Youtube ID for the video and generate the page
-	updateVideo( this.href.substr( this.href.indexOf("#video-") + 7 ) );
+	setCurrentVideo( this.href.substr( this.href.indexOf("#video-") + 7 ) );
 });
 
 // Query String Parser
@@ -226,14 +231,19 @@ function updateNativeHost(qs) {
 	window.location = "khan://update?" + qs;
 }
 
-function updateVideo( id ) {
+function setCurrentVideo( id ) {
 	var player = $("video").get(0);
-	var video = videos[id];
+	var video = videos[ id ];
+	var status = videoStatus[ id ];
 	
 	if ( !player.paused ) player.pause();
-	if ( "download_urls" in video && "mp4" in video["download_urls"] ) {
+	// TODO there has to be a better way to do this...
+	if ( status && status[ "download_status" ] && status[ "download_status" ][ "offline_url" ] ) {
+		player.src = status[ "download_status" ][ "offline_url" ];
+	} else if ( "download_urls" in video && "mp4" in video["download_urls"] ) {
 		player.src = video[ "download_urls" ][ "mp4" ];
 	} else {
+		// TODO show error "this video is not available yet" or similar
 		player.src = "";
 	}
 	if ( id in lastPlayhead ) {
@@ -249,4 +259,35 @@ function updateVideo( id ) {
 	
 	$(".below-video h1").text( video[ "title" ] );
 	$(".below-video p").text( video[ "description" ] );
+	updateStatus();
+}
+
+function updateStatus() {
+	var btn = $(".save");
+	var btnText = $(".ui-btn-text", btn);
+	
+	if ( curVideoId in videoStatus ) {
+		var status = videoStatus[ curVideoId ];
+		var downloadStatus = status[ "download_status" ];
+		if (downloadStatus) {
+			if ( downloadStatus[ "offline_url" ] ) {
+				btnText.text("Saved for Offline");
+			} else {
+				btnText.text("Downloading... (" + Math.round(downloadStatus[ "download_progress" ] * 100.0) + "%)");
+			}
+			btn.toggleClass( "ui-disabled", true );
+			return;
+		}
+	}
+	
+	btnText.text( "Save for Offline" );
+	btn.toggleClass( "ui-disabled", false );
+}
+
+function lg(msg, states) {
+	var v = $("video").get(0);
+	if (states) {
+		msg += " (readyState " + v.readyState + ", networkState " + v.networkState + ", currentTime " + v.currentTime + ")";
+	}
+	$(".log").prepend("<li>" + msg + "</li>");
 }
