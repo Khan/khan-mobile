@@ -34,10 +34,93 @@ ul.playlist .ui-btn-icon-right .ui-icon {
 }
 
 .splitview.min-width-480px .ui-content {
-    top: 42px;
+	top: 42px;
 }
 .splitview.min-width-480px .ui-header {
-    height: 40px;
+	height: 40px;
+}
+
+.content-video {
+	position: absolute;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	padding: 0;
+}
+
+video, .error {
+	width: 100%;
+	/* Video element has a phantom bottom border that can't be removed unless
+	   you set display: block. See:
+	   http://css-tricks.com/forums/discussion/6346/solved-unusual-bottom-margin-on-html5-video-element/p1 */
+	display: block;
+	background-color: #000;
+	padding: 0;
+	margin: 0;
+}
+
+.error {
+	color: #ddd;
+	text-shadow: none;
+	display: table; /* Vertically center the h2 */
+}
+
+.error .details {
+	display: block;
+	text-align: center;
+	display: table-cell;
+	vertical-align: middle;
+	opacity: 1.0;
+	-webkit-transition: opacity 0.3s ease-in;
+}
+
+.error img {
+	display: block;
+	margin: 0 auto 0.5em auto;
+}
+
+.error h2 {
+	margin-bottom: 0.2em;
+}
+
+.error h2 + p {
+	margin-top: 0;
+}
+
+.below-video {
+	margin: 15px;
+}
+
+.below-video h1 {
+	/* Hide h1 below video, unless it's inside .no-sidebar */
+	display: none;
+}
+
+html.no-sidebar .below-video h1 {
+	display: block;
+	font-size: 1.2em;
+	margin: 0.2em 0;
+}
+
+.below-video h1 + p {
+	margin-top: 0;
+}
+
+.actions {
+	float: right;
+	margin-top: -0.5em;
+	margin-right: -5px;
+}
+
+.log {
+	position: absolute;
+	bottom: 0px;
+	display: block;
+	left: 0;
+	right: 0;
+	height: 120px;
+	overflow: scroll;
 }
 
 /* JQuery Mobile Khan Skin
@@ -155,25 +238,70 @@ ul.playlist .ui-btn-icon-right .ui-icon {
 }
 
 .ui-bar-k .ui-shadow {
-    -moz-box-shadow: 0 1px 0 rgba(255,255,255, .3);
-    -webkit-box-shadow: 0 1px 0 rgba(255,255,255, .3);
-    box-shadow: 0 1px 0 rgba(255,255,255, .3);
+	-moz-box-shadow: 0 1px 0 rgba(255,255,255, .3);
+	-webkit-box-shadow: 0 1px 0 rgba(255,255,255, .3);
+	box-shadow: 0 1px 0 rgba(255,255,255, .3);
+}
+
+/* Fix button padding with respect to icons. Default doesn't center properly. */
+.ui-btn-inner {
+	padding-left: 12px; /* Down from 25px which is pretty big */
+	padding-right: 12px;
+}
+
+.ui-btn-icon-left .ui-btn-inner {
+	padding-left: 36px; /* 18px icon width, 12px normal border, 6px padding between icon and text */
+}
+
+.ui-btn-icon-left .ui-icon {
+	left: 12px;
+}
+
+.ui-btn-icon-right .ui-btn-inner {
+	padding-right: 36px;
+}
+
+.ui-btn-icon-right .ui-icon {
+	right: 12px;
 }
 
 /* jQuery Mobile Split View Customizations
 ------------------------------------------------------------------------------------------------------------*/
 
 .panel-popover {
-    border: 2px solid #415E08;
+	border: 2px solid #415E08;
 }
 .panel-popover > .popover_triangle {
-    border-bottom-color: #415E08;
+	border-bottom-color: #415E08;
 }
 
 html.no-sidebar div.ui-header {
 	display: none;
 }
 
-html.no-sidebar.ui-mobile body {
+html.no-sidebar.ui-mobile .ui-body-k {
 	height: auto;
+}
+
+/* Style customizations for no-sidebar
+------------------------------------------------------------------------------------------------------------*/
+
+html.no-sidebar .ui-body-k {
+	background-image: none;
+	background-color: #e3e3e3; /* Solid bgcolor so we can match background in hosting view, so rotations don't look crappy */
+}
+
+html.no-sidebar body {
+	/* If we don't set the body's background color to the same as .ui-body-k,
+	   an artifact (with body's color) appears when rotating the device. */
+	background-color: #e3e3e3;
+}
+
+* {
+	-webkit-user-select: none;
+	-webkit-touch-callout: none;
+}
+
+.ui-btn {
+	-webkit-tap-highlight-color: rgba(0,0,0,0);
 }

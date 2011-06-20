@@ -1,11 +1,13 @@
 var data,
 	playlists = {},
 	videos = {},
+	videoStatus = {},
 	query = {},
 	queryProcess = {},
 	queryWatch = {},
-	YTReady,
-	curPlaylist;
+	lastPlayhead = {}, // TODO needs to be persistent
+	pendingSeek, // http://adamernst.com/post/6570213273/seeking-an-html5-video-player-on-the-ipad
+	curVideoId;
 
 // Load in query string from URL
 updateQuery( window.location.search.substring(1) );
@@ -33,13 +35,18 @@ if ( query.sidebar !== "no" ) {
 				content.scrollview({ direction: "y" });
 			}
 		});
+		
+		$(".save").hide(); // Can't save offline if you're not in native app
 	});
 
 } else {
 	$(function() {
 		$("#menu").remove();
 		$("#main > div").unwrap();
+		// unwrap breaks the video tag on iPad (bug). Fix it.
+		$("video").replaceWith(function() {return $(this).clone();});
 		$("html").removeClass("splitview").addClass("no-sidebar");
+		$(document).bind( "touchmove", false );
 		
 		$.mobile.activePage = $("#home");
 		
@@ -52,18 +59,82 @@ if ( query.sidebar !== "no" ) {
 		});
 		
 		addQueryWatch( "video", function( id ) {
-			// Create the page if it doesn't already exist
-			genVideoPage( id );
-			
-			// Swap to the new page
-			$.mobile.changePage( $("#video-" + id), "none", false, false );
+			setCurrentVideo( id );
+		});
+		
+		addQueryWatch( "video_status", function( json ) {
+			var updatedVideos = JSON.parse( json );
+			// Merge into videoStatus
+			$.each( updatedVideos, function( id, status ) {
+				videoStatus[ id ] = status;
+			});
+			if ( curVideoId in updatedVideos ) {
+				updateStatus();
+			}
+		});
+		
+		addQueryWatch( "playing", function( b ) {
+			// This seems inelegant, TODO make it cleaner
+			if ( b !== "no" ) {
+				$("video").get(0).play();
+			} else {
+				$("video").get(0).pause();
+			}
+		});
+		
+		$(".save").click(function(){
+			$( this ).addClass( "ui-disabled" );
+			updateNativeHost( "download=" + curVideoId );
+		});
+		
+		$( "video" ).bind( "play" , function(ev) {
+			updateNativeHost( "playing=yes" );
+		}).bind( "pause" , function(ev) {
+			updateNativeHost( "playing=no" );
 		});
 	});
 }
 
-function onYouTubePlayerAPIReady() {
-	YTReady = true;
-}
+$(function() {
+	$("video").error(function(e) {
+		lg("error " + e.target.error.code, true);
+		pendingSeek = null;
+		$("video").hide();
+		$(".error").show();
+		// You can't immediately animate an object that's just been shown.
+		// http://www.greywyvern.com/?post=337
+		// If you can find a better way, please do.
+		setTimeout(function() { $(".error .details").css("opacity", 1.0); }, 0);
+	}).bind( "loadstart progress suspend abort emptied stalled loadedmetadata loadeddata canplay canplaythrough playing waiting seeking seeked ended durationchange play pause ratechange" , function(ev){ 
+		lg(ev.type, true);
+	}).bind( "loadstart progress stalled loadedmetadata loadeddata canplay canplaythrough playing waiting durationchange" , function( ev ) {
+		if ( pendingSeek !== null ) {
+			var seekableRanges = ev.target.seekable;
+			var isSeekable = function() {
+				for ( var i = 0; i < seekableRanges.length; i++ )
+					if ( seekableRanges.start(i) <= pendingSeek )
+						if ( pendingSeek <= seekableRanges.end(i) )
+							return true;
+				return false;
+			}
+			if ( isSeekable() ) {
+				// Copy to a local variable, in case setting currentTime triggers further events.
+				var seekTo = pendingSeek;
+				pendingSeek = null;
+				ev.target.currentTime = seekTo;
+			}
+		}
+	}).bind( "timeupdate" , function(ev){
+		lastPlayhead[ curVideoId ] = ev.target.currentTime;
+	});
+	
+	var updateVideoHeight = function() {
+		var height = $(window).width() / 16.0 * 9.0;
+		$("video, .error").height(height);
+	};
+	$(window).resize(updateVideoHeight);
+	updateVideoHeight(); // Also update immediately
+});
 
 // Watch for clicks on playlists in the main Playlist menu
 $(document).delegate( "#playlists a", "mousedown", function() {
@@ -86,7 +157,7 @@ $(document).delegate( "#playlists a", "mousedown", function() {
 // Watch for clicks on videos in a playlist meny
 $(document).delegate( "ul.playlist a", "mousedown", function() {
 	// Grab the Youtube ID for the video and generate the page
-	genVideoPage( this.href.substr( this.href.indexOf("#video-") + 7 ) );
+	setCurrentVideo( this.href.substr( this.href.indexOf("#video-") + 7 ) );
 });
 
 // Query String Parser
@@ -157,27 +228,67 @@ function loadPlaylists( result ) {
 	}
 }
 
-function genVideoPage( id ) {
-	// If we found it, add it to the page
-	if ( videos[ id ] ) {
-		// Generated page doesn't exist so make it
-		if ( !$("#video-" + id).length ) {
-			$( tmpl( "video-tmpl", videos[ id ] ) )
-				.appendTo( "body" )
-				.page();
-		}
+function updateNativeHost(qs) {
+	window.location = "khan://update?" + qs;
+}
+
+function setCurrentVideo( id ) {
+	var player = $("video").get(0);
+	var video = videos[ id ];
+	var status = videoStatus[ id ];
 	
-		// If the YouTube API is ready
-		if ( YTReady ) {
-			// Find the YouTube video on the previous page
-			var oldIframe = $.mobile.activePage.find("iframe")[0];
-			
-			// And pause the video
-			// TODO: Determine if it's already playing and only pause if that's the case
-			if ( oldIframe ) {
-				(new YT.Player( oldIframe )).pauseVideo();
-				// TODO: Send back play details to server
+	if ( !player.paused ) player.pause();
+	// TODO there has to be a better way to do this...
+	if ( status && status[ "download_status" ] && status[ "download_status" ][ "offline_url" ] ) {
+		player.src = status[ "download_status" ][ "offline_url" ];
+	} else if ( "download_urls" in video && "mp4" in video["download_urls"] ) {
+		player.src = video[ "download_urls" ][ "mp4" ];
+	} else {
+		// TODO show error "this video is not available yet" or similar
+		player.src = "";
+	}
+	if ( id in lastPlayhead ) {
+		pendingSeek = lastPlayhead[id];
+	} else {
+		pendingSeek = null;
+	}
+	curVideoId = id;
+	$(player).show();
+	$(".error").hide();
+	$(".error .details").css("opacity", 0.0);
+	player.load();
+	
+	$(".below-video h1").text( video[ "title" ] );
+	$(".below-video p").text( video[ "description" ] );
+	updateStatus();
+}
+
+function updateStatus() {
+	var btn = $(".save");
+	var btnText = $(".ui-btn-text", btn);
+	
+	if ( curVideoId in videoStatus ) {
+		var status = videoStatus[ curVideoId ];
+		var downloadStatus = status[ "download_status" ];
+		if (downloadStatus) {
+			if ( downloadStatus[ "offline_url" ] ) {
+				btnText.text("Saved for Offline");
+			} else {
+				btnText.text("Downloading... (" + Math.round(downloadStatus[ "download_progress" ] * 100.0) + "%)");
 			}
+			btn.toggleClass( "ui-disabled", true );
+			return;
 		}
 	}
+	
+	btnText.text( "Save for Offline" );
+	btn.toggleClass( "ui-disabled", false );
+}
+
+function lg(msg, states) {
+	var v = $("video").get(0);
+	if (states) {
+		msg += " (readyState " + v.readyState + ", networkState " + v.networkState + ", currentTime " + v.currentTime + ")";
+	}
+	$(".log").prepend("<li>" + msg + "</li>");
 }
