@@ -243,6 +243,28 @@ html.no-sidebar .below-video h1 {
 	box-shadow: 0 1px 0 rgba(255,255,255, .3);
 }
 
+/* Fix button padding with respect to icons. Default doesn't center properly. */
+.ui-btn-inner {
+	padding-left: 12px; /* Down from 25px which is pretty big */
+	padding-right: 12px;
+}
+
+.ui-btn-icon-left .ui-btn-inner {
+	padding-left: 36px; /* 18px icon width, 12px normal border, 6px padding between icon and text */
+}
+
+.ui-btn-icon-left .ui-icon {
+	left: 12px;
+}
+
+.ui-btn-icon-right .ui-btn-inner {
+	padding-right: 36px;
+}
+
+.ui-btn-icon-right .ui-icon {
+	right: 12px;
+}
+
 /* jQuery Mobile Split View Customizations
 ------------------------------------------------------------------------------------------------------------*/
 
