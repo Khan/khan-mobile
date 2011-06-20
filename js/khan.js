@@ -83,7 +83,8 @@ if ( query.sidebar !== "no" ) {
 		});
 		
 		$(".save").click(function(){
-			updateNativeHost("download=" + curVideoId);
+			$( this ).addClass( "ui-disabled" );
+			updateNativeHost( "download=" + curVideoId );
 		});
 		
 		$( "video" ).bind( "play" , function(ev) {
