@@ -100,6 +100,7 @@ $(function() {
 		lg("error " + e.target.error.code, true);
 		pendingSeek = null;
 		$("video").hide();
+		$(".loading").hide();
 		$(".error").show();
 		$(".error h2").text("Network Error");
 		$(".error p").text("Try downloading videos for offline viewing.");
@@ -128,11 +129,15 @@ $(function() {
 		}
 	}).bind( "timeupdate" , function(ev){
 		lastPlayhead[ curVideoId ] = ev.target.currentTime;
+	}).bind( "loadstart" , function(ev){
+		$(".loading").show();
+	}).bind( "suspend progress stalled loadedmetadata loadeddata canplay playing", function(ev) {
+		$(".loading").hide();
 	});
 	
 	var updateVideoHeight = function() {
 		var height = $(window).width() / 16.0 * 9.0;
-		$("video, .error").height(height);
+		$(".video-wrap").height(height);
 	};
 	$(window).resize(updateVideoHeight);
 	updateVideoHeight(); // Also update immediately
@@ -263,6 +268,7 @@ function setCurrentVideo( id ) {
 		$(player).show();
 		$(".error").hide();
 		$(".error .details").css("opacity", 0.0);
+		$(".loading").show();
 		player.load();
 	} else {
 		$(player).hide();
@@ -270,6 +276,7 @@ function setCurrentVideo( id ) {
 		$(".error .details").css("opacity", 1.0);
 		$(".error h2").text("Video Not Yet Available");
 		$(".error p").text("Try again in a few hours.");
+		$(".loading").hide();
 	}
 	
 	$(".below-video h1").text( video[ "title" ] );

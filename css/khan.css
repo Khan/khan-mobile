@@ -49,8 +49,22 @@ ul.playlist .ui-btn-icon-right .ui-icon {
 	padding: 0;
 }
 
+.video-wrap {
+	height: 300px;
+	position: relative;
+}
+
+.loading {
+	position: absolute;
+	top: 75%;
+	left: 50%;
+	margin-left: -16px;
+	margin-top: -16px;
+}
+
 video, .error {
 	width: 100%;
+	height: 100%;
 	/* Video element has a phantom bottom border that can't be removed unless
 	   you set display: block. See:
 	   http://css-tricks.com/forums/discussion/6346/solved-unusual-bottom-margin-on-html5-video-element/p1 */
@@ -67,7 +81,6 @@ video, .error {
 }
 
 .error .details {
-	display: block;
 	text-align: center;
 	display: table-cell;
 	vertical-align: middle;
