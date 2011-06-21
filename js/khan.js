@@ -272,7 +272,7 @@ function updateStatus() {
 		var downloadStatus = status[ "download_status" ];
 		if (downloadStatus) {
 			if ( downloadStatus[ "offline_url" ] ) {
-				btnText.text("Saved for Offline");
+				btnText.text("Downloaded");
 			} else {
 				btnText.text("Downloading... (" + Math.round(downloadStatus[ "download_progress" ] * 100.0) + "%)");
 			}
@@ -281,7 +281,7 @@ function updateStatus() {
 		}
 	}
 	
-	btnText.text( "Save for Offline" );
+	btnText.text( "Download" );
 	btn.toggleClass( "ui-disabled", false );
 }
 
