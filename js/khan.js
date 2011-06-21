@@ -101,6 +101,8 @@ $(function() {
 		pendingSeek = null;
 		$("video").hide();
 		$(".error").show();
+		$(".error h2").text("Network Error");
+		$(".error p").text("Try downloading videos for offline viewing.");
 		// You can't immediately animate an object that's just been shown.
 		// http://www.greywyvern.com/?post=337
 		// If you can find a better way, please do.
@@ -239,24 +241,34 @@ function setCurrentVideo( id ) {
 	
 	if ( !player.paused ) player.pause();
 	// TODO there has to be a better way to do this...
+	var available = true;
 	if ( status && status[ "download_status" ] && status[ "download_status" ][ "offline_url" ] ) {
 		player.src = status[ "download_status" ][ "offline_url" ];
-	} else if ( "download_urls" in video && "mp4" in video["download_urls"] ) {
+	} else if ( video["download_urls"] && video["download_urls"]["mp4"] ) {
 		player.src = video[ "download_urls" ][ "mp4" ];
 	} else {
-		// TODO show error "this video is not available yet" or similar
-		player.src = "";
+		available = false;
 	}
+	
 	if ( id in lastPlayhead ) {
 		pendingSeek = lastPlayhead[id];
 	} else {
 		pendingSeek = null;
 	}
 	curVideoId = id;
-	$(player).show();
-	$(".error").hide();
-	$(".error .details").css("opacity", 0.0);
-	player.load();
+	
+	if ( available ) {
+		$(player).show();
+		$(".error").hide();
+		$(".error .details").css("opacity", 0.0);
+		player.load();
+	} else {
+		$(player).hide();
+		$(".error").show();
+		$(".error .details").css("opacity", 1.0);
+		$(".error h2").text("Video Not Yet Available");
+		$(".error p").text("Try again in a few hours.");
+	}
 	
 	$(".below-video h1").text( video[ "title" ] );
 	$(".below-video p").text( video[ "description" ] );
@@ -282,7 +294,7 @@ function updateStatus() {
 	}
 	
 	btnText.text( "Download" );
-	btn.toggleClass( "ui-disabled", false );
+	btn.toggleClass( "ui-disabled", !(video["download_urls"] && video["download_urls"]["mp4"]) );  // TODO duplicates logic above
 }
 
 function lg(msg, states) {
