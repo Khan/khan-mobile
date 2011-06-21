@@ -235,6 +235,8 @@ function updateNativeHost(qs) {
 }
 
 function setCurrentVideo( id ) {
+	if ( curVideoId === id ) return;
+	
 	var player = $("video").get(0);
 	var video = videos[ id ];
 	var status = videoStatus[ id ];
