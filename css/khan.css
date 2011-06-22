@@ -112,17 +112,15 @@ video, .error {
 
 html.no-sidebar .below-video .title-and-points {
     display: block;
-    float: left;
 }
     html.no-sidebar .below-video .title-and-points .energy-points-badge {
-        float: right;
+        float: left;
     }
     
 html.no-sidebar .below-video .title {
     float: left;
-    margin: 0.2em 0 1.2em;
 	text-overflow: ellipsis;
-	max-width: 280px;
+	max-width: 270px;
 	overflow: hidden;
 }
 html.no-sidebar .below-video h1 {
@@ -132,7 +130,7 @@ html.no-sidebar .below-video h1 {
 }
 
 .below-video h1 + p {
-	margin-top: 0;
+	margin-top: 1.2em;
 }
 
 .actions {
