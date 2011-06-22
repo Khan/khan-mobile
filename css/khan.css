@@ -320,15 +320,15 @@ html.no-sidebar body {
 }
 
 .ui-icon-khan-subtitles {
-    background-image: url(./images/subtitles.png);
+    background-image: url(../img/subtitles.png);
 }
 
 .ui-icon-khan-download {
-    background-image: url(./images/download.png);
+    background-image: url(../img/download.png);
 }
 
 .ui-icon-khan-share {
-    background-image: url(./images/share.png);
+    background-image: url(../img/share.png);
 }
 
 .energy-points-badge {
