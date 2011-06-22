@@ -331,6 +331,8 @@ html.no-sidebar body {
     background-image: url(../img/share.png);
 }
 
+.video-button-group { display: inline; }
+
 .energy-points-badge {
     background: #0075b1;
     display: inline-block;
