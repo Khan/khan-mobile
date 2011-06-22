@@ -111,16 +111,24 @@ video, .error {
 }
 
 html.no-sidebar .below-video .title-and-points {
-    display: inline-block;
-    max-width: 360px;
-	white-space: nowrap;
+    display: block;
+    float: left;
+}
+    html.no-sidebar .below-video .title-and-points .energy-points-badge {
+        float: right;
+    }
+    
+html.no-sidebar .below-video .title {
+    float: left;
+    margin: 0.2em 0 1.2em;
+	text-overflow: ellipsis;
+	max-width: 280px;
+	overflow: hidden;
 }
 html.no-sidebar .below-video h1 {
 	display: inline;
 	font-size: 1.2em;
-	margin: 0.2em 0 1.2em;
-	white-space: nowrap;
-	text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .below-video h1 + p {
