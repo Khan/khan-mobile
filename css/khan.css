@@ -110,10 +110,17 @@ video, .error {
 	display: none;
 }
 
+html.no-sidebar .below-video .title-and-points {
+    display: inline-block;
+    max-width: 360px;
+	white-space: nowrap;
+}
 html.no-sidebar .below-video h1 {
-	display: block;
+	display: inline;
 	font-size: 1.2em;
 	margin: 0.2em 0 1.2em;
+	white-space: nowrap;
+	text-overflow: ellipsis;
 }
 
 .below-video h1 + p {
@@ -336,14 +343,17 @@ html.no-sidebar body {
 .energy-points-badge {
     background: #0075b1;
     display: inline-block;
-    line-height: 18px;
+    line-height: 1.6em;
     text-align: center;
-    padding: 7px 8px 8px;
-    margin-right: 8px;
+    padding: .3em .7em .4em;
+    margin: 0 0 0 .8em;
     color: white;
+    font-size: .8em;
     font-weight: bold;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     text-shadow: none;
+    position: relative;
+    top: -.1em;
     
     -webkit-border-radius: 10px;
     -moz-border-radius: 10px;
