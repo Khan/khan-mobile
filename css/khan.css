@@ -318,3 +318,32 @@ html.no-sidebar body {
 .ui-btn {
 	-webkit-tap-highlight-color: rgba(0,0,0,0);
 }
+
+.ui-icon-khan-subtitles {
+    background-image: url(./images/subtitles.png);
+}
+
+.ui-icon-khan-download {
+    background-image: url(./images/download.png);
+}
+
+.ui-icon-khan-share {
+    background-image: url(./images/share.png);
+}
+
+.energy-points-badge {
+    background: #0075b1;
+    display: inline-block;
+    line-height: 18px;
+    text-align: center;
+    padding: 7px 8px 8px;
+    margin-right: 8px;
+    color: white;
+    font-weight: bold;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    text-shadow: none;
+    
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+}
