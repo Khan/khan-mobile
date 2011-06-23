@@ -1,3 +1,7 @@
+html, body {
+	overflow: hidden;
+}
+
 ul.playlist img.ui-li-thumb {
 	left: 10px;
 	top: 10px;
@@ -113,9 +117,10 @@ video, .error {
 html.no-sidebar .below-video .title-and-points {
     display: block;
 }
-    html.no-sidebar .below-video .title-and-points .energy-points-badge {
-        float: left;
-    }
+
+html.no-sidebar .below-video .title-and-points .energy-points-badge {
+    float: left;
+}
     
 html.no-sidebar .below-video .title {
     float: left;
@@ -147,6 +152,7 @@ html.no-sidebar .below-video h1 {
 	right: 0;
 	height: 120px;
 	overflow: scroll;
+	display: none;
 }
 
 /* JQuery Mobile Khan Skin

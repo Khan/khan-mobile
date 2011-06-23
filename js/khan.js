@@ -41,113 +41,142 @@ if ( query.sidebar !== "no" ) {
 
 } else {
 	$(function() {
-		$("#menu").remove();
-		$("#main > div").unwrap();
-		// unwrap breaks the video tag on iPad (bug). Fix it.
-		$("video").replaceWith(function() {return $(this).clone();});
+		// We're not showing the sidebar or doing the splitview
 		$("html").removeClass("splitview").addClass("no-sidebar");
+		$("#menu").remove();
+		
+		// Assume that we're on an iPad, or similar, so disable scrolling
 		$(document).bind( "touchmove", false );
 		
+		// Remove the extra main panel
+		$("#main > div").unwrap();
+		
+		// Unwrap breaks the video tag on iPad (bug). Fix it.
+		$("video").replaceWith(function() {
+			return $(this).clone();
+		});
+		
+		// Set the active page to the current page
 		$.mobile.activePage = $("#home");
 		
+		// Watch for when playlist data is passed in
+		// load the data for later usage
 		addQueryProcess( "playlist", function( json ) {
 			// Load the playlist data for later use
 			var playlist = JSON.parse( json );
 			loadPlaylists( [ playlist ] );
-			
 			return playlist;
 		});
 		
-		addQueryWatch( "video", function( id ) {
-			setCurrentVideo( id );
-		});
+		// When a video is triggered, display it
+		addQueryWatch( "video", setCurrentVideo );
 		
+		// Information about a video being downloaded
 		addQueryWatch( "video_status", function( json ) {
 			var updatedVideos = JSON.parse( json );
+			
 			// Merge into videoStatus
-			$.each( updatedVideos, function( id, status ) {
-				videoStatus[ id ] = status;
-			});
-			if ( curVideoId in updatedVideos ) {
+			$.merge( videoStatus, updatedVideos );
+			
+			// If the video is currently being played, update its status
+			if ( updatedVideos[ curVideoId ] ) {
 				updateStatus();
 			}
 		});
 		
-		addQueryWatch( "playing", function( b ) {
-			// This seems inelegant, TODO make it cleaner
-			if ( b !== "no" ) {
-				$("video").get(0).play();
-			} else {
-				$("video").get(0).pause();
-			}
+		// Turn on/off logging
+		addQueryWatch( "log", function( value ) {
+			$(".log").toggle( value === "yes" );
 		});
 		
-		$(".save").click(function(){
-			$( this ).addClass( "ui-disabled" );
+		// Toggle the video playing
+		addQueryWatch( "playing", function( value ) {
+			$("video")[0][ value === "no" ? "pause" : "play" ]();
+		});
+		
+		// Watch for the Save/Download button being clicked
+		$(".save").click(function() {
+			// Disable the button (to indicate that it's downloading)
+			$(this).addClass( "ui-disabled" );
+			
+			// Tell the app to start downloading the file
 			updateNativeHost( "download=" + curVideoId );
 		});
-		$(".share").click(function(){
+		
+		// Watch for the Share button being clicked
+		$(".share").click(function() {
+			// Collect the dimensions of the button
+			// (Makes it easier to position the share information)
 			var location = $(this).offset();
-			location["width"] = $(this).width();
-			location["height"] = $(this).height();
-			updateNativeHost( "share=" + curVideoId + "&share_location=" + encodeURIComponent(JSON.stringify(location)) );
+			location.width = $(this).width();
+			location.height = $(this).height();
+			
+			// Notify the app about what video should be shared and
+			// where to position the overlay
+			updateNativeHost( "share=" + curVideoId +
+				"&share_location=" + encodeURIComponent(JSON.stringify(location)) );
 		});
 		
-		$( "video" ).bind( "play" , function(ev) {
+		// Notify the app when the user hits play
+		$( "video" ).bind( "play", function() {
 			updateNativeHost( "playing=yes" );
-		}).bind( "pause" , function(ev) {
+		
+		// Notify the app when the user hits pause
+		}).bind( "pause", function() {
 			updateNativeHost( "playing=no" );
-		});
-	});
-}
-
-$(function() {
-	$("video").error(function(e) {
-		lg("error " + e.target.error.code, true);
-		pendingSeek = null;
-		$("video").hide();
-		$(".loading").hide();
-		$(".error").show();
-		$(".error h2").text("Network Error");
-		$(".error p").text("Try downloading videos for offline viewing.");
-		// You can't immediately animate an object that's just been shown.
-		// http://www.greywyvern.com/?post=337
-		// If you can find a better way, please do.
-		setTimeout(function() { $(".error .details").css("opacity", 1.0); }, 0);
-	}).bind( "loadstart progress suspend abort emptied stalled loadedmetadata loadeddata canplay canplaythrough playing waiting seeking seeked ended durationchange play pause ratechange" , function(ev){ 
-		lg(ev.type, true);
-	}).bind( "loadstart progress stalled loadedmetadata loadeddata canplay canplaythrough playing waiting durationchange" , function( ev ) {
-		if ( pendingSeek !== null ) {
-			var seekableRanges = ev.target.seekable;
-			var isSeekable = function() {
-				for ( var i = 0; i < seekableRanges.length; i++ )
-					if ( seekableRanges.start(i) <= pendingSeek )
-						if ( pendingSeek <= seekableRanges.end(i) )
-							return true;
-				return false;
-			}
-			if ( isSeekable() ) {
+		
+		// Handle when an error occurs loading the video
+		}).bind("error", function(e) {
+			log("error " + e.target.error.code, true);
+			
+			// Cancel any pending seeks since the video is broken
+			pendingSeek = null;
+			
+			// Hide the video
+			$(this).hide();
+			
+			// Hide the loading overlay
+			$(".loading").hide();
+			
+			// Show an error message
+			showError( "Network Error", "Try downloading videos for offline viewing." );
+		
+		// Log all the video events
+		}).bind( "loadstart progress suspend abort emptied stalled loadedmetadata loadeddata canplay canplaythrough playing waiting seeking seeked ended durationchange play pause ratechange" , function(ev){ 
+			log(ev.type, true);
+		
+		// Try to jump to a seeked position in a video
+		}).bind( "loadstart progress stalled loadedmetadata loadeddata canplay canplaythrough playing waiting durationchange" , function() {
+			// If we have a pending seek and the position we want is seekable
+			if ( pendingSeek !== null && isSeekable( this.seekable ) ) {
 				// Copy to a local variable, in case setting currentTime triggers further events.
 				var seekTo = pendingSeek;
 				pendingSeek = null;
-				ev.target.currentTime = seekTo;
+				this.currentTime = seekTo;
 			}
-		}
-	}).bind( "timeupdate" , function(ev){
-		lastPlayhead[ curVideoId ] = ev.target.currentTime;
-	}).bind( "loadstart" , function(ev){
-		$(".loading").show();
-	}).bind( "suspend progress stalled loadedmetadata loadeddata canplay playing", function(ev) {
-		$(".loading").hide();
+		
+		// Remember the last position of the video, for resuming later on
+		}).bind( "timeupdate", function() {
+			lastPlayhead[ curVideoId ] = this.currentTime;
+		
+		// Show a loading message while the video is loading
+		}).bind( "loadstart", function() {
+			$(".loading").show();
+		
+		// Hide the loading message once we get an indicator that loading is complete
+		}).bind( "suspend progress stalled loadedmetadata loadeddata canplay playing", function() {
+			$(".loading").hide();
+		});
+
+		$(window)
+			// Make sure the video container is the right size ratio
+			.resize(function() {
+				$(".video-wrap").height( $(window).width() / 16.0 * 9.0 );
+			})
+			// Also update immediately
+			.resize();
 	});
-	
-	var updateVideoHeight = function() {
-		var height = $(window).width() / 16.0 * 9.0;
-		$(".video-wrap").height(height);
-	};
-	$(window).resize(updateVideoHeight);
-	updateVideoHeight(); // Also update immediately
-});
+}
 
 // Watch for clicks on playlists in the main Playlist menu
 $(document).delegate( "#playlists a", "mousedown", function() {
@@ -241,82 +270,139 @@ function loadPlaylists( result ) {
 	}
 }
 
-function updateNativeHost(qs) {
-	window.location = "khan://update?" + qs;
+// Notify the app that something has occurred
+function updateNativeHost( query ) {
+	window.location = "khan://update?" + query;
 }
 
+// Display a video given the specified ID
 function setCurrentVideo( id ) {
-	if ( curVideoId === id ) return;
-	
-	var player = $("video").get(0);
-	var video = videos[ id ];
-	var status = videoStatus[ id ];
-	
-	if ( !player.paused ) player.pause();
-	// TODO there has to be a better way to do this...
-	var available = true;
-	if ( status && status[ "download_status" ] && status[ "download_status" ][ "offline_url" ] ) {
-		player.src = status[ "download_status" ][ "offline_url" ];
-	} else if ( video["download_urls"] && video["download_urls"]["mp4"] ) {
-		player.src = video[ "download_urls" ][ "mp4" ];
-	} else {
-		available = false;
+	// Bail if we're already displaying it
+	if ( curVideoId === id ) {
+		return;
 	}
 	
-	if ( id in lastPlayhead ) {
-		pendingSeek = lastPlayhead[id];
-	} else {
-		pendingSeek = null;
-	}
-	curVideoId = id;
+	var player = $("video")[0],
+		video = videos[ id ],
+		status = videoStatus[ id ];
 	
-	if ( available ) {
+	// Pause the existing video before loading the new one
+	if ( !player.paused ) {
+		player.pause();
+	}
+	
+	// Get the video file URL to play
+	var url = status && status.download_status && status.download_status.offline_url ||
+		video.download_urls && video.download_urls.mp4 || null;
+	
+	// If a file was found, play it
+	if ( url ) {
+		// Load it into the player
+		// Note: we re-use the existing player to save on resources
+		player.src = url;
+		
+		// Get the cached seek position, if one exists
+		pendingSeek = lastPlayhead[id] || null;
+		
+		// Remember the ID of the video that we're playing
+		curVideoId = id;
+		
+		// Make sure the player is displayed
 		$(player).show();
-		$(".error").hide();
-		$(".error .details").css("opacity", 0.0);
+		
+		// Hide any displayed error messages
+		hideError();
+		
+		// Show a loading message
 		$(".loading").show();
+		
+		// And start loading the video
 		player.load();
+	
+	// If no valid video file was found
 	} else {
+		// Hide the video player
 		$(player).hide();
-		$(".error").show();
-		$(".error .details").css("opacity", 1.0);
-		$(".error h2").text("Video Not Yet Available");
-		$(".error p").text("Try again in a few hours.");
+		
+		// Hide the loading indicator
 		$(".loading").hide();
+		
+		// Display an error message
+		showError( "Video Not Yet Available", "Try again in a few hours." );
 	}
 	
-	$(".below-video h1").text( video[ "title" ] );
-	$(".below-video p").text( video[ "description" ] );
+	// Display information about the video
+	$(".below-video")
+		.find("h1").text( video[ "title" ] ).end()
+		.find("p").text( video[ "description" ] );
+	
+	// Update the download indicator
 	updateStatus();
 }
 
+// Update the indicator of how downloads are going
 function updateStatus() {
-	var btn = $(".save");
-	var btnText = $(".ui-btn-text", btn);
-	
-	if ( curVideoId in videoStatus ) {
-		var status = videoStatus[ curVideoId ];
-		var downloadStatus = status[ "download_status" ];
-		if (downloadStatus) {
-			if ( downloadStatus[ "offline_url" ] ) {
-				btnText.text("Downloaded");
-			} else {
-				btnText.text("Downloading... (" + Math.round(downloadStatus[ "download_progress" ] * 100.0) + "%)");
-			}
-			btn.toggleClass( "ui-disabled", true );
-			return;
+	var status = videoStatus[ curVideoId ],
+		video = videos[ curVideoId ],
+		downloadStatus = status && status.download_status;
+
+	// Only let them download if a downloadable version exists
+	$("save")
+		.toggleClass( "ui-disabled", downloadStatus ||
+			!(video.download_urls && video.download_urls.mp4) )
+
+		// Show the status of the file download
+		.find(".ui-btn-text").text( downloadStatus ?
+				downloadStatus.offline_url ?
+					"Downloaded" :
+					"Downloading... (" + Math.round(downloadStatus.download_progress * 100) + "%)" :
+				"Download" );
+}
+
+// Check to see if a pending seek is able to be resumed
+function isSeekable( seekableRanges ) {
+	for ( var i = 0, l = seekableRanges.length; i < l; i++ ) {
+		if ( seekableRanges.start(i) <= pendingSeek && pendingSeek <= seekableRanges.end(i) ) {
+			return true;
 		}
 	}
 	
-	btnText.text( "Download" );
-	var video = videos[ curVideoId ];
-	btn.toggleClass( "ui-disabled", !(video["download_urls"] && video["download_urls"]["mp4"]) );  // TODO duplicates logic above
+	return false;
 }
 
-function lg(msg, states) {
-	var v = $("video").get(0);
-	if (states) {
-		msg += " (readyState " + v.readyState + ", networkState " + v.networkState + ", currentTime " + v.currentTime + ")";
+// Show an error message to the user
+function showError( title, msg ) {
+	// Show the error message overlay
+	var details = $(".error").show()
+		// Set the text of the error message
+		.find("h2").text( title ).end()
+		.find("p").text( msg ).end()
+		.find(".details");
+	
+	// You can't immediately animate an object that's just been shown.
+	// http://www.greywyvern.com/?post=337
+	// If you can find a better way, please do.
+	setTimeout(function() {
+		details.css( "opacity", 1 );
+	}, 1);
+}
+
+// Hide the error message dialog
+function hideError() {
+	$(".error").hide()
+		
+		// Reset the opacity of the details
+		// (for the CSS animation)
+		.find(".details").css( "opacity", 0 );
+}
+
+// Log out details to the screen
+function log( msg, states ) {
+	var video = $("video")[0];
+	
+	if ( states ) {
+		msg += " (readyState " + video.readyState + ", networkState " + video.networkState + ", currentTime " + video.currentTime + ")";
 	}
+	
 	$(".log").prepend("<li>" + msg + "</li>");
 }
