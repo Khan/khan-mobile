@@ -86,6 +86,12 @@ if ( query.sidebar !== "no" ) {
 			$( this ).addClass( "ui-disabled" );
 			updateNativeHost( "download=" + curVideoId );
 		});
+		$(".share").click(function(){
+			var location = $(this).offset();
+			location["width"] = $(this).width();
+			location["height"] = $(this).height();
+			updateNativeHost( "share=" + curVideoId + "&share_location=" + encodeURIComponent(JSON.stringify(location)) );
+		});
 		
 		$( "video" ).bind( "play" , function(ev) {
 			updateNativeHost( "playing=yes" );
