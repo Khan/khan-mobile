@@ -303,7 +303,7 @@ function updateStatus() {
 	}
 	
 	btnText.text( "Download" );
-	var video = $("video").get(0);
+	var video = videos[ curVideoId ];
 	btn.toggleClass( "ui-disabled", !(video["download_urls"] && video["download_urls"]["mp4"]) );  // TODO duplicates logic above
 }
 
