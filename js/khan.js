@@ -76,7 +76,7 @@ if ( query.sidebar !== "no" ) {
 			var updatedVideos = JSON.parse( json );
 			
 			// Merge into videoStatus
-			$.merge( videoStatus, updatedVideos );
+			$.extend( videoStatus, updatedVideos );
 			
 			// If the video is currently being played, update its status
 			if ( updatedVideos[ curVideoId ] ) {
@@ -345,13 +345,22 @@ function updateStatus() {
 	var status = videoStatus[ curVideoId ],
 		video = videos[ curVideoId ],
 		downloadStatus = status && status.download_status;
+	
+	var disable = false;
+	// Disable if downloading (status, but no error or offline_url)
+	// or if downloaded (status and offline_url)
+	if ( downloadStatus && ( downloadStatus.offline_url || !downloadStatus.download_error ) ) {
+		disable = true;
+	}
+	// Or if there's no video to download
+	if ( !(video.download_urls && video.download_urls.mp4) ) {
+		disable = true;
+	}
 
 	// Only let them download if a downloadable version exists
 	$(".save")
-		.toggleClass( "ui-disabled", 
-			(downloadStatus && downloadStatus.offline_url) ||
-			!(video.download_urls && video.download_urls.mp4) )
-
+		.toggleClass( "ui-disabled", disable )
+		
 		// Show the status of the file download
 		.find(".ui-btn-text").text( downloadStatus ?
 				downloadStatus.offline_url ?
