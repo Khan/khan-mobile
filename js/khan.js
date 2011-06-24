@@ -95,7 +95,7 @@ if ( query.sidebar !== "no" ) {
 		});
 		
 		// Watch for the Save/Download button being clicked
-		$(".save").click(function() {
+		$(".save").bind( "vclick", function() {
 			// Disable the button (to indicate that it's downloading)
 			$(this).addClass( "ui-disabled" );
 			
@@ -104,7 +104,7 @@ if ( query.sidebar !== "no" ) {
 		});
 		
 		// Watch for the Share button being clicked
-		$(".share").click(function() {
+		$(".share").bind( "vclick", function() {
 			// Collect the dimensions of the button
 			// (Makes it easier to position the share information)
 			var location = $(this).offset();
