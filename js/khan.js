@@ -291,6 +291,9 @@ function setCurrentVideo( id ) {
 		player.pause();
 	}
 	
+	// Remember the ID of the video that we're playing
+	curVideoId = id;
+	
 	// Get the video file URL to play
 	var url = status && status.download_status && status.download_status.offline_url ||
 		video.download_urls && video.download_urls.mp4 || null;
@@ -303,9 +306,6 @@ function setCurrentVideo( id ) {
 		
 		// Get the cached seek position, if one exists
 		pendingSeek = lastPlayhead[id] || null;
-		
-		// Remember the ID of the video that we're playing
-		curVideoId = id;
 		
 		// Make sure the player is displayed
 		$(player).show();
@@ -347,8 +347,9 @@ function updateStatus() {
 		downloadStatus = status && status.download_status;
 
 	// Only let them download if a downloadable version exists
-	$("save")
-		.toggleClass( "ui-disabled", downloadStatus ||
+	$(".save")
+		.toggleClass( "ui-disabled", 
+			(downloadStatus && downloadStatus.offline_url) ||
 			!(video.download_urls && video.download_urls.mp4) )
 
 		// Show the status of the file download
