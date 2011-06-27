@@ -54,7 +54,10 @@ VideoStats.prototype = {
 		{
 			// Every 10 seconds check to see if we've crossed over our percent
 			// granularity logging boundary
-			setInterval(function(){VideoStats.playerStateChange(-2);}, 10000);
+			var self = this;
+			setInterval(function() {
+				self.playerStateChange(-2);
+			}, 10000);
 			this.fIntervalStarted = true;
 		}
 	},
@@ -62,15 +65,29 @@ VideoStats.prototype = {
 	listenToPlayerStateChange: function() {
 		if (!this.player || this.player.fStateChangeHookAttached) return;
 		
-		if (this.fAlternativePlayer)
-		{
-			this.player 
+		var status = this;
+		
+		if (!this.fAlternativePlayer) {
+			window.onYouTubePlayerStateChange = function(state) {
+			    status.playerStateChange(state);
+			};
+			
 			// YouTube player is ready, add event listener
 			this.player.addEventListener("onStateChange", "onYouTubePlayerStateChange");
 
-			// Multiple calls should be idempotent
-			this.player.fStateChangeHookAttached = true;
+		} else {
+			
+			$(this.player).bind( "play", function() {
+				status.playerStateChange( 1 );
+			}).bind( "pause", function() {
+				status.playerStateChange( 2 );
+			}).bind( "ended", function() {
+				status.playerStateChange( 0 );
+			});
 		}
+		
+		// Multiple calls should be idempotent
+		this.player.fStateChangeHookAttached = true;
 	},
 
 	playerStateChange: function(state) {
@@ -100,6 +117,8 @@ VideoStats.prototype = {
 		var percent = this.getPercentWatched();
 		var dtSinceSaveBeforeError = this.dtSinceSave;
 
+		var self = this;
+		
 		$.oauth($.extend( {}, oauth, {
 			type: "POST",
 			url: "http://www.khanacademy.org/api/v1/user/videos/" + this.curVideoId + "/log",
@@ -109,13 +128,13 @@ VideoStats.prototype = {
 				seconds_watched: this.getSecondsWatchedRestrictedByPageTime()
 			},
 			success: function (data) {
-				VideoStats.finishSave(data, percent);
+				self.finishSave(data, percent);
 			},
 			error: function () {
 				// Restore pre-error stats so user can still get full
 				// credit for video even if GAE timed out on a request
-				VideoStats.fSaving = false;
-				VideoStats.dtSinceSave = dtSinceSaveBeforeError;
+				self.fSaving = false;
+				self.dtSinceSave = dtSinceSaveBeforeError;
 			}
 		}) );
 
@@ -123,8 +142,8 @@ VideoStats.prototype = {
 	},
 
 	finishSave: function(dict_json, percent) {
-		VideoStats.fSaving = false;
-		VideoStats.dPercentLastSaved = percent;
+		this.fSaving = false;
+		this.dPercentLastSaved = percent;
 
 		if (dict_json.video_points && dict_json.user_points_html)
 		{
@@ -139,10 +158,12 @@ VideoStats.prototype = {
 
 		this.player = $("#flvPlayer").get(0);
 		if (!this.player) return;
+		
+		var self = this;
 
 		// Simulate the necessary YouTube APIs for the alternative player
-		this.player.getDuration = function() { return VideoStats.cachedDuration; };
-		this.player.getCurrentTime = function() { return VideoStats.cachedCurrentTime; };
+		this.player.getDuration = function() { return self.cachedDuration; };
+		this.player.getCurrentTime = function() { return self.cachedCurrentTime; };
 
 		this.fAlternativePlayer = true;
 	},

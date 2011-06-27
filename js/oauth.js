@@ -759,11 +759,6 @@ try {
 (function (window, document, $, undefined) {
 	if (!$.Deferred) throw 'jQuery 1.5 is required to use the jQuery.oauth script!';
 
-	function require(name, url) {
-		if (window[name] === undefined)
-			return $.ajax({ type: 'GET', cache: true, dataType: 'script', url: url });
-	}
-
 	$.oauth = function (options) {
 		var d = $.Deferred();
 
@@ -778,9 +773,11 @@ try {
 
 	function addOAuthStuffs(options) {
 		options = $.extend({ type: 'GET', consumerKey: '', consumerSecret: '', tokenSecret: '', url: '' }, options);
-		if (options.data) {
-			if (typeof options.data !== "string")
-				options.data = $.param(options.data);
+		
+		var data = options.data;
+		
+		if (options.data && typeof options.data !== "string") {
+			options.data = $.param(options.data);
 		}
 
 		if (options.url.indexOf(':') == -1) {
@@ -791,7 +788,8 @@ try {
 			}
 		}
 
-		var message = { action: options.url + (options.data && options.data.length > 0 ? '?' + options.data : ''),
+		var message = {
+			action: options.url + (options.data && options.data.length > 0 && options.type === "GET" ? '?' + options.data : ''),
 			method: options.type, parameters: [["oauth_version", "1.0"], ["oauth_consumer_key", options.consumerKey]]
 		};
 
@@ -799,11 +797,19 @@ try {
 			OAuth.setParameter(message, "oauth_token", options.token);
 		}
 		
+		if ( data && typeof data !== "string" && options.type === "POST" ) {
+			for ( var prop in data ) {
+				OAuth.setParameter(message, prop, data[ prop ]);
+			}
+			
+			options.data = null;
+		}
+		
 		OAuth.setTimestampAndNonce(message);
 		OAuth.SignatureMethod.sign(message, { consumerSecret: options.consumerSecret, tokenSecret: options.tokenSecret });
 
 		var parameterMap = OAuth.getParameterMap(message);
-		var baseStr = OAuth.decodeForm(OAuth.SignatureMethod.getBaseString(message));
+		var baseStr = OAuth.decodeForm( OAuth.SignatureMethod.getBaseString(message) );
 		options.data = baseStr[2][0];
 
 		if (parameterMap.parameters)
@@ -818,6 +824,7 @@ try {
 
 		if (options.url.indexOf('?') > -1)
 			options.url = options.url.substr(0, options.url.indexOf('?'));
+		
 
 		options.cache = false;
 		

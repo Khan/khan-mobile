@@ -8,6 +8,7 @@ var data,
 	lastPlayhead = {}, // TODO needs to be persistent
 	pendingSeek, // http://adamernst.com/post/6570213273/seeking-an-html5-video-player-on-the-ipad
 	curVideoId,
+	videoStats,
 	oauth = { consumerKey: "", consumerSecret: "", token: "", tokenSecret: "" };
 
 // Load in query string from URL
@@ -100,16 +101,6 @@ if ( query.sidebar !== "no" ) {
 			var parts = value.split(",");
 			oauth.token = parts[0];
 			oauth.tokenSecret = parts[1];
-			
-			/*
-			$.oauth($.extend( {}, oauth, {
-				url: "http://www.khanacademy.org/api/v1/user/videos",
-				dataType: "jsonp",
-				success: function( data ) {
-					console.log( data );
-				}
-			} ));
-			*/
 		});
 		
 		addQueryWatch( "oauth_consumer", function( value ) {
@@ -190,6 +181,8 @@ if ( query.sidebar !== "no" ) {
 		// Hide the loading message once we get an indicator that loading is complete
 		}).bind( "suspend progress stalled loadedmetadata loadeddata canplay playing", function() {
 			$(".loading").hide();
+			
+			$(videoStatus).trigger( "playerready" );
 		});
 
 		$(window)
@@ -317,6 +310,11 @@ function setCurrentVideo( id ) {
 	
 	// Remember the ID of the video that we're playing
 	curVideoId = id;
+	
+	// Hook in video tracking
+	videoStats = new VideoStats( id, player );
+	videoStats.prepareVideoPlayer();
+	videoStats.startLoggingProgress();
 	
 	// Get the video file URL to play
 	var url = status && status.download_status && status.download_status.offline_url ||
