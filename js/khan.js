@@ -101,13 +101,15 @@ if ( query.sidebar !== "no" ) {
 			oauth.token = parts[0];
 			oauth.tokenSecret = parts[1];
 			
+			/*
 			$.oauth($.extend( {}, oauth, {
-				url: "http://khanacademy.org/api/v1/user/videos", // ?oauth_token=" + oauth.tokenKey,
+				url: "http://www.khanacademy.org/api/v1/user/videos",
 				dataType: "jsonp",
 				success: function( data ) {
 					console.log( data );
 				}
 			} ));
+			*/
 		});
 		
 		addQueryWatch( "oauth_consumer", function( value ) {

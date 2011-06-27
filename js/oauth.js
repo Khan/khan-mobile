@@ -821,10 +821,6 @@ try {
 
 		options.cache = false;
 		
-		console.log( options.url + "?" + options.data );
-		
-		return {};
-		
 		return options;
 	}
 })(window, document, jQuery);
