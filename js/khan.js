@@ -369,9 +369,8 @@ function updateStatus() {
 		downloadStatus = status && status.download_status;
 	
 	var disable = false;
-	// Disable if downloading (status, but no error or offline_url)
-	// or if downloaded (status and offline_url)
-	if ( downloadStatus && ( downloadStatus.offline_url || !downloadStatus.download_error ) ) {
+	// Disable if downloading or downloaded
+	if ( downloadStatus ) {
 		disable = true;
 	}
 	// Or if there's no video to download
