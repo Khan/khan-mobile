@@ -7,7 +7,8 @@ var data,
 	queryWatch = {},
 	lastPlayhead = {}, // TODO needs to be persistent
 	pendingSeek, // http://adamernst.com/post/6570213273/seeking-an-html5-video-player-on-the-ipad
-	curVideoId;
+	curVideoId,
+	oauth = { consumerKey: "", consumerSecret: "", token: "", tokenSecret: "" };
 
 // Load in query string from URL
 updateQuery( window.location.search.substring(1) );
@@ -92,6 +93,27 @@ if ( query.sidebar !== "no" ) {
 		// Toggle the video playing
 		addQueryWatch( "playing", function( value ) {
 			$("video")[0][ value === "no" ? "pause" : "play" ]();
+		});
+		
+		// Handle OAuth-related matters
+		addQueryWatch( "oauth", function( value ) {
+			var parts = value.split(",");
+			oauth.token = parts[0];
+			oauth.tokenSecret = parts[1];
+			
+			$.oauth($.extend( {}, oauth, {
+				url: "http://khanacademy.org/api/v1/user/videos", // ?oauth_token=" + oauth.tokenKey,
+				dataType: "jsonp",
+				success: function( data ) {
+					console.log( data );
+				}
+			} ));
+		});
+		
+		addQueryWatch( "oauth_consumer", function( value ) {
+			var parts = value.split(",");
+			oauth.consumerKey = parts[0];
+			oauth.consumerSecret = parts[1];
 		});
 		
 		// Watch for the Save/Download button being clicked
