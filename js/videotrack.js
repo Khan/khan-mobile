@@ -117,28 +117,43 @@ VideoStats.prototype = {
 		var percent = this.getPercentWatched();
 		var dtSinceSaveBeforeError = this.dtSinceSave;
 
-		var self = this;
+		var self = this,
+			id = this.curVideoId,
+			secondsWatched = this.getSecondsWatchedRestrictedByPageTime(),
+			lastSecondWatched = this.getSecondsWatched();
 		
-		$.oauth($.extend( {}, oauth, {
-			type: "POST",
-			url: "http://www.khanacademy.org/api/v1/user/videos/" + this.curVideoId + "/log",
-			dataType: "json",
-			data: {
-				last_second_watched: this.getSecondsWatched(),
-				seconds_watched: this.getSecondsWatchedRestrictedByPageTime()
-			},
-			success: function (data) {
-				self.finishSave(data, percent);
-			},
-			error: function () {
-				// Restore pre-error stats so user can still get full
-				// credit for video even if GAE timed out on a request
-				self.fSaving = false;
-				self.dtSinceSave = dtSinceSaveBeforeError;
+		// Store the watch data offline
+		if ( window.localStorage ) {
+			window.localStorage[ "watch:" + id ] = secondsWatched + "," + lastSecondWatched;
+			
+			if ( window.localStorage.watch.indexOf( "," + id ) < 0 ) {
+				window.localStorage.watch += "," + id;
 			}
-		}) );
-
-		this.dtSinceSave = new Date();
+		}
+		
+		if ( !offline ) {
+			saveWatch({
+				id: id,
+				lastSecondWatched: lastSecondWatched,
+				secondsWatched: secondsWatched,
+				success: function( data ) {
+					self.finishSave(data, percent);
+				},
+				error: function() {
+					// Restore pre-error stats so user can still get full
+					// credit for video even if GAE timed out on a request
+					self.fSaving = false;
+					self.dtSinceSave = dtSinceSaveBeforeError;
+				}
+			});
+			
+			this.dtSinceSave = new Date();
+		
+		// Make sure that we resume trying to save
+		} else {
+			this.fSaving = false;
+			this.dtSinceSave = dtSinceSaveBeforeError;
+		}
 	},
 
 	finishSave: function(dict_json, percent) {
@@ -213,4 +228,54 @@ function onYouTubePlayerReady(playerID) {
 	// take appropriate action to use the new player.
 	var stats = new VideoStats( playerID, player );
 	$(stats).trigger('playerready');
+}
+
+function offlineSync() {
+	// Coming back online, sync data with server
+	if ( !offline && window.localStorage && oauth.token && oauth.consumerKey ) {
+		var ids = window.localStorage.watch.split( "," );
+		
+		for ( var i = 0, l = ids.length; i < l; i++ ) {
+			var id = ids[i],
+				watched = (window.localStorage[ "watch:" + id ] || "").split( "," );
+			
+			// We have the data, time to sync it
+			if ( watched.length === 2 ) {
+				saveWatch({
+					id: id,
+					lastSecondWatched: watched[1],
+					secondsWatched: watched[0]
+				});
+			
+			// Data no longer exists, strike from the sync queue
+			} else if ( id ) {
+				window.localStorage.watch = window.localStorage.watch.replace( new RegExp(",?" + id, "g"), "" );
+			}
+		}
+	}
+}
+
+function saveWatch( opt ) {
+	$.oauth($.extend( {}, oauth, {
+		type: "POST",
+		url: "http://www.khanacademy.org/api/v1/user/videos/" + opt.id + "/log",
+		timeout: 5000,
+		dataType: "json",
+		data: {
+			last_second_watched: opt.lastSecondWatched,
+			seconds_watched: opt.secondsWatched
+		},
+		success: function(data) {
+			// Synced with server, wipe out sync queue
+			if ( window.localStorage ) {
+				window.localStorage.removeItem( "watch:" + opt.id );
+				window.localStorage.watch = window.localStorage.watch.replace( new RegExp(",?" + opt.id, "g"), "" );
+			}
+			
+			if ( opt.success ) {
+				opt.success( data );
+			}
+		},
+		error: opt.error
+	}) );
 }
