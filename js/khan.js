@@ -337,6 +337,10 @@ function setCurrentVideo( id ) {
 		video = videos[ id ],
 		status = videoStatus[ id ];
 	
+	if ( !video ) {
+		return;
+	}
+	
 	// Pause the existing video before loading the new one
 	if ( !player.paused ) {
 		player.pause();
