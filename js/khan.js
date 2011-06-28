@@ -85,6 +85,9 @@ if ( query.sidebar !== "no" ) {
 			if ( updatedVideos[ curVideoId ] ) {
 				updateStatus();
 			}
+			
+			// Update point display
+			updatePoints( updatedVideos.user_video && updatedVideos.user_video.video.youtube_id, updatedVideos );
 		});
 		
 		// Turn on/off logging
@@ -342,6 +345,15 @@ function setCurrentVideo( id ) {
 	// Remember the ID of the video that we're playing
 	curVideoId = id;
 	
+	// Show the points display
+	if ( oauth.token && oauth.consumerKey ) {
+		updatePoints( id, { user_video: { points: 0 } } );
+	
+	// Hide the display if the user isn't logged in
+	} else {
+		$(".energy-points-badge").hide();
+	}
+	
 	// Hook in video tracking
 	videoStats = new VideoStats( id, player );
 	videoStats.prepareVideoPlayer();
@@ -398,15 +410,12 @@ function setCurrentVideo( id ) {
 function updateStatus() {
 	var status = videoStatus[ curVideoId ],
 		video = videos[ curVideoId ],
-		downloadStatus = status && status.download_status;
+		downloadStatus = status && status.download_status,
+		disable = false;
 	
-	var disable = false;
 	// Disable if downloading or downloaded
-	if ( downloadStatus ) {
-		disable = true;
-	}
 	// Or if there's no video to download
-	if ( !(video.download_urls && video.download_urls.mp4) ) {
+	if ( downloadStatus || !(video.download_urls && video.download_urls.mp4) ) {
 		disable = true;
 	}
 
@@ -457,6 +466,17 @@ function hideError() {
 		// Reset the opacity of the details
 		// (for the CSS animation)
 		.find(".details").css( "opacity", 0 );
+}
+
+// Update point display
+function updatePoints( id, data ) {
+	if ( curVideoId === id ) {
+		try {
+			$(".energy-points-badge").show().text( data.user_video.points + " of 750" );
+		} catch(e) {
+			$(".energy-points-badge").hide();
+		}
+	}
 }
 
 // Log out details to the screen

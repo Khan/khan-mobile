@@ -126,7 +126,7 @@ VideoStats.prototype = {
 		if ( window.localStorage ) {
 			window.localStorage[ "watch:" + id ] = secondsWatched + "," + lastSecondWatched;
 			
-			if ( window.localStorage.watch.indexOf( "," + id ) < 0 ) {
+			if ( (window.localStorage.watch || "").indexOf( "," + id ) < 0 ) {
 				window.localStorage.watch += "," + id;
 			}
 		}
@@ -164,6 +164,7 @@ VideoStats.prototype = {
 			updateNativeHost( "action_result=" + encodeURIComponent(JSON.stringify( dict_json )) );
 		}
 
+		// XXX: From the old way of tracking points - not relevant any more?
 		if (dict_json.video_points && dict_json.user_points_html)
 		{
 			var jelPoints = $(".video-energy-points");
@@ -171,6 +172,9 @@ VideoStats.prototype = {
 			$(".video-energy-points-current", jelPoints).text(dict_json.video_points);
 			$("#user-points-container").html(dict_json.user_points_html);
 		}
+		
+		// Update point display
+		updatePoints( this.curVideoId, dict_json && dict_json.action_results );
 	},
 
 	prepareAlternativePlayer: function() {
@@ -265,7 +269,7 @@ function saveWatch( opt ) {
 			last_second_watched: opt.lastSecondWatched,
 			seconds_watched: opt.secondsWatched
 		},
-		success: function(data) {
+		success: function( data ) {
 			// Synced with server, wipe out sync queue
 			clearSync( opt.id );
 			

@@ -120,6 +120,7 @@ html.no-sidebar .below-video .title-and-points {
 
 html.no-sidebar .below-video .title-and-points .energy-points-badge {
     float: left;
+	display: none;
 }
     
 html.no-sidebar .below-video .title {
