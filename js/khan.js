@@ -7,6 +7,7 @@ var data,
 	queryWatch = {},
 	lastPlayhead = {},
 	pendingSeek, // http://adamernst.com/post/6570213273/seeking-an-html5-video-player-on-the-ipad
+	seekFn,
 	curVideoId,
 	videoStats,
 	offline = false,
@@ -136,6 +137,23 @@ if ( query.sidebar !== "no" ) {
 			updateNativeHost( "download=" + curVideoId );
 		});
 		
+		// Watch for clicks on subtitles
+		$(".subtitles").bind( "vclick", function( e ) {
+			// Grab the time to jump to from the subtitle
+			pendingSeek = parseFloat( $(e.target).data( "time" ) );
+			
+			// Jump to that portion of the video
+			var video = $("video")[0];
+			seek( video );
+			
+			// Start playing the video, if we haven't done so already
+			seekFn = function() {
+				if ( video.paused ) {
+					video.play();
+				}
+			};
+		});
+		
 		// Watch for the Share button being clicked
 		$(".share").bind( "vclick", function() {
 			// Collect the dimensions of the button
@@ -180,19 +198,7 @@ if ( query.sidebar !== "no" ) {
 		
 		// Try to jump to a seeked position in a video
 		}).bind( "loadstart progress stalled loadedmetadata loadeddata canplay canplaythrough playing waiting durationchange" , function() {
-			// If we have a pending seek and the position we want is seekable
-			if ( pendingSeek !== null && isSeekable( this.seekable ) ) {
-				// Copy to a local variable, in case setting currentTime triggers further events.
-				try {
-					var seekTo = pendingSeek;
-					pendingSeek = null;
-					this.currentTime = seekTo;
-				
-				// Sometimes setting the currentTime fails out, we can try again on a later event
-				} catch( e ) {
-					pendingSeek = seekTo;
-				}
-			}
+			seek( this );
 		
 		// Remember the last position of the video, for resuming later on
 		}).bind( "timeupdate", function() {
@@ -358,6 +364,21 @@ function setCurrentVideo( id ) {
 		$(".energy-points-badge").hide();
 	}
 	
+	// Show or hide the interactive subtitles
+	var subtitles = $(".subtitles").toggle( !!video.subtitles );
+	
+	// If they exist, display them
+	if ( video.subtitles ) {
+		subtitles.html( tmpl( "subtitles-tmpl", video ) );
+		
+		// Only turn on the custom scrolling logic if we're on a touch device
+		if ( $.support.touch ) {
+			// We need to enable it explicitly for the subtitles
+			// as we're loading it dynamically
+			subtitles.scrollview({ direction: "y" });
+		}
+	}
+	
 	// Hook in video tracking
 	videoStats = new VideoStats( id, player );
 	videoStats.prepareVideoPlayer();
@@ -483,6 +504,29 @@ function updatePoints( id, data ) {
 	}
 }
 
+// Seek to a specific part of a video
+function seek( video ) {
+	// If we have a pending seek and the position we want is seekable
+	if ( pendingSeek !== null && isSeekable( video.seekable ) ) {
+		// Copy to a local variable, in case setting currentTime triggers further events.
+		try {
+			var seekTo = pendingSeek;
+			pendingSeek = null;
+			video.currentTime = seekTo;
+			
+			// Execute the callback if one was specified
+			if ( seekFn ) {
+				seekFn();
+				seekFn = null;
+			}
+		
+		// Sometimes setting the currentTime fails out, we can try again on a later event
+		} catch( e ) {
+			pendingSeek = seekTo;
+		}
+	}
+}
+
 // Log out details to the screen
 function log( msg, states ) {
 	var video = $("video")[0];
@@ -492,4 +536,8 @@ function log( msg, states ) {
 	}
 	
 	$(".log").prepend("<li>" + msg + "</li>");
+}
+
+function pad( num ) {
+	return num < 10 ? "0" + num : num;
 }

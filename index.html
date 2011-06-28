@@ -65,8 +65,7 @@
 					<ul class="log"></ul>
 					<div class="actions">
 					    <div data-role="controlgroup" data-type="horizontal" class="video-button-group">
-    					    <a data-role="button" data-inline="true" data-theme="k" data-icon="khan-subtitles" class="subtitles">Subtitles</a>
-    					    <a data-role="button" data-inline="true" data-theme="k" data-icon="khan-share" class="share">Share</a>
+    					  <a data-role="button" data-inline="true" data-theme="k" data-icon="khan-share" class="share">Share</a>
     						<a data-role="button" data-inline="true" data-theme="k" data-icon="khan-download" class="save">Download</a>
 						</div>
 					</div>
@@ -76,12 +75,22 @@
 					   </div>
 					   <div class="energy-points-badge">0 of 750</div>
 					   <div style="clear:both;"></div>
-				    </div>  
+				  </div>
 					<p></p>
+					<ul class="subtitles"></ul>
 				</div>
 			</div>
 		</div>
 	</div>
+	
+	<!-- Template for constructing interactive subtitles. -->
+	<script type="text/html" id="subtitles-tmpl">
+		<%each sub in subtitles %>
+			<% if ( sub.text ) { %>
+				<li data-time="<%= sub.start_time %>"><span class="time"><%= Math.floor(Math.round(sub.start_time) / 60) %>:<%= pad( Math.round(sub.start_time) % 60 ) %></span> <%= sub.text %></li>
+			<% } %>
+		<% } %>
+	</script>
 
 	<!-- Template for constructing a listview of playlists. -->
 	<script type="text/html" id="playlists-tmpl">

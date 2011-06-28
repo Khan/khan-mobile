@@ -114,6 +114,33 @@ video, .error {
 	display: none;
 }
 
+html.no-sidebar .below-video .subtitles {
+	width: 100%;
+	height: 300px;
+	padding: 8px;
+	overflow-y: auto;
+	display: none;
+}
+
+html.no-sidebar .below-video .subtitles li {
+	list-style: none;
+	padding: 3px;
+}
+
+html.no-sidebar .below-video .subtitles li.active {
+	background: #0075B1;
+	color: #FFF;
+}
+
+html.no-sidebar .below-video .subtitles li span.time {
+	color: #777;
+	margin-right: 10px;
+}
+
+html.no-sidebar .below-video .subtitles li.active span.time {
+	color: #CCC;
+}
+
 html.no-sidebar .below-video .title-and-points {
     display: block;
 }
