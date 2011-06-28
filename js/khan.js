@@ -5,9 +5,12 @@ var data,
 	query = {},
 	queryProcess = {},
 	queryWatch = {},
-	lastPlayhead = {}, // TODO needs to be persistent
+	lastPlayhead = {},
 	pendingSeek, // http://adamernst.com/post/6570213273/seeking-an-html5-video-player-on-the-ipad
-	curVideoId;
+	curVideoId,
+	videoStats,
+	offline = false,
+	oauth = { consumerKey: "", consumerSecret: "", token: "", tokenSecret: "" };
 
 // Load in query string from URL
 updateQuery( window.location.search.substring(1) );
@@ -89,9 +92,36 @@ if ( query.sidebar !== "no" ) {
 			$(".log").toggle( value === "yes" );
 		});
 		
+		// Handle swapping between online/offline mode
+		addQueryWatch( "offline", function( value ) {
+			offline = value === "yes";
+			
+			// Sync with the server, if we can
+			offlineSync();
+		});
+		
 		// Toggle the video playing
 		addQueryWatch( "playing", function( value ) {
 			$("video")[0][ value === "no" ? "pause" : "play" ]();
+		});
+		
+		// Handle OAuth-related matters
+		addQueryWatch( "oauth", function( value ) {
+			var parts = value.split(",");
+			oauth.token = parts[0];
+			oauth.tokenSecret = parts[1];
+			
+			// Sync with the server on load
+			offlineSync();
+		});
+		
+		addQueryWatch( "oauth_consumer", function( value ) {
+			var parts = value.split(",");
+			oauth.consumerKey = parts[0];
+			oauth.consumerSecret = parts[1];
+			
+			// Sync with the server on load
+			offlineSync();
 		});
 		
 		// Watch for the Save/Download button being clicked
@@ -150,14 +180,26 @@ if ( query.sidebar !== "no" ) {
 			// If we have a pending seek and the position we want is seekable
 			if ( pendingSeek !== null && isSeekable( this.seekable ) ) {
 				// Copy to a local variable, in case setting currentTime triggers further events.
-				var seekTo = pendingSeek;
-				pendingSeek = null;
-				this.currentTime = seekTo;
+				try {
+					var seekTo = pendingSeek;
+					pendingSeek = null;
+					this.currentTime = seekTo;
+				
+				// Sometimes setting the currentTime fails out, we can try again on a later event
+				} catch( e ) {
+					pendingSeek = seekTo;
+				}
 			}
 		
 		// Remember the last position of the video, for resuming later on
 		}).bind( "timeupdate", function() {
-			lastPlayhead[ curVideoId ] = this.currentTime;
+			// Store seek position offline
+			if ( window.localStorage ) {
+				window.localStorage[ "seek:" + curVideoId ] = this.currentTime;
+				
+			} else {
+				lastPlayhead[ curVideoId ] = this.currentTime;
+			}
 		
 		// Show a loading message while the video is loading
 		}).bind( "loadstart", function() {
@@ -166,6 +208,8 @@ if ( query.sidebar !== "no" ) {
 		// Hide the loading message once we get an indicator that loading is complete
 		}).bind( "suspend progress stalled loadedmetadata loadeddata canplay playing", function() {
 			$(".loading").hide();
+			
+			$(videoStatus).trigger( "playerready" );
 		});
 
 		$(window)
@@ -257,6 +301,10 @@ function loadPlaylists( result ) {
 
 	// Build up an index of the playlists for fast reference
 	for ( var p = 0, pl = data.length; p < pl; p++ ) {
+		if ( !data[p].youtube_id ) {
+			data[p].youtube_id = data[p].title;
+		}
+		
 		playlists[ data[p].youtube_id ] = data[p];
 
 		// Do the same thing for the videos
@@ -298,6 +346,11 @@ function setCurrentVideo( id ) {
 	// Remember the ID of the video that we're playing
 	curVideoId = id;
 	
+	// Hook in video tracking
+	videoStats = new VideoStats( id, player );
+	videoStats.prepareVideoPlayer();
+	videoStats.startLoggingProgress();
+	
 	// Get the video file URL to play
 	var url = status && status.download_status && status.download_status.offline_url ||
 		video.download_urls && video.download_urls.mp4 || null;
@@ -309,7 +362,8 @@ function setCurrentVideo( id ) {
 		player.src = url;
 		
 		// Get the cached seek position, if one exists
-		pendingSeek = lastPlayhead[id] || null;
+		// Check the offline cache as well
+		pendingSeek = window.localStorage && parseFloat( window.localStorage[ "seek:" + id ] ) || lastPlayhead[id] || null;
 		
 		// Make sure the player is displayed
 		$(player).show();
