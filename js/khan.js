@@ -301,6 +301,10 @@ function loadPlaylists( result ) {
 
 	// Build up an index of the playlists for fast reference
 	for ( var p = 0, pl = data.length; p < pl; p++ ) {
+		if ( !data[p].youtube_id ) {
+			data[p].youtube_id = data[p].title;
+		}
+		
 		playlists[ data[p].youtube_id ] = data[p];
 
 		// Do the same thing for the videos

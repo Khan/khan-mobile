@@ -233,7 +233,7 @@ function onYouTubePlayerReady(playerID) {
 function offlineSync() {
 	// Coming back online, sync data with server
 	if ( !offline && window.localStorage && oauth.token && oauth.consumerKey ) {
-		var ids = window.localStorage.watch.split( "," );
+		var ids = (window.localStorage.watch || "").split( "," );
 		
 		for ( var i = 0, l = ids.length; i < l; i++ ) {
 			var id = ids[i],
@@ -248,8 +248,8 @@ function offlineSync() {
 				});
 			
 			// Data no longer exists, strike from the sync queue
-			} else if ( id ) {
-				window.localStorage.watch = window.localStorage.watch.replace( new RegExp(",?" + id, "g"), "" );
+			} else {
+				clearSync( id );
 			}
 		}
 	}
@@ -267,10 +267,7 @@ function saveWatch( opt ) {
 		},
 		success: function(data) {
 			// Synced with server, wipe out sync queue
-			if ( window.localStorage ) {
-				window.localStorage.removeItem( "watch:" + opt.id );
-				window.localStorage.watch = window.localStorage.watch.replace( new RegExp(",?" + opt.id, "g"), "" );
-			}
+			clearSync( opt.id );
 			
 			if ( opt.success ) {
 				opt.success( data );
@@ -278,4 +275,11 @@ function saveWatch( opt ) {
 		},
 		error: opt.error
 	}) );
+}
+
+function clearSync( id ) {
+	if ( id && window.localStorage ) {
+		window.localStorage.removeItem( "watch:" + id );
+		window.localStorage.watch = window.localStorage.watch.replace( new RegExp(",?" + id, "g"), "" );
+	}
 }
