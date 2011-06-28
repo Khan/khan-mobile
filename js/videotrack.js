@@ -144,6 +144,10 @@ VideoStats.prototype = {
 	finishSave: function(dict_json, percent) {
 		this.fSaving = false;
 		this.dPercentLastSaved = percent;
+		
+		if ( typeof updateNativeHost === "function" ) {
+			updateNativeHost( "action_result=" + encodeURIComponent(JSON.stringify( dict_json )) );
+		}
 
 		if (dict_json.video_points && dict_json.user_points_html)
 		{
