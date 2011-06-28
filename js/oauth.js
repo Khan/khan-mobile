@@ -816,7 +816,7 @@ try {
 			$.each(parameterMap.parameters, function (item, values) {
 				return $.each(values, function (subitem, value) {
 					if (value == 'oauth_signature') {
-						options.data += '&oauth_signature=' + escape(values[1]);
+						options.data += '&oauth_signature=' + encodeURIComponent(values[1]);
 						return false;
 					}
 				});
