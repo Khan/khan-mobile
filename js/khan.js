@@ -209,7 +209,7 @@ if ( query.sidebar !== "no" ) {
 			$(".loading").show();
 		
 		// Hide the loading message once we get an indicator that loading is complete
-		}).bind( "suspend progress stalled loadedmetadata loadeddata canplay playing", function() {
+		}).bind( "suspend progress loadedmetadata loadeddata canplay playing", function() {
 			$(".loading").hide();
 			
 			$(videoStatus).trigger( "playerready" );
