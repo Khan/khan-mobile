@@ -415,13 +415,24 @@ function setCurrentVideo( id ) {
 			subtitleJump( li[ i - 1 ] );
 		}, 333);
 		
+		// Jump to a specific subtitle (either via click or automatically)
 		function subtitleJump( nextLI ) {
-			if ( nextLI !== curLI ) {
+			if ( doJump && nextLI !== curLI ) {
 				$(nextLI).addClass("active");
 				$(curLI).removeClass("active");
 				curLI = nextLI;
+				
+				// Set the positioning to be positioned 45 pixels down
+				// (allowing the user to read the two previous lines)
+				var pos = Math.max( curLI.offsetTop - 45, 0 );
 
-				subtitles.animate( { scrollTop: Math.max( curLI.offsetTop - 45, 0 ) }, 200 );
+				// Adjust the viewport to animate to the new position
+				if ( $.support.touch ) {
+					subtitles.scrollview( "scrollTo", 0, pos, 200 );
+				
+				} else {
+					subtitles.animate( { scrollTop: pos }, 200 );
+				}
 			}
 		}
 		
