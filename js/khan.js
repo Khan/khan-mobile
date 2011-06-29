@@ -101,13 +101,12 @@ if ( query.sidebar !== "no" ) {
 			// Merge into videoStatus
 			$.extend( videoStatus, updatedVideos );
 			
-			// If the video is currently being played, update its status
-			if ( updatedVideos[ curVideoId ] ) {
+			// If the video is currently being played, update its status and points
+			var curVideoStatus = updatedVideos[ curVideoId ];
+			if ( curVideoStatus ) {
 				updateStatus();
+				updatePoints();
 			}
-			
-			// Update point display
-			updatePoints( updatedVideos.user_video && updatedVideos.user_video.video.youtube_id, updatedVideos );
 		});
 		
 		// Turn on/off logging
@@ -351,14 +350,7 @@ function setCurrentVideo( id ) {
 	// Remember the ID of the video that we're playing
 	curVideoId = id;
 	
-	// Show the points display
-	if ( oauth.token && oauth.consumerKey ) {
-		updatePoints( id, { user_video: { points: 0 } } );
-	
-	// Hide the display if the user isn't logged in
-	} else {
-		$(".energy-points-badge").hide();
-	}
+	updatePoints();
 	
 	// Show or hide the interactive subtitles
 	var subtitles = $(".subtitles").toggle( !!video.subtitles );
@@ -575,13 +567,16 @@ function hideError() {
 }
 
 // Update point display
-function updatePoints( id, data ) {
-	if ( curVideoId === id ) {
-		try {
-			$(".energy-points-badge").show().text( data.user_video.points + " of 750" );
-		} catch(e) {
-			$(".energy-points-badge").hide();
+function updatePoints() {
+	var curVideoStatus = videoStatus[ curVideoId ];
+	if ( oauth.token ) {
+		var points = 0;
+		if ( curVideoStatus && curVideoStatus.user_video && curVideoStatus.user_video.points ) {
+			points = curVideoStatus.user_video.points;
 		}
+		$(".energy-points-badge").show().text( points + " of 750" );
+	} else {
+		$(".energy-points-badge").hide();
 	}
 }
 
