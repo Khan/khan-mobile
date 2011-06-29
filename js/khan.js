@@ -212,6 +212,9 @@ if ( query.sidebar !== "no" ) {
 			// Make sure the video container is the right size ratio
 			.resize(function() {
 				$(".video-wrap").height( $(window).width() / 16.0 * 9.0 );
+				
+				var subtitles = $(".subtitles");
+				subtitles.height( $(window).height() - subtitles[0].offsetTop - 14 );
 			})
 			// Also update immediately
 			.resize();
@@ -425,6 +428,9 @@ function setCurrentVideo( id ) {
 				// Set the positioning to be positioned 45 pixels down
 				// (allowing the user to read the two previous lines)
 				var pos = Math.max( curLI.offsetTop - 45, 0 );
+				
+				// Make sure that we don't end with whitespace at the bottom
+				pos = Math.min( subtitles[0].scrollHeight - subtitles[0].offsetHeight, pos );
 
 				// Adjust the viewport to animate to the new position
 				if ( $.support.touch ) {
@@ -435,6 +441,9 @@ function setCurrentVideo( id ) {
 				}
 			}
 		}
+		
+		var subtitles = $(".subtitles");
+		subtitles.height( $(window).height() - subtitles[0].offsetTop - 45 );
 		
 		// Only turn on the custom scrolling logic if we're on a touch device
 		if ( $.support.touch && !subtitles.hasClass("ui-scrollview-clip") ) {

@@ -160,6 +160,10 @@ VideoStats.prototype = {
 		this.fSaving = false;
 		this.dPercentLastSaved = percent;
 		
+		if ( !dict_json ) {
+			return;
+		}
+		
 		if ( typeof updateNativeHost === "function" ) {
 			updateNativeHost( "action_result=" + encodeURIComponent(JSON.stringify( dict_json )) );
 		}
