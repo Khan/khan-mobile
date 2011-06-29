@@ -386,11 +386,57 @@ function setCurrentVideo( id ) {
 			};
 		});
 		
+		// Get the subtitles and hilite the first one
+		var li = subtitles.find("li"),
+			curLI = li.eq(0).addClass("active")[0],
+			doJump = true;
+		
+		// Continually update the active subtitle position
+		setInterval(function() {
+			// Get the seek position or the current time
+			// (allowing the user to see the transcript while loading)
+			// We need to round the number to fix floating point issues
+			var curTime = (pendingSeek || player.currentTime).toFixed(2);
+			
+			for ( var i = 0, l = li.length; i < l; i++ ) {
+				var liTime = $(li[i]).data("time");
+				
+				// We're looking for the next highest element before backtracking
+				if ( liTime > curTime && liTime !== curTime ) {
+					var nextLI = li[ i - 1 ];
+					
+					if ( nextLI ) {
+						return subtitleJump( nextLI );
+					}
+				}
+			}
+			
+			// We've reached the end so make the last one active
+			subtitleJump( li[ i - 1 ] );
+		}, 333);
+		
+		function subtitleJump( nextLI ) {
+			if ( nextLI !== curLI ) {
+				$(nextLI).addClass("active");
+				$(curLI).removeClass("active");
+				curLI = nextLI;
+
+				subtitles.animate( { scrollTop: Math.max( curLI.offsetTop - 45, 0 ) }, 200 );
+			}
+		}
+		
 		// Only turn on the custom scrolling logic if we're on a touch device
-		if ( $.support.touch ) {
+		if ( $.support.touch && !subtitles.hasClass("ui-scrollview-clip") ) {
 			// We need to enable it explicitly for the subtitles
 			// as we're loading it dynamically
-			subtitles.scrollview({ direction: "y" });
+			subtitles
+				.scrollview({ direction: "y" })
+				.bind( "scrollstart", function() {
+					doJump = false;
+				})
+				.bind( "scrollstop", function() {
+					doJump = true;
+				});
 		}
 	}
 	

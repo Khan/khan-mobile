@@ -120,16 +120,19 @@ html.no-sidebar .below-video .subtitles {
 	padding: 8px;
 	overflow-y: auto;
 	display: none;
+	position: relative;
 }
 
 html.no-sidebar .below-video .subtitles li {
 	list-style: none;
 	padding: 3px;
+	border: 1px solid auto;
 }
 
 html.no-sidebar .below-video .subtitles li.active {
-	background: #0075B1;
-	color: #FFF;
+	background: #EEE;
+	border: 1px solid #CCC;
+	border-radius: 5px;
 }
 
 html.no-sidebar .below-video .subtitles li span.time {
@@ -137,17 +140,9 @@ html.no-sidebar .below-video .subtitles li span.time {
 	margin-right: 10px;
 }
 
-html.no-sidebar .below-video .subtitles li.active span.time {
-	color: #CCC;
-}
-
 html.no-sidebar .below-video .subtitles li a {
 	color: #000;
 	text-decoration: none;
-}
-
-html.no-sidebar .below-video .subtitles li.active a {
-	color: #FFF;
 }
 
 html.no-sidebar .below-video .title-and-points {
