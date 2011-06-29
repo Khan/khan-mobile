@@ -164,8 +164,8 @@ VideoStats.prototype = {
 			return;
 		}
 		
-		if ( typeof updateNativeHost === "function" ) {
-			updateNativeHost( "action_result=" + encodeURIComponent(JSON.stringify( dict_json )) );
+		if ( typeof updateNativeHost === "function" && dict_json.action_results ) {
+			updateNativeHost( "action_results=" + encodeURIComponent(JSON.stringify( dict_json.action_results )) );
 		}
 
 		// XXX: From the old way of tracking points - not relevant any more?
