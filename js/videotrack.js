@@ -281,7 +281,11 @@ function saveWatch( opt ) {
 				opt.success( data );
 			}
 		},
-		error: opt.error
+		error: function() {
+			if ( opt.error ) {
+				opt.error();
+			}
+		}
 	}) );
 }
 
