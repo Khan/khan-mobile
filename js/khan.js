@@ -137,23 +137,6 @@ if ( query.sidebar !== "no" ) {
 			updateNativeHost( "download=" + curVideoId );
 		});
 		
-		// Watch for clicks on subtitles
-		$(".subtitles").bind( "vclick", function( e ) {
-			// Grab the time to jump to from the subtitle
-			pendingSeek = parseFloat( $(e.target).data( "time" ) );
-			
-			// Jump to that portion of the video
-			var video = $("video")[0];
-			seek( video );
-			
-			// Start playing the video, if we haven't done so already
-			seekFn = function() {
-				if ( video.paused ) {
-					video.play();
-				}
-			};
-		});
-		
 		// Watch for the Share button being clicked
 		$(".share").bind( "vclick", function() {
 			// Collect the dimensions of the button
@@ -202,12 +185,16 @@ if ( query.sidebar !== "no" ) {
 		
 		// Remember the last position of the video, for resuming later on
 		}).bind( "timeupdate", function() {
+			// Check to see if we're too close to the end of the video
+			var currentTime = this.currentTime + 5 >= this.duration ? 0 : this.currentTime;
+ 
 			// Store seek position offline
 			if ( window.localStorage ) {
-				window.localStorage[ "seek:" + curVideoId ] = this.currentTime;
-				
+				window.localStorage[ "seek:" + curVideoId ] = currentTime;
+			
+			// Remember the position so that we resume the video later
 			} else {
-				lastPlayhead[ curVideoId ] = this.currentTime;
+				lastPlayhead[ curVideoId ] = currentTime;
 			}
 		
 		// Show a loading message while the video is loading
@@ -228,6 +215,10 @@ if ( query.sidebar !== "no" ) {
 			})
 			// Also update immediately
 			.resize();
+		
+		setTimeout(function(){
+			updateQuery('video=jxA8MffVmPs&oauth_consumer=Pge78dXdqHJLsNWR%2CngpsuP9Vy6HXFpAu&oauth=gxWbavhuuhZa25Cx%2C7aDCqwVLMAHFMByG&playlist=' + encodeURIComponent('{"videos":[{"duration":145,"readable_id":"place-value-1","title":"Place Value 1","description":"U01_L1_T1_we1 Place Value 1","download_urls":{"mp4":"http://www.archive.org/download/KA-youtube-converted/jxA8MffVmPs.mp4","png":"http://www.archive.org/download/KA-youtube-converted/jxA8MffVmPs.png"},"url":"http://www.youtube.com/watch?v=jxA8MffVmPs&feature=youtube_gdata_player","youtube_id":"jxA8MffVmPs","ka_url":"http://www.khanacademy.org/video/place-value-1","subtitles":[{"text":"Find the place value of 3 in 4,356.","start_time":0.63,"subtitle_id":"5234826701633","sub_order":2,"end_time":6.73},{"text":"Now, whenever I think about place value, and the more you","start_time":6.73,"subtitle_id":"3111214604505","sub_order":3,"end_time":9.19},{"text":"do practice problems on this it\'ll become a little bit of","start_time":9.19,"subtitle_id":"3113891227247","sub_order":4,"end_time":11.72},{"text":"second nature, but whenever I see a problem like this, I","start_time":11.72,"subtitle_id":"5860105701525","sub_order":5,"end_time":14.6},{"text":"like to expand out what 4,356 really is, so let me rewrite","start_time":14.6,"subtitle_id":"7064799964137","sub_order":6,"end_time":20.32},{"text":"the number.","start_time":20.32,"subtitle_id":"8851016294167","sub_order":7,"end_time":20.88},{"text":"So if I were to write it-- and I\'ll write it","start_time":20.88,"subtitle_id":"9247741964008","sub_order":8,"end_time":21.94},{"text":"in different colors.","start_time":21.94,"subtitle_id":"7926446182020","sub_order":9,"end_time":23.21},{"text":"So 4,356 is equal to-- and just think about","start_time":23.21,"subtitle_id":"9912513489729","sub_order":10,"end_time":33.42},{"text":"how I just said it.","start_time":33.42,"subtitle_id":"2473116629245","sub_order":11,"end_time":34.36},{"text":"It is equal to 4,000 plus 300 plus 50 plus 6.","start_time":34.36,"subtitle_id":"8043375463592","sub_order":12,"end_time":48.19},{"text":"And you could come up with that just based on how we said","start_time":48.19,"subtitle_id":"9830235933204","sub_order":13,"end_time":50.6},{"text":"it: four thousand, three hundred, and fifty-six.","start_time":50.6,"subtitle_id":"9285940435286","sub_order":14,"end_time":54.81},{"text":"Now another way to think about this is this is just like","start_time":54.81,"subtitle_id":"7049222510846","sub_order":15,"end_time":58.06},{"text":"saying this is 4 thousands plus-- or you could even think","start_time":58.06,"subtitle_id":"5950143664027","sub_order":16,"end_time":67.52},{"text":"of \\"and\\"-- so plus 3 hundreds plus 50, you could think of it","start_time":67.52,"subtitle_id":"6235311374424","sub_order":17,"end_time":76.88},{"text":"as 5 tens plus 6.","start_time":76.88,"subtitle_id":"3235306379101","sub_order":18,"end_time":82.04},{"text":"And instead of 6, we could say plus 6 ones.","start_time":82.04,"subtitle_id":"3218754620024","sub_order":19,"end_time":84.42},{"text":"","start_time":84.42,"subtitle_id":"1141854383365","sub_order":20,"end_time":87.57},{"text":"And so if we go back to the original number 4,356, this is","start_time":87.57,"subtitle_id":"9020825385492","sub_order":21,"end_time":92.62},{"text":"the same thing as 4-- I\'ll write it down.","start_time":92.62,"subtitle_id":"5044095117813","sub_order":22,"end_time":96.44},{"text":"Let me see how well I can-- I\'ll write it up like this.","start_time":96.44,"subtitle_id":"9060246974036","sub_order":23,"end_time":99.23},{"text":"This is the same thing is 4 thousands, 3 hundreds, 5 tens","start_time":99.23,"subtitle_id":"7372162861288","sub_order":24,"end_time":111.02},{"text":"and then 6 ones.","start_time":111.02,"subtitle_id":"976749270599","sub_order":25,"end_time":113.67},{"text":"So when they ask what is the place value of 3 into 4,356,","start_time":113.67,"subtitle_id":"5198089135308","sub_order":26,"end_time":119.82},{"text":"we\'re concerned with this 3 right here,","start_time":119.82,"subtitle_id":"4916492209319","sub_order":27,"end_time":122.12},{"text":"and it\'s place value.","start_time":122.12,"subtitle_id":"4454928528802","sub_order":28,"end_time":123.26},{"text":"It\'s in the hundreds place.","start_time":123.26,"subtitle_id":"2168870553935","sub_order":29,"end_time":125.09},{"text":"If there was a 4 here, that would mean we\'re dealing with","start_time":125.09,"subtitle_id":"4854865404398","sub_order":30,"end_time":126.97},{"text":"4 hundreds.","start_time":126.97,"subtitle_id":"8560594646007","sub_order":31,"end_time":127.85},{"text":"If there\'s a 5, 5 hundreds.","start_time":127.85,"subtitle_id":"9929011756802","sub_order":32,"end_time":129.85},{"text":"It\'s the third from the right.","start_time":129.85,"subtitle_id":"2302517547133","sub_order":33,"end_time":132.26},{"text":"This is the ones place.","start_time":132.26,"subtitle_id":"3999450355229","sub_order":34,"end_time":133.41},{"text":"That\'s 6 ones, 5 tens, 3 hundreds.","start_time":133.41,"subtitle_id":"206969347787","sub_order":35,"end_time":136.5},{"text":"So the answer here is it is in the hundreds place.","start_time":136.5,"subtitle_id":"3196781322597","sub_order":36,"end_time":140.19}],"playlists":["Developmental Math"],"date_added":"2011-02-20T16:39:02","kind":"Video","views":59691,"position":1,"keywords":"U01_L1_T1_we1, Place, Value"},{"duration":249,"readable_id":"place-value-2","title":"Place Value 2","description":"U01_L1_T1_we2 Place Value 2","download_urls":{"mp4":"http://www.archive.org/download/KA-youtube-converted/wd4cRAoBOiE.mp4","png":"http://www.archive.org/download/KA-youtube-converted/wd4cRAoBOiE.png"},"url":"http://www.youtube.com/watch?v=wd4cRAoBOiE&feature=youtube_gdata_player","youtube_id":"wd4cRAoBOiE","ka_url":"http://www.khanacademy.org/video/place-value-2","playlists":["Developmental Math"],"date_added":"2011-02-20T16:39:02","kind":"Video","views":18077,"position":2,"keywords":"U01_L1_T1_we2, Place, Value"},{"duration":320,"readable_id":"place-value-3","title":"Place Value 3","description":"U01_L1_T1_we3 Place Value 3","download_urls":{"mp4":"http://www.archive.org/download/KA-youtube-converted/iK0y39rjBgQ.mp4","png":"http://www.archive.org/download/KA-youtube-converted/iK0y39rjBgQ.png"},"url":"http://www.youtube.com/watch?v=iK0y39rjBgQ&feature=youtube_gdata_player","youtube_id":"iK0y39rjBgQ","ka_url":"http://www.khanacademy.org/video/place-value-3","playlists":["Developmental Math"],"date_added":"2011-02-20T16:39:02","kind":"Video","views":13809,"position":3,"keywords":"U01_L1_T1_we3, Place, Value"}],"title":"Developmental Math","description":"Worked developmental math examples from the Monterey Institute.  These start pretty basic and would prepare a student for the Algebra I worked examples"}'));
+		}, 1000);
 	});
 }
 
@@ -329,7 +320,9 @@ function loadPlaylists( result ) {
 
 // Notify the app that something has occurred
 function updateNativeHost( query ) {
-	window.location = "khan://update?" + query;
+	if ( window.location.protocol.indexOf( "http" ) !== 0 ) {
+		window.location = "khan://update?" + query;
+	}
 }
 
 // Display a video given the specified ID
@@ -370,6 +363,28 @@ function setCurrentVideo( id ) {
 	// If they exist, display them
 	if ( video.subtitles ) {
 		subtitles.html( tmpl( "subtitles-tmpl", video ) );
+		
+		// Watch for clicks on subtitles
+		// We need to bind directly to the list items so that
+		// the event fires before it hits the scrollview
+		subtitles.find("a").bind("click", function( e ) {
+			// Stop from visiting the link
+			e.preventDefault();
+			
+			// Grab the time to jump to from the subtitle
+			pendingSeek = parseFloat( $(e.target).parent().data( "time" ) );
+			
+			// Jump to that portion of the video
+			var video = $("video")[0];
+			seek( video );
+			
+			// Start playing the video, if we haven't done so already
+			seekFn = function() {
+				if ( video.paused ) {
+					video.play();
+				}
+			};
+		});
 		
 		// Only turn on the custom scrolling logic if we're on a touch device
 		if ( $.support.touch ) {

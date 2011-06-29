@@ -141,6 +141,15 @@ html.no-sidebar .below-video .subtitles li.active span.time {
 	color: #CCC;
 }
 
+html.no-sidebar .below-video .subtitles li a {
+	color: #000;
+	text-decoration: none;
+}
+
+html.no-sidebar .below-video .subtitles li.active a {
+	color: #FFF;
+}
+
 html.no-sidebar .below-video .title-and-points {
     display: block;
 }
