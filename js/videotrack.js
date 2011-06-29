@@ -178,7 +178,13 @@ VideoStats.prototype = {
 		}
 		
 		// Update point display
-		updatePoints( this.curVideoId, dict_json && dict_json.action_results );
+		// TODO verify that current user (oauth) hasn't changed since request
+		// began
+		if ( ! videoStatus[ this.curVideoId ] ) {
+			videoStatus[ this.curVideoId ] = {}
+		}
+		videoStatus[ this.curVideoId ].user_video = dict_json.action_results.user_video;
+		updatePoints();
 	},
 
 	prepareAlternativePlayer: function() {
