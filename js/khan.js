@@ -64,13 +64,23 @@ if ( query.sidebar !== "no" ) {
 		$.mobile.activePage = $("#home");
 		
 		// Handle OAuth-related matters
-		addQueryWatch( "oauth", function( value ) {
-			var parts = value.split(",");
-			oauth.token = parts[0];
-			oauth.tokenSecret = parts[1];
+		addQueryWatch( "user", function( value ) {
+			// TODO capture user_data key from the value dictionary,
+			// store it and make use of it to persist user data across logins
+			// (playhead positions, etc.)
+			if ( value ) {
+				var user = JSON.parse( value );
+				
+				var parts = user.token.split(",");
+				oauth.token = parts[0];
+				oauth.tokenSecret = parts[1];
+			} else {
+				oauth.token = oauth.tokenSecret = "";
+			}
 			
 			// Sync with the server on load
 			offlineSync();
+			updatePoints();
 		});
 		
 		addQueryWatch( "oauth_consumer", function( value ) {
