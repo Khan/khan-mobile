@@ -5,12 +5,13 @@ var data,
 	query = {},
 	queryProcess = {},
 	queryWatch = {},
-	lastPlayhead = {},
+	storage = { seek: {}, watch: {} },
 	pendingSeek, // http://adamernst.com/post/6570213273/seeking-an-html5-video-player-on-the-ipad
 	seekFn,
 	curVideoId,
 	videoStats,
 	offline = false,
+	userId,
 	oauth = { consumerKey: "", consumerSecret: "", token: "", tokenSecret: "" };
 
 // Load in query string from URL
@@ -65,17 +66,28 @@ if ( query.sidebar !== "no" ) {
 		
 		// Handle OAuth-related matters
 		addQueryWatch( "user", function( value ) {
-			// TODO capture user_data key from the value dictionary,
-			// store it and make use of it to persist user data across logins
-			// (playhead positions, etc.)
+			// User has logged in
 			if ( value ) {
 				var user = JSON.parse( value );
 				
 				var parts = user.token.split(",");
 				oauth.token = parts[0];
 				oauth.tokenSecret = parts[1];
+				
+				// Get user ID
+				userId = user.user_data.user;
+				
+				// Get the user storage
+				loadStorage();
+			
+			// User is logging out
 			} else {
 				oauth.token = oauth.tokenSecret = "";
+				userId = null;
+				videoStatus = {};
+				
+				// Reset the storage object
+				loadStorage();
 			}
 			
 			// Sync with the server on load
@@ -197,14 +209,11 @@ if ( query.sidebar !== "no" ) {
 			// Check to see if we're too close to the end of the video
 			var currentTime = this.currentTime + 5 >= this.duration ? 0 : this.currentTime;
  
-			// Store seek position offline
-			if ( window.localStorage ) {
-				window.localStorage[ "seek:" + curVideoId ] = currentTime;
+			// Remember the video seek position
+			storage.seek[ curVideoId ] = currentTime;
 			
-			// Remember the position so that we resume the video later
-			} else {
-				lastPlayhead[ curVideoId ] = currentTime;
-			}
+			// Store seek position offline
+			saveStorage();
 		
 		// Show a loading message while the video is loading
 		}).bind( "loadstart", function() {
@@ -479,7 +488,7 @@ function setCurrentVideo( id ) {
 		
 		// Get the cached seek position, if one exists
 		// Check the offline cache as well
-		pendingSeek = window.localStorage && parseFloat( window.localStorage[ "seek:" + id ] ) || lastPlayhead[id] || null;
+		pendingSeek = storage.seek[ id ] || null;
 		
 		// Make sure the player is displayed
 		$(player).show();
@@ -585,6 +594,7 @@ function updatePoints() {
 			points = curVideoStatus.user_video.points;
 		}
 		$(".energy-points-badge").show().text( points + " of 750" );
+	
 	} else {
 		$(".energy-points-badge").hide();
 	}
@@ -610,6 +620,17 @@ function seek( video ) {
 		} catch( e ) {
 			pendingSeek = seekTo;
 		}
+	}
+}
+
+function loadStorage() {
+	storage = JSON.parse( userId && window.localStorage[ userId ] || '{"seek":{},"watch":{}}' );
+}
+
+function saveStorage() {
+	// Save the data if the user is logged in
+	if ( userId ) {
+		window.localStorage[ userId ] = JSON.stringify( storage );
 	}
 }
 

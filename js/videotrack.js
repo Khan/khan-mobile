@@ -122,14 +122,9 @@ VideoStats.prototype = {
 			secondsWatched = this.getSecondsWatchedRestrictedByPageTime(),
 			lastSecondWatched = this.getSecondsWatched();
 		
-		// Store the watch data offline
-		if ( window.localStorage ) {
-			window.localStorage[ "watch:" + id ] = secondsWatched + "," + lastSecondWatched;
-			
-			if ( (window.localStorage.watch || "").indexOf( "," + id ) < 0 ) {
-				window.localStorage.watch += "," + id;
-			}
-		}
+		// Save the watch position data for later
+		storage.watch[ id ] = { secondsWatched: secondsWatched, lastSecondWatched: lastSecondWatched };
+		saveStorage();
 		
 		if ( !offline ) {
 			saveWatch({
@@ -246,19 +241,16 @@ function onYouTubePlayerReady(playerID) {
 
 function offlineSync() {
 	// Coming back online, sync data with server
-	if ( !offline && window.localStorage && oauth.token && oauth.consumerKey ) {
-		var ids = (window.localStorage.watch || "").split( "," );
-		
-		for ( var i = 0, l = ids.length; i < l; i++ ) {
-			var id = ids[i],
-				watched = (window.localStorage[ "watch:" + id ] || "").split( "," );
+	if ( !offline && oauth.token && oauth.consumerKey ) {
+		for ( var id in storage.watch ) {
+			var watched = storage.watch[ id ];
 			
 			// We have the data, time to sync it
-			if ( watched.length === 2 ) {
+			if ( watched ) {
 				saveWatch({
 					id: id,
-					lastSecondWatched: watched[1],
-					secondsWatched: watched[0]
+					lastSecondWatched: watched.lastSecondWatched,
+					secondsWatched: watched.secondsWatched
 				});
 			
 			// Data no longer exists, strike from the sync queue
@@ -270,6 +262,15 @@ function offlineSync() {
 }
 
 function saveWatch( opt ) {
+	// Don't attempt to save if we're logged out
+	if ( !oauth.token ) {
+		if ( opt.error ) {
+			opt.error();
+		}
+		
+		return;
+	}
+	
 	$.oauth($.extend( {}, oauth, {
 		type: "POST",
 		url: "http://www.khanacademy.org/api/v1/user/videos/" + opt.id + "/log",
@@ -296,8 +297,8 @@ function saveWatch( opt ) {
 }
 
 function clearSync( id ) {
-	if ( id && window.localStorage ) {
-		window.localStorage.removeItem( "watch:" + id );
-		window.localStorage.watch = window.localStorage.watch.replace( new RegExp(",?" + id, "g"), "" );
+	if ( id ) {
+		delete storage.watch[ id ];
+		saveStorage();
 	}
 }
