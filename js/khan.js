@@ -10,6 +10,7 @@ var data,
 	seekFn,
 	curVideoId,
 	subInterval,
+	doJump = true,
 	videoStats,
 	offline = false,
 	userId,
@@ -437,7 +438,8 @@ function setCurrentVideo( id ) {
 function showSubtitles( data ) {
 	// Show or hide the interactive subtitles
 	var subtitles = $(".subtitles").toggle( !!data ),
-		player = $("video")[0];
+		player = $("video")[0],
+		isScroll = subtitles.hasClass("ui-scrollview-clip");
 	
 	// Stop updating the old subtitle updater
 	clearInterval( subInterval );
@@ -447,7 +449,8 @@ function showSubtitles( data ) {
 		return;
 	}
 	
-	subtitles.html( tmpl( "subtitles-tmpl", { subtitles: data } ) );
+	(isScroll ? subtitles.children("div") : subtitles).html(
+		tmpl( "subtitles-tmpl", { subtitles: data } ) );
 	
 	// Watch for clicks on subtitles
 	// We need to bind directly to the list items so that
@@ -472,8 +475,7 @@ function showSubtitles( data ) {
 	
 	// Get the subtitles and hilite the first one
 	var li = subtitles.find("li"),
-		curLI = li.eq(0).addClass("active")[0],
-		doJump = true;
+		curLI = li.eq(0).addClass("active")[0];
 	
 	// Continually update the active subtitle position
 	subInterval = setInterval(function() {
@@ -527,17 +529,23 @@ function showSubtitles( data ) {
 	subtitles.height( $(window).height() - subtitles[0].offsetTop - 45 );
 	
 	// Only turn on the custom scrolling logic if we're on a touch device
-	if ( $.support.touch && !subtitles.hasClass("ui-scrollview-clip") ) {
+	if ( $.support.touch ) {
+		// Reset to the starting scroll position
+		if ( isScroll ) {
+			subtitles.scrollview( "scrollTo", 0, 0, 200 );
+		
 		// We need to enable it explicitly for the subtitles
 		// as we're loading it dynamically
-		subtitles
-			.scrollview({ direction: "y" })
-			.bind( "scrollstart", function() {
-				doJump = false;
-			})
-			.bind( "scrollstop", function() {
-				doJump = true;
-			});
+		} else {
+			subtitles
+				.scrollview({ direction: "y" })
+				.bind( "scrollstart", function() {
+					doJump = false;
+				})
+				.bind( "scrollstop", function() {
+					doJump = true;
+				});
+		}
 	}
 }
 
