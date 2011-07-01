@@ -9,6 +9,7 @@ var data,
 	pendingSeek, // http://adamernst.com/post/6570213273/seeking-an-html5-video-player-on-the-ipad
 	seekFn,
 	curVideoId,
+	subInterval,
 	videoStats,
 	offline = false,
 	userId,
@@ -371,105 +372,15 @@ function setCurrentVideo( id ) {
 	
 	updatePoints();
 	
-	// Show or hide the interactive subtitles
-	var subtitles = $(".subtitles").toggle( !!video.subtitles );
+	// Start by hiding the subtitles while we're loading
+	$(".subtitles").hide();
 	
-	// If they exist, display them
-	if ( video.subtitles ) {
-		subtitles.html( tmpl( "subtitles-tmpl", video ) );
-		
-		// Watch for clicks on subtitles
-		// We need to bind directly to the list items so that
-		// the event fires before it hits the scrollview
-		subtitles.find("a").bind("click", function( e ) {
-			// Stop from visiting the link
-			e.preventDefault();
-			
-			// Grab the time to jump to from the subtitle
-			pendingSeek = parseFloat( $(e.target).parent().data( "time" ) );
-			
-			// Jump to that portion of the video
-			var video = $("video")[0];
-			seek( video );
-			
-			// Start playing the video, if we haven't done so already
-			seekFn = function() {
-				if ( video.paused ) {
-					video.play();
-				}
-			};
-		});
-		
-		// Get the subtitles and hilite the first one
-		var li = subtitles.find("li"),
-			curLI = li.eq(0).addClass("active")[0],
-			doJump = true;
-		
-		// Continually update the active subtitle position
-		setInterval(function() {
-			// Get the seek position or the current time
-			// (allowing the user to see the transcript while loading)
-			// We need to round the number to fix floating point issues
-			var curTime = (pendingSeek || player.currentTime).toFixed(2);
-			
-			for ( var i = 0, l = li.length; i < l; i++ ) {
-				var liTime = $(li[i]).data("time");
-				
-				// We're looking for the next highest element before backtracking
-				if ( liTime > curTime && liTime !== curTime ) {
-					var nextLI = li[ i - 1 ];
-					
-					if ( nextLI ) {
-						return subtitleJump( nextLI );
-					}
-				}
-			}
-			
-			// We've reached the end so make the last one active
-			subtitleJump( li[ i - 1 ] );
-		}, 333);
-		
-		// Jump to a specific subtitle (either via click or automatically)
-		function subtitleJump( nextLI ) {
-			if ( doJump && nextLI !== curLI ) {
-				$(nextLI).addClass("active");
-				$(curLI).removeClass("active");
-				curLI = nextLI;
-				
-				// Set the positioning to be positioned 45 pixels down
-				// (allowing the user to read the two previous lines)
-				var pos = Math.max( curLI.offsetTop - 45, 0 );
-				
-				// Make sure that we don't end with whitespace at the bottom
-				pos = Math.min( subtitles[0].scrollHeight - subtitles[0].offsetHeight, pos );
-
-				// Adjust the viewport to animate to the new position
-				if ( $.support.touch ) {
-					subtitles.scrollview( "scrollTo", 0, pos, 200 );
-				
-				} else {
-					subtitles.animate( { scrollTop: pos }, 200 );
-				}
-			}
-		}
-		
-		var subtitles = $(".subtitles");
-		subtitles.height( $(window).height() - subtitles[0].offsetTop - 45 );
-		
-		// Only turn on the custom scrolling logic if we're on a touch device
-		if ( $.support.touch && !subtitles.hasClass("ui-scrollview-clip") ) {
-			// We need to enable it explicitly for the subtitles
-			// as we're loading it dynamically
-			subtitles
-				.scrollview({ direction: "y" })
-				.bind( "scrollstart", function() {
-					doJump = false;
-				})
-				.bind( "scrollstop", function() {
-					doJump = true;
-				});
-		}
-	}
+	// Load in the subtitle data for the video
+	$.ajax({
+	  url: "kasubtitles://" + id + "/",
+	  dataType: "json",
+	  success: showSubtitles
+	});
 	
 	// Hook in video tracking
 	videoStats = new VideoStats( id, player );
@@ -521,6 +432,113 @@ function setCurrentVideo( id ) {
 	
 	// Update the download indicator
 	updateStatus();
+}
+
+function showSubtitles( data ) {
+	// Show or hide the interactive subtitles
+	var subtitles = $(".subtitles").toggle( !!data ),
+		player = $("video")[0];
+	
+	// Stop updating the old subtitle updater
+	clearInterval( subInterval );
+	
+	// If they don't exist, back out
+	if ( !data ) {
+		return;
+	}
+	
+	subtitles.html( tmpl( "subtitles-tmpl", { subtitles: data } ) );
+	
+	// Watch for clicks on subtitles
+	// We need to bind directly to the list items so that
+	// the event fires before it hits the scrollview
+	subtitles.find("a").bind("click", function( e ) {
+		// Stop from visiting the link
+		e.preventDefault();
+		
+		// Grab the time to jump to from the subtitle
+		pendingSeek = parseFloat( $(e.target).parent().data( "time" ) );
+		
+		// Jump to that portion of the video
+		seek( player );
+		
+		// Start playing the video, if we haven't done so already
+		seekFn = function() {
+			if ( player.paused ) {
+				player.play();
+			}
+		};
+	});
+	
+	// Get the subtitles and hilite the first one
+	var li = subtitles.find("li"),
+		curLI = li.eq(0).addClass("active")[0],
+		doJump = true;
+	
+	// Continually update the active subtitle position
+	subInterval = setInterval(function() {
+		// Get the seek position or the current time
+		// (allowing the user to see the transcript while loading)
+		// We need to round the number to fix floating point issues
+		var curTime = (pendingSeek || player.currentTime).toFixed(2);
+		
+		for ( var i = 0, l = li.length; i < l; i++ ) {
+			var liTime = $(li[i]).data("time");
+			
+			// We're looking for the next highest element before backtracking
+			if ( liTime > curTime && liTime !== curTime ) {
+				var nextLI = li[ i - 1 ];
+				
+				if ( nextLI ) {
+					return subtitleJump( nextLI );
+				}
+			}
+		}
+		
+		// We've reached the end so make the last one active
+		subtitleJump( li[ i - 1 ] );
+	}, 333);
+	
+	// Jump to a specific subtitle (either via click or automatically)
+	function subtitleJump( nextLI ) {
+		if ( doJump && nextLI !== curLI ) {
+			$(nextLI).addClass("active");
+			$(curLI).removeClass("active");
+			curLI = nextLI;
+			
+			// Set the positioning to be positioned 45 pixels down
+			// (allowing the user to read the two previous lines)
+			var pos = Math.max( curLI.offsetTop - 45, 0 );
+			
+			// Make sure that we don't end with whitespace at the bottom
+			pos = Math.min( subtitles[0].scrollHeight - subtitles[0].offsetHeight, pos );
+
+			// Adjust the viewport to animate to the new position
+			if ( $.support.touch ) {
+				subtitles.scrollview( "scrollTo", 0, pos, 200 );
+			
+			} else {
+				subtitles.animate( { scrollTop: pos }, 200 );
+			}
+		}
+	}
+	
+	var subtitles = $(".subtitles");
+	subtitles.height( $(window).height() - subtitles[0].offsetTop - 45 );
+	
+	// Only turn on the custom scrolling logic if we're on a touch device
+	if ( $.support.touch && !subtitles.hasClass("ui-scrollview-clip") ) {
+		// We need to enable it explicitly for the subtitles
+		// as we're loading it dynamically
+		subtitles
+			.scrollview({ direction: "y" })
+			.bind( "scrollstart", function() {
+				doJump = false;
+			})
+			.bind( "scrollstop", function() {
+				doJump = true;
+			});
+	}
 }
 
 // Update the indicator of how downloads are going
