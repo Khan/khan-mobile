@@ -127,6 +127,7 @@ html.no-sidebar .below-video .subtitles li {
 	list-style: none;
 	padding: 3px;
 	border: 1px solid auto;
+	overflow: hidden;
 }
 
 html.no-sidebar .below-video .subtitles li.active {
@@ -138,11 +139,14 @@ html.no-sidebar .below-video .subtitles li.active {
 html.no-sidebar .below-video .subtitles li span.time {
 	color: #777;
 	margin-right: 10px;
+	display: block;
+	float: left;
 }
 
 html.no-sidebar .below-video .subtitles li a {
 	color: #000;
 	text-decoration: none;
+	display: block;
 }
 
 html.no-sidebar .below-video .title-and-points {
