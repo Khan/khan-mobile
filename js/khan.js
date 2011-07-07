@@ -267,10 +267,15 @@ if ( query.sidebar !== "no" ) {
 		$(window)
 			// Make sure the video container is the right size ratio
 			.resize(function() {
+				// Make sure the video is kept to the proper aspect ratio
 				$(".video-wrap").height( $(window).width() / 16.0 * 9.0 );
 				
+				// Adjust the height of the subtitle viewport
 				var subtitles = $(".subtitles");
 				subtitles.height( $(window).height() - subtitles[0].offsetTop - 14 );
+				
+				// Jump to the active subtitle
+				subtitles.scrollTo( $(".subtitles li.active")[0] );
 			})
 			// Also update immediately
 			.resize();
@@ -553,21 +558,9 @@ function showSubtitles( data ) {
 			$(nextLI).addClass("active");
 			$(curLI).removeClass("active");
 			curLI = nextLI;
-			
-			// Set the positioning to be positioned 45 pixels down
-			// (allowing the user to read the two previous lines)
-			var pos = Math.max( curLI.offsetTop - 45, 0 );
-			
-			// Make sure that we don't end with whitespace at the bottom
-			pos = Math.min( subtitles[0].scrollHeight - subtitles[0].offsetHeight, pos );
 
 			// Adjust the viewport to animate to the new position
-			if ( $.support.touch ) {
-				subtitles.scrollview( "scrollTo", 0, pos, 200 );
-			
-			} else {
-				subtitles.animate( { scrollTop: pos }, 200 );
-			}
+			subtitles.scrollTo( curLI );
 		}
 	}
 	
@@ -754,3 +747,26 @@ function log( msg, states ) {
 function pad( num ) {
 	return num < 10 ? "0" + num : num;
 }
+
+jQuery.fn.scrollTo = function( elem ) {
+	if ( !elem ) {
+		return this;
+	}
+	
+	// Set the positioning to be positioned 45 pixels down
+	// (allowing the user to read the two previous lines)
+	var pos = Math.max( elem.offsetTop - 45, 0 );
+	
+	// Make sure that we don't end with whitespace at the bottom
+	pos = Math.min( this[0].scrollHeight - this[0].offsetHeight, pos );
+	
+	// Adjust the viewport to animate to the new position
+	if ( jQuery.support.touch ) {
+		this.scrollview( "scrollTo", 0, pos, 200 );
+	
+	} else {
+		this.stop().animate( { scrollTop: pos }, 200 );
+	}
+	
+	return this;
+};
