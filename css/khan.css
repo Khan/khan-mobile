@@ -263,12 +263,12 @@ html.no-sidebar .below-video h1 {
 	text-shadow: 0 -1px 0 	#293b05;
 	background: 			#415e08;
 	background-image: -moz-linear-gradient(top, 
-							#78a90c, 
-							#608d0c);
+							#8aac57, 
+							#5c8b14);
 	background-image: -webkit-gradient(linear,left top,left bottom,
-		color-stop(0, 		#78a90c),
-		color-stop(1, 		#608d0c));
-	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#78a90c', EndColorStr='#608d0c')";
+		color-stop(0, 		#8aac57),
+		color-stop(1, 		#5c8b14));
+	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#8aac57', EndColorStr='#5c8b14')";
 }
 .ui-btn-up-k a.ui-link-inherit {
 	color: 					#fff;
@@ -295,12 +295,12 @@ html.no-sidebar .below-video h1 {
 	text-shadow: 0 -1px 0 	#293b05;
 	background: 			#415e08;
 	background-image: -moz-linear-gradient(top, 
-							#608d0c, 
-							#78a90c);
+							#5c8b14, 
+							#8aac57);
 	background-image: -webkit-gradient(linear,left top,left bottom,
-		color-stop(0, 		#608d0c),
-		color-stop(1, 		#78a90c));
-	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#608d0c', EndColorStr='#78a90c')";
+		color-stop(0, 		#5c8b14),
+		color-stop(1, 		#8aac57));
+	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#5c8b14', EndColorStr='#8aac57')";
 }
 .ui-btn-down-k a.ui-link-inherit {
 	color: 					#fff;
@@ -320,8 +320,7 @@ html.no-sidebar .below-video h1 {
 
 /* Fix button padding with respect to icons. Default doesn't center properly. */
 .ui-btn-inner {
-	padding-left: 12px; /* Down from 25px which is pretty big */
-	padding-right: 12px;
+	padding: 6px 12px 7px; /* Down from 25px which is pretty big */
 }
 
 .ui-btn-icon-left .ui-btn-inner {
@@ -413,12 +412,71 @@ html.no-sidebar body {
     text-shadow: none;
     position: relative;
     top: -.1em;
-    
-    -webkit-border-radius: 10px;
-    -moz-border-radius: 10px;
-    border-radius: 10px;
 }
 
 html.offline .energy-points-badge {
 	opacity: 0.3;
+}
+
+/* Override jQuery's default rounding classes
+--------------------------------------------------------------------------------------------------------------------------*/
+/* corner rounding classes
+-----------------------------------------------------------------------------------------------------------*/
+
+.ui-corner-tl {
+	-moz-border-radius-topleft: 		5px;
+	-webkit-border-top-left-radius: 	5px;
+	border-top-left-radius: 			5px;
+}
+.ui-corner-tr {
+	-moz-border-radius-topright: 		5px;
+	-webkit-border-top-right-radius: 	5px;
+	border-top-right-radius: 			5px;
+}
+.ui-corner-bl {
+	-moz-border-radius-bottomleft: 		5px;
+	-webkit-border-bottom-left-radius: 	5px;
+	border-bottom-left-radius: 			5px;
+}
+.ui-corner-br {
+	-moz-border-radius-bottomright: 	5px;
+	-webkit-border-bottom-right-radius: 5px;
+	border-bottom-right-radius: 		5px;
+}
+.ui-corner-top {
+	-moz-border-radius-topleft: 		5px;
+	-webkit-border-top-left-radius: 	5px;
+	border-top-left-radius: 			5px;
+	-moz-border-radius-topright: 		5px;
+	-webkit-border-top-right-radius: 	5px;
+	border-top-right-radius: 			5px;
+}
+.ui-corner-bottom {
+	-moz-border-radius-bottomleft: 		5px;
+	-webkit-border-bottom-left-radius: 	5px;
+	border-bottom-left-radius: 			5px;
+	-moz-border-radius-bottomright: 	5px;
+	-webkit-border-bottom-right-radius: 5px;
+	border-bottom-right-radius: 		5px;
+	}
+.ui-corner-right {
+	-moz-border-radius-topright: 		5px;
+	-webkit-border-top-right-radius: 	5px;
+	border-top-right-radius: 			5px;
+	-moz-border-radius-bottomright: 	5px;
+	-webkit-border-bottom-right-radius: 5px;
+	border-bottom-right-radius: 		5px;
+}
+.ui-corner-left {
+	-moz-border-radius-topleft: 		5px;
+	-webkit-border-top-left-radius: 	5px;
+	border-top-left-radius: 			5px;
+	-moz-border-radius-bottomleft: 		5px;
+	-webkit-border-bottom-left-radius: 	5px;
+	border-bottom-left-radius: 			5px;
+}
+.ui-corner-all {
+	-moz-border-radius: 				5px;
+	-webkit-border-radius: 				5px;
+	border-radius: 						5px;
 }
