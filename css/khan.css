@@ -363,6 +363,7 @@ html.no-sidebar body {
 	/* If we don't set the body's background color to the same as .ui-body-k,
 	   an artifact (with body's color) appears when rotating the device. */
 	background-color: #e3e3e3;
+	font-size: 0.9em;
 }
 
 * {
