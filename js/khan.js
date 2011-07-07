@@ -507,15 +507,15 @@ function showSubtitles( data ) {
 		// Grab the time to jump to from the subtitle
 		pendingSeek = parseFloat( $(e.target).parent().data( "time" ) );
 		
-		// Jump to that portion of the video
-		seek( player );
-		
 		// Start playing the video, if we haven't done so already
 		seekFn = function() {
 			if ( player.paused ) {
 				player.play();
 			}
 		};
+		
+		// Jump to that portion of the video
+		seek( player );
 	});
 	
 	// Get the subtitles and hilite the first one
