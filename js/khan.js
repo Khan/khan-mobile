@@ -9,6 +9,7 @@ var data,
 	pendingSeek, // http://adamernst.com/post/6570213273/seeking-an-html5-video-player-on-the-ipad
 	seekFn,
 	curVideoId,
+	nextVideoId,
 	subInterval,
 	doJump = true,
 	videoStats,
@@ -178,9 +179,30 @@ if ( query.sidebar !== "no" ) {
 		});
 		
 		// Retry watching a video that has errored out
-		$(".retry").bind( "vclick", function() {
+		$(".retry-button").bind( "vclick", function() {
 			// Force re-displaying the current video
 			setCurrentVideo( curVideoId, true );
+		});
+		
+		// Allow the user to replay the current video
+		$(".replay-button").bind( "vclick", function() {
+			hideReplay();
+			
+			// Start the video over at the beginning
+			var video = $("video")[0];
+			video.currentTime = 0;
+			video.play();
+		});
+		
+		// Allow the user to watch the next video
+		$(".next-button").bind( "vclick", function() {
+			hideReplay();
+			
+			// Notify the app that we're switching to another video
+			updateNativeHost( "video=" + nextVideoId );
+			
+			// Switch to the next video
+			setCurrentVideo( nextVideoId );
 		});
 		
 		// Notify the app when the user hits play
@@ -190,6 +212,10 @@ if ( query.sidebar !== "no" ) {
 		// Notify the app when the user hits pause
 		}).bind( "pause", function() {
 			updateNativeHost( "playing=no" );
+		
+		// Watch for when the video ends, to show the replay dialog
+		}).bind( "ended", function() {
+			showReplay();
 		
 		// Handle when an error occurs loading the video
 		}).bind("error", function(e) {
@@ -381,6 +407,15 @@ function setCurrentVideo( id, force ) {
 	// Remember the ID of the video that we're playing
 	curVideoId = id;
 	
+	// Find the next video to show
+	// TODO: Determine which playlist we're current focused on.
+	var playlist = playlists[ video.playlists[0] ];
+	nextVideoId = playlist && playlist.videos.length > video.position ? playlist.videos[ video.position ].youtube_id : null;
+	
+	// Show or hide the Next Video button
+	$(".next-button").toggle( !!nextVideoId );
+	
+	// Update the user point display
 	updatePoints();
 	
 	// Start by hiding the subtitles while we're loading
@@ -625,6 +660,36 @@ function hideError() {
 		// Reset the opacity of the details
 		// (for the CSS animation)
 		.find(".details").css( "opacity", 0 );
+}
+
+// Show an replay overlay to the user
+function showReplay() {
+	// Show the replay overlay
+	var player = $("video").hide()[0],
+		details = $(".replay").show().find(".details");
+	
+	// Force the video to pause, just in case
+	if ( !player.paused ) {
+		player.pause();
+	}
+	
+	// You can't immediately animate an object that's just been shown.
+	// http://www.greywyvern.com/?post=337
+	// If you can find a better way, please do.
+	setTimeout(function() {
+		details.css( "opacity", 1 );
+	}, 1);
+}
+
+// Hide the error message dialog
+function hideReplay() {
+	$(".replay").hide()
+		
+		// Reset the opacity of the details
+		// (for the CSS animation)
+		.find(".details").css( "opacity", 0 );
+	
+	$("video").show();
 }
 
 // Update point display

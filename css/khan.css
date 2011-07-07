@@ -66,7 +66,7 @@ ul.playlist .ui-btn-icon-right .ui-icon {
 	margin-top: -16px;
 }
 
-video, .error {
+video, .overlay {
 	width: 100%;
 	height: 100%;
 	/* Video element has a phantom bottom border that can't be removed unless
@@ -78,13 +78,13 @@ video, .error {
 	margin: 0;
 }
 
-.error {
+.overlay {
 	color: #ddd;
 	text-shadow: none;
 	display: table; /* Vertically center the h2 */
 }
 
-.error .details {
+.overlay .details {
 	text-align: center;
 	display: table-cell;
 	vertical-align: middle;
@@ -92,16 +92,16 @@ video, .error {
 	-webkit-transition: opacity 0.3s ease-in;
 }
 
-.error img {
+.overlay img {
 	display: block;
 	margin: 0 auto 0.5em auto;
 }
 
-.error h2 {
+.overlay h2 {
 	margin-bottom: 0.2em;
 }
 
-.error h2 + p {
+.overlay h2 + p {
 	margin-top: 0;
 }
 
