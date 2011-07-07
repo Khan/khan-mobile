@@ -105,6 +105,13 @@ video, .overlay {
 	margin-top: 0;
 }
 
+.overlay.replay {
+	background: rgba(0, 0, 0, 0.3);
+	position: absolute;
+	top: 0px;
+	left: 0px;
+}
+
 .below-video {
 	margin: 15px;
 }

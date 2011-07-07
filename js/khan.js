@@ -665,7 +665,7 @@ function hideError() {
 // Show an replay overlay to the user
 function showReplay() {
 	// Show the replay overlay
-	var player = $("video").hide()[0],
+	var player = $("video")[0],
 		details = $(".replay").show().find(".details");
 	
 	// Force the video to pause, just in case
@@ -688,8 +688,6 @@ function hideReplay() {
 		// Reset the opacity of the details
 		// (for the CSS animation)
 		.find(".details").css( "opacity", 0 );
-	
-	$("video").show();
 }
 
 // Update point display
