@@ -177,6 +177,12 @@ if ( query.sidebar !== "no" ) {
 				"&share_location=" + encodeURIComponent(JSON.stringify(location)) );
 		});
 		
+		// Retry watching a video that has errored out
+		$(".retry").bind( "vclick", function() {
+			// Force re-displaying the current video
+			setCurrentVideo( curVideoId, true );
+		});
+		
 		// Notify the app when the user hits play
 		$( "video" ).bind( "play", function() {
 			updateNativeHost( "playing=yes" );
@@ -187,7 +193,8 @@ if ( query.sidebar !== "no" ) {
 		
 		// Handle when an error occurs loading the video
 		}).bind("error", function(e) {
-			log("error " + e.target.error.code, true);
+			var error = e.target.error;
+			log("error " + (error ? error.code : ""), true);
 			
 			// Cancel any pending seeks since the video is broken
 			pendingSeek = null;
@@ -352,9 +359,9 @@ function updateNativeHost( query ) {
 }
 
 // Display a video given the specified ID
-function setCurrentVideo( id ) {
+function setCurrentVideo( id, force ) {
 	// Bail if we're already displaying it
-	if ( curVideoId === id ) {
+	if ( curVideoId === id && !force ) {
 		return;
 	}
 	
@@ -591,11 +598,17 @@ function isSeekable( seekableRanges ) {
 // Show an error message to the user
 function showError( title, msg ) {
 	// Show the error message overlay
-	var details = $(".error").show()
-		// Set the text of the error message
-		.find("h2").text( title ).end()
-		.find("p").text( msg ).end()
-		.find(".details");
+	var player = $("video")[0],
+		details = $(".error").show()
+			// Set the text of the error message
+			.find("h2").text( title ).end()
+			.find("p").text( msg ).end()
+			.find(".details");
+	
+	// Force the video to pause, just in case
+	if ( !player.paused ) {
+		player.pause();
+	}
 	
 	// You can't immediately animate an object that's just been shown.
 	// http://www.greywyvern.com/?post=337
