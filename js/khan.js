@@ -463,7 +463,7 @@ function setCurrentVideo( id, force ) {
 		
 		// Get the cached seek position, if one exists
 		// Check the offline cache as well
-		pendingSeek = storage.seek[ id ] || null;
+		pendingSeek = storage.seek[ id ] || status.last_second_watched || null;
 		
 		// Make sure the player is displayed
 		$(player).show();
