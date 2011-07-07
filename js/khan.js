@@ -275,7 +275,7 @@ if ( query.sidebar !== "no" ) {
 				subtitles.height( $(window).height() - subtitles[0].offsetTop - 14 );
 				
 				// Jump to the active subtitle
-				subtitles.scrollTo( $(".subtitles li.active")[0] );
+				subtitles.scrollTo( subtitles.find("li.active")[0] );
 			})
 			// Also update immediately
 			.resize();
@@ -565,7 +565,7 @@ function showSubtitles( data ) {
 	}
 	
 	var subtitles = $(".subtitles");
-	subtitles.height( $(window).height() - subtitles[0].offsetTop - 45 );
+	subtitles.height( $(window).height() - subtitles[0].offsetTop - 14 );
 	
 	// Only turn on the custom scrolling logic if we're on a touch device
 	if ( $.support.touch ) {
