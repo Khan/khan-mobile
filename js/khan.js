@@ -142,6 +142,9 @@ if ( query.sidebar !== "no" ) {
 		addQueryWatch( "offline", function( value ) {
 			offline = value === "yes";
 			
+			// Toggle a global offline class for tweaking style
+			$("html").toggleClass( "offline", offline );
+			
 			// Sync with the server, if we can
 			offlineSync();
 		});

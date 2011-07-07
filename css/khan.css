@@ -407,3 +407,7 @@ html.no-sidebar body {
     -moz-border-radius: 10px;
     border-radius: 10px;
 }
+
+html.offline .energy-points-badge {
+	opacity: 0.3;
+}
