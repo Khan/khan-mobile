@@ -117,6 +117,8 @@ jQuery.widget( "mobile.scrollview", jQuery.mobile.widget, {
 
 	_stopMScroll: function()
 	{
+		var wasScrolling = !!this._timerID;
+		
 		if (this._timerID)
 		{
 			this._$clip.trigger(this.options.stopEventName);
@@ -131,6 +133,8 @@ jQuery.widget( "mobile.scrollview", jQuery.mobile.widget, {
 			this._hTracker.reset();
 
 		this._hideScrollBars();
+		
+		return wasScrolling;
 	},
 
 	_handleMomentumScroll: function()
@@ -277,16 +281,20 @@ jQuery.widget( "mobile.scrollview", jQuery.mobile.widget, {
 
 	_handleDragStart: function(e, ex, ey)
 	{
+		// Only trigger a delayed click if we're not stopping a scroll
+		var wasScrolling = false;
+		
 		// Stop any scrolling of elements in our parent hierarcy.
-		$.each(this._getScrollHierarchy(),function(i,sv){ sv._stopMScroll(); });
-		this._stopMScroll();
+		$.each(this._getScrollHierarchy(),function(i,sv){ wasScrolling = sv._stopMScroll() || wasScrolling; });
+		wasScrolling = this._stopMScroll() || wasScrolling;
 
 		var c = this._$clip;
 		var v = this._$view;
 
 		if (this.options.delayedClickEnabled) {
-			this._$clickEle = $(e.target).closest(this.options.delayedClickSelector);
+			this._$clickEle = $(wasScrolling ? [] : e.target).closest(this.options.delayedClickSelector);
 		}
+		
 		this._lastX = ex;
 		this._lastY = ey;
 		this._doSnapBackX = false;
