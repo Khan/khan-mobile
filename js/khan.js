@@ -450,8 +450,9 @@ function setCurrentVideo( id, force ) {
 		// Make sure the player is displayed
 		$(player).show();
 		
-		// Hide any displayed error messages
+		// Hide any displayed error messages and replay overlay
 		hideError();
+		hideReplay();
 		
 		// Show a loading message
 		$(".loading").show();
