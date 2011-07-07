@@ -184,8 +184,8 @@ html.no-sidebar .below-video .title {
 	text-overflow: ellipsis;
 	max-width: 350px;
 	overflow: hidden;
-	font-size: .8em;
-	padding-top: .4em;
+	font-size: 1em;
+	padding-top: .2em;
 }
 html.no-sidebar .below-video h1 {
 	display: inline;
