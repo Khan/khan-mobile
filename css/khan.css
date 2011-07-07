@@ -126,7 +126,7 @@ html.no-sidebar .below-video .subtitles {
 html.no-sidebar .below-video .subtitles li {
 	list-style: none;
 	padding: 3px;
-	border: 1px solid auto;
+	border: 1px solid transparent;
 	overflow: hidden;
 }
 
