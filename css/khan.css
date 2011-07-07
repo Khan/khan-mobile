@@ -170,6 +170,8 @@ html.no-sidebar .below-video .subtitles-loading, html.no-sidebar .below-video .s
 
 html.no-sidebar .below-video .title-and-points {
     display: block;
+    position: relative;
+    top: -6px;
 }
 
 html.no-sidebar .below-video .title-and-points .energy-points-badge {
@@ -180,8 +182,10 @@ html.no-sidebar .below-video .title-and-points .energy-points-badge {
 html.no-sidebar .below-video .title {
     float: left;
 	text-overflow: ellipsis;
-	max-width: 270px;
+	max-width: 350px;
 	overflow: hidden;
+	font-size: .8em;
+	padding-top: .4em;
 }
 html.no-sidebar .below-video h1 {
 	display: inline;
@@ -346,6 +350,7 @@ html.no-sidebar .below-video h1 {
 
 .below-video .ui-btn-inner {
 	font-size: .8em;
+	font-weight: bold;
 }
 
 /* jQuery Mobile Split View Customizations
@@ -369,7 +374,7 @@ html.no-sidebar.ui-mobile .ui-body-k {
 /* Style customizations for no-sidebar
 ------------------------------------------------------------------------------------------------------------*/
 
-html.no-sidebar .ui-body-k {
+html.no-sidebar .ui-body-k, html.no-sidebar .ui-body-c {
 	background-image: none;
 	background-color: #fefffc; /* Solid bgcolor so we can match background in hosting view, so rotations don't look crappy */
 }
@@ -408,11 +413,11 @@ html.no-sidebar body {
 .video-button-group { display: inline; }
 
 .energy-points-badge {
-    background: #0075b1;
+    background: #005987;
     display: inline-block;
     line-height: 1.6em;
     text-align: center;
-    padding: .3em .7em .4em;
+    padding: .4em .8em .5em;
     margin: 0 0 0 .8em;
     color: white;
     font-size: .8em;
@@ -420,7 +425,7 @@ html.no-sidebar body {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     text-shadow: none;
     position: relative;
-    top: -.1em;
+    top: -.2em;
 }
 
 html.offline .energy-points-badge {
