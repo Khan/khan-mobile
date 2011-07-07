@@ -156,6 +156,18 @@ html.no-sidebar .below-video .subtitles li a {
 	display: block;
 }
 
+html.no-sidebar .below-video .subtitles-loading, html.no-sidebar .below-video .subtitles-error {
+	display: none;
+	margin: 0 auto;
+	width: 300px;
+	background: #AAA;
+	border-radius: 5px;
+	padding: 5px;
+	color: #FFF;
+	text-align: center;
+	-webkit-transition: opacity 0.3s ease-in;
+}
+
 html.no-sidebar .below-video .title-and-points {
     display: block;
 }

@@ -425,12 +425,25 @@ function setCurrentVideo( id, force ) {
 	
 	// Start by hiding the subtitles while we're loading
 	$(".subtitles").hide();
+	$(".subtitles-error").hide();
+	
+	// Show the loading indicator
+	var loading = $(".subtitles-loading").css("opacity", 0).show();
+	
+	// Fade in the loading indicator
+	setTimeout(function() {
+		loading.css("opacity", 1);
+	}, 1);
 	
 	// Load in the subtitle data for the video
 	$.ajax({
-	  url: "kasubtitles://" + id + "/",
-	  dataType: "json",
-	  success: showSubtitles
+		url: "kasubtitles://" + id + "/",
+		dataType: "json",
+		success: showSubtitles,
+		error: function() {
+			// Pass in no arguments to trigger an error
+			showSubtitles();
+		}
 	});
 	
 	// Hook in video tracking
@@ -450,7 +463,7 @@ function setCurrentVideo( id, force ) {
 		
 		// Get the cached seek position, if one exists
 		// Check the offline cache as well
-		pendingSeek = storage.seek[ id ] || null;
+		pendingSeek = storage.seek[ id ] || status.last_second_watched || null;
 		
 		// Make sure the player is displayed
 		$(player).show();
@@ -495,8 +508,23 @@ function showSubtitles( data ) {
 	// Stop updating the old subtitle updater
 	clearInterval( subInterval );
 	
+	// Hide the subtitle loading message
+	$(".subtitles-loading").hide();
+	
 	// If they don't exist, back out
 	if ( !data ) {
+		var error = $(".subtitles-error").css( "opacity", 0 ).show();
+
+		// Fade in the error message
+		setTimeout(function() {
+			error.css( "opacity", 1 );
+		}, 1);
+		
+		// Fade it out at the end
+		setTimeout(function() {
+			error.css( "opacity", 0 );
+		}, 3000);
+		
 		return;
 	}
 	
