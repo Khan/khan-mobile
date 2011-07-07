@@ -326,6 +326,7 @@ html.no-sidebar .below-video h1 {
 /* Fix button padding with respect to icons. Default doesn't center properly. */
 .ui-btn-inner {
 	padding: 6px 12px 7px; /* Down from 25px which is pretty big */
+	font-size: .8em;
 }
 
 .ui-btn-icon-left .ui-btn-inner {
