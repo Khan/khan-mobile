@@ -201,6 +201,8 @@ html.no-sidebar .below-video h1 {
 	float: right;
 	margin-top: -0.5em;
 	margin-right: -5px;
+	position: relative;
+	z-index: 2;
 }
 
 .log {
