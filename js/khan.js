@@ -161,7 +161,7 @@ if ( query.sidebar !== "no" ) {
 			$(this).addClass( "ui-disabled" );
 			
 			// Tell the app to start downloading the file
-			updateNativeHost( "download=" + curVideoId );
+			updateNativeHost( {download: curVideoId} );
 		});
 		
 		// Watch for the Share button being clicked
@@ -174,8 +174,7 @@ if ( query.sidebar !== "no" ) {
 			
 			// Notify the app about what video should be shared and
 			// where to position the overlay
-			updateNativeHost( "share=" + curVideoId +
-				"&share_location=" + encodeURIComponent(JSON.stringify(location)) );
+			updateNativeHost( {share: curVideoId, share_location: JSON.stringify(location)} );
 		});
 		
 		// Retry watching a video that has errored out
@@ -199,7 +198,7 @@ if ( query.sidebar !== "no" ) {
 			hideReplay();
 			
 			// Notify the app that we're switching to another video
-			updateNativeHost( "video=" + nextVideoId );
+			updateNativeHost( {video: nextVideoId} );
 			
 			// Switch to the next video
 			setCurrentVideo( nextVideoId );
@@ -207,11 +206,11 @@ if ( query.sidebar !== "no" ) {
 		
 		// Notify the app when the user hits play
 		$( "video" ).bind( "play", function() {
-			updateNativeHost( "playing=yes" );
+			updateNativeHost( {playing: "yes"} );
 		
 		// Notify the app when the user hits pause
 		}).bind( "pause", function() {
-			updateNativeHost( "playing=no" );
+			updateNativeHost( {playing: "no"} );
 		
 		// Watch for when the video ends, to show the replay dialog
 		}).bind( "ended", function() {
@@ -234,8 +233,8 @@ if ( query.sidebar !== "no" ) {
 			// Show an error message
 			showError( "Network Error", "Try downloading videos for offline viewing." );
 		
-		// Log all the video events
-		}).bind( "loadstart progress suspend abort emptied stalled loadedmetadata loadeddata canplay canplaythrough playing waiting seeking seeked ended durationchange play pause ratechange" , function(ev){ 
+		// Log all the video events, except progress
+		}).bind( "loadstart suspend abort emptied stalled loadedmetadata loadeddata canplay canplaythrough playing waiting seeking seeked ended durationchange play pause ratechange" , function(ev){ 
 			log(ev.type, true);
 		
 		// Try to jump to a seeked position in a video
@@ -383,9 +382,29 @@ function loadPlaylists( result ) {
 }
 
 // Notify the app that something has occurred
-function updateNativeHost( query ) {
+var pendingUpdates = [];
+function updateNativeHost( update ) {
 	if ( window.location.protocol.indexOf( "http" ) !== 0 ) {
-		window.location = "khan://update?" + query;
+		// If you set window.location more than once in the same event loop,
+		// only the last one is actually processed by UIWebView. Manage a 
+		// queue to work around this problem.
+		
+		pendingUpdates.push( update );
+		// If this is the only update in the queue, schedule a send
+		if ( pendingUpdates.length == 1 ) {
+			setTimeout( sendPendingUpdate, 1 );
+		}
+	}
+}
+
+function sendPendingUpdate() {
+	if ( pendingUpdates.length == 0 ) return;
+	
+	var update = pendingUpdates.shift(); // FIFO
+	window.location = "khan://update?" + $.param(update);
+	
+	if ( pendingUpdates.length ) {
+		setTimeout( sendPendingUpdate, 1 );
 	}
 }
 
@@ -769,7 +788,7 @@ function log( msg, states ) {
 		msg += " (readyState " + video.readyState + ", networkState " + video.networkState + ", currentTime " + video.currentTime + ")";
 	}
 	
-	$(".log").prepend("<li>" + msg + "</li>");
+	updateNativeHost({log: msg});
 }
 
 function pad( num ) {

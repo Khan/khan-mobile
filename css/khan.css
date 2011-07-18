@@ -205,17 +205,6 @@ html.no-sidebar .below-video h1 {
 	z-index: 2;
 }
 
-.log {
-	position: absolute;
-	bottom: 0px;
-	display: block;
-	left: 0;
-	right: 0;
-	height: 120px;
-	overflow: scroll;
-	display: none;
-}
-
 /* JQuery Mobile Khan Skin
 -----------------------------------------------------------------------------------------------------------*/
 

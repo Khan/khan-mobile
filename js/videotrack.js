@@ -93,9 +93,11 @@ VideoStats.prototype = {
 	playerStateChange: function(state) {
 		if (state == -2) { // playing normally
 			var percent = this.getPercentWatched();
+			log("playerStateChange percent is " + percent + ", last saved is " + this.dPercentLastSaved);
 			if (percent > (this.dPercentLastSaved + this.dPercentGranularity))
 			{
-				// Another 10% has been watched
+				// Another chunk has been watched
+				log("playerStateChange, watched enough, saving");
 				this.save();
 			}
 		} else if (state == 0) { // ended
@@ -111,11 +113,14 @@ VideoStats.prototype = {
 	},
 
 	save: function() {
+		log("save:0");
 		if (this.fSaving) return;
+		log("save:1");
 
 		this.fSaving = true;
 		var percent = this.getPercentWatched();
 		var dtSinceSaveBeforeError = this.dtSinceSave;
+		log("save:2, percent = " + percent);
 
 		var self = this,
 			id = this.curVideoId,
@@ -127,6 +132,7 @@ VideoStats.prototype = {
 		saveStorage();
 		
 		if ( !offline ) {
+			log("save:3");
 			saveWatch({
 				id: id,
 				lastSecondWatched: lastSecondWatched,
@@ -146,12 +152,14 @@ VideoStats.prototype = {
 		
 		// Make sure that we resume trying to save
 		} else {
+			log("save:4");
 			this.fSaving = false;
 			this.dtSinceSave = dtSinceSaveBeforeError;
 		}
 	},
 
 	finishSave: function(dict_json, percent) {
+		log("finishSave:0");
 		this.fSaving = false;
 		this.dPercentLastSaved = percent;
 		
@@ -160,9 +168,11 @@ VideoStats.prototype = {
 		}
 		
 		if ( typeof updateNativeHost === "function" && dict_json.action_results ) {
-			updateNativeHost( "action_results=" + encodeURIComponent(JSON.stringify( dict_json.action_results )) );
+			log("finishSave: updating native host");
+			updateNativeHost( {action_results: JSON.stringify( dict_json.action_results )} );
+			log("finishSave: updated native host");
 		}
-
+		
 		// XXX: From the old way of tracking points - not relevant any more?
 		if (dict_json.video_points && dict_json.user_points_html)
 		{
@@ -179,7 +189,9 @@ VideoStats.prototype = {
 			videoStatus[ this.curVideoId ] = {}
 		}
 		videoStatus[ this.curVideoId ].user_video = dict_json.action_results.user_video;
+		log("finishSave:1");
 		updatePoints();
+		log("finishSave:2");
 	},
 
 	prepareAlternativePlayer: function() {
@@ -282,6 +294,7 @@ function saveWatch( opt ) {
 		},
 		success: function( data ) {
 			// Synced with server, wipe out sync queue
+			log("save success");
 			clearSync( opt.id );
 			
 			if ( opt.success ) {
