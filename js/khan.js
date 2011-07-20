@@ -734,13 +734,15 @@ function hideReplay() {
 // Update point display
 function updatePoints() {
 	var curVideoStatus = videoStatus[ curVideoId ];
+	log("updatePoints, looked up video status for " + curVideoId);
 	if ( oauth.token ) {
 		var points = 0;
 		if ( curVideoStatus && curVideoStatus.user_video && curVideoStatus.user_video.points ) {
 			points = curVideoStatus.user_video.points;
 		}
+		log("updatePoints, looked up points earned: " + points);
 		$(".energy-points-badge").show().text( points + " of 750" );
-	
+		
 	} else {
 		$(".energy-points-badge").hide();
 	}
