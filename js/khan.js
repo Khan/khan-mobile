@@ -535,7 +535,8 @@ function showSubtitles( data ) {
 	$(".subtitles-loading").hide();
 	
 	// If they don't exist, back out
-	if ( !data ) {
+	// Or if we have a malformed subtitle start time
+	if ( !data || data[ data.length - 1 ].start_time < 0 ) {
 		var error = $(".subtitles-error").css( "opacity", 0 ).show();
 
 		// Fade in the error message
