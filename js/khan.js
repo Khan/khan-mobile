@@ -12,6 +12,7 @@ var data,
 	nextVideoId,
 	subInterval,
 	doJump = true,
+	scrollResume,
 	videoStats,
 	offline = false,
 	userId,
@@ -561,6 +562,10 @@ function showSubtitles( data ) {
 	subtitles.find("a").bind("click", function( e ) {
 		// Stop from visiting the link
 		e.preventDefault();
+
+		// Resume scrolling from this position
+		doJump = true;
+		clearInterval( scrollResume );
 		
 		// Grab the time to jump to from the subtitle
 		pendingSeek = parseFloat( $(e.target).parent().data( "time" ) );
@@ -606,13 +611,15 @@ function showSubtitles( data ) {
 	
 	// Jump to a specific subtitle (either via click or automatically)
 	function subtitleJump( nextLI ) {
-		if ( doJump && nextLI !== curLI ) {
+		if ( nextLI !== curLI ) {
 			$(nextLI).addClass("active");
 			$(curLI).removeClass("active");
 			curLI = nextLI;
 
 			// Adjust the viewport to animate to the new position
-			subtitles.scrollTo( curLI );
+			if ( doJump ) {
+				subtitles.scrollTo( curLI );
+			}
 		}
 	}
 	
@@ -631,10 +638,15 @@ function showSubtitles( data ) {
 			subtitles
 				.scrollview({ direction: "y" })
 				.bind( "scrollstart", function() {
+					clearInterval( scrollResume );
+
 					doJump = false;
 				})
 				.bind( "scrollstop", function() {
-					doJump = true;
+					// Wait 30 seconds before resuming auto-scrolling
+					scrollResume = setTimeout(function() {
+						doJump = true;
+					}, 30000);
 				});
 		}
 	}
