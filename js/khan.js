@@ -335,6 +335,8 @@ function updateQuery( q ) {
 			queryWatch[ name ]( query[ name ] );
 		}
 	}
+    
+	log( "updateQuery: " + q );
 	
 	return true;
 }
@@ -519,6 +521,8 @@ function setCurrentVideo( id, force ) {
 }
 
 function showSubtitles( data ) {
+	log( "Subtitles: " + JSON.stringify( data ) );
+
 	// Show or hide the interactive subtitles
 	var subtitles = $(".subtitles").toggle( !!data ),
 		player = $("video")[0],
@@ -790,7 +794,10 @@ function log( msg, states ) {
 		msg += " (readyState " + video.readyState + ", networkState " + video.networkState + ", currentTime " + video.currentTime + ")";
 	}
 	
-	updateNativeHost({log: msg});
+	// Delay display of log to prevent UI from breaking
+	setTimeout(function() {
+		updateNativeHost({log: msg});
+	}, 1);
 }
 
 function pad( num ) {
