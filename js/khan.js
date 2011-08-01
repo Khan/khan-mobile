@@ -337,6 +337,8 @@ function updateQuery( q ) {
 			queryWatch[ name ]( query[ name ] );
 		}
 	}
+    
+	log( "updateQuery: " + q );
 	
 	return true;
 }
@@ -521,6 +523,8 @@ function setCurrentVideo( id, force ) {
 }
 
 function showSubtitles( data ) {
+	log( "Subtitles: " + JSON.stringify( data ) );
+
 	// Show or hide the interactive subtitles
 	var subtitles = $(".subtitles").toggle( !!data ),
 		player = $("video")[0],
@@ -533,7 +537,8 @@ function showSubtitles( data ) {
 	$(".subtitles-loading").hide();
 	
 	// If they don't exist, back out
-	if ( !data ) {
+	// Or if we have a malformed subtitle start time
+	if ( !data || data[ data.length - 1 ].start_time < 0 ) {
 		var error = $(".subtitles-error").css( "opacity", 0 ).show();
 
 		// Fade in the error message
@@ -795,7 +800,10 @@ function log( msg, states ) {
 		msg += " (readyState " + video.readyState + ", networkState " + video.networkState + ", currentTime " + video.currentTime + ")";
 	}
 	
-	updateNativeHost({log: msg});
+	// Delay display of log to prevent UI from breaking
+	setTimeout(function() {
+		updateNativeHost({log: msg});
+	}, 1);
 }
 
 function pad( num ) {
