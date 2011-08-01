@@ -121,13 +121,37 @@ video, .overlay {
 	display: none;
 }
 
+html.no-sidebar .below-video .subtitles-area {
+    position: relative;
+}
+.subtitles-fade.top, .subtitles-fade.bottom {
+    background: transparent url(../img/caption-fade.png) repeat-x;
+    height: 20px;
+    position: absolute;
+    left: 0;
+    right: 15px;
+    top: -1px;
+    z-index: 10;
+}
+.subtitles-fade.bottom {
+    top: 240px;
+    -webkit-transform: rotate(180deg);
+}
+html.no-sidebar .below-video .subtitles .subtitles-area {
+    padding: 8px;
+}
 html.no-sidebar .below-video .subtitles {
-	width: 100%;
 	height: 300px;
-	padding: 8px;
+	padding: 0;
 	overflow-y: auto;
 	display: none;
 	position: relative;
+}
+html.no-sidebar .below-video .subtitles li:first-child {
+    margin-top: 15px;
+}
+html.no-sidebar .below-video .subtitles li:last-child {
+    margin-bottom: 18px;
 }
 
 html.no-sidebar .below-video .subtitles li {
@@ -166,6 +190,9 @@ html.no-sidebar .below-video .subtitles-loading, html.no-sidebar .below-video .s
 	color: #FFF;
 	text-align: center;
 	-webkit-transition: opacity 0.3s ease-in;
+	text-shadow: none;
+	z-index: 11;
+	position: relative;
 }
 
 html.no-sidebar .below-video .title-and-points {
