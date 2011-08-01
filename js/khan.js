@@ -527,7 +527,8 @@ function showSubtitles( data ) {
 	// Show or hide the interactive subtitles
 	var subtitles = $(".subtitles").toggle( !!data ),
 		player = $("video")[0],
-		isScroll = subtitles.hasClass("ui-scrollview-clip");
+		isScroll = subtitles.hasClass("ui-scrollview-clip"),
+		subContainer = (isScroll ? subtitles.children("div") : subtitles);
 	
 	// Stop updating the old subtitle updater
 	clearInterval( subInterval );
@@ -537,7 +538,7 @@ function showSubtitles( data ) {
 	
 	// If they don't exist, back out
 	// Or if we have a malformed subtitle start time
-	if ( !data || data[ data.length - 1 ].start_time < 0 ) {
+	if ( !data || !data.length || data[ data.length - 1 ].start_time < 0 ) {
 		var error = $(".subtitles-error").css( "opacity", 0 ).show();
 
 		// Fade in the error message
@@ -549,12 +550,15 @@ function showSubtitles( data ) {
 		setTimeout(function() {
 			error.css( "opacity", 0 );
 		}, 3000);
+
+		// Empty out the old subtitles
+		subContainer.empty();
 		
 		return;
 	}
-	
-	(isScroll ? subtitles.children("div") : subtitles).html(
-		tmpl( "subtitles-tmpl", { subtitles: data } ) );
+
+	// Inject the subtitles
+	subContainer.html( tmpl( "subtitles-tmpl", { subtitles: data } ) );
 	
 	// Watch for clicks on subtitles
 	// We need to bind directly to the list items so that
