@@ -130,11 +130,13 @@ html.no-sidebar .below-video .subtitles-area {
     position: absolute;
     left: 0;
     right: 15px;
-    top: -1px;
     z-index: 10;
 }
+.subtitles-fade.top {
+    top: -1px;
+}
 .subtitles-fade.bottom {
-    top: 240px;
+    bottom: -1px;
     -webkit-transform: rotate(180deg);
 }
 html.no-sidebar .below-video .subtitles .subtitles-area {

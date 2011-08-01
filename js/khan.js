@@ -271,10 +271,8 @@ if ( query.sidebar !== "no" ) {
 				
 				// Adjust the height of the subtitle viewport
 				var subtitles = $(".subtitles");
-				subtitles.height( $(window).height() - subtitles[0].offsetTop - 14 );
-				// Position the div that fades the subtitles out when scrolling 
-				var subtitlesBottomFade = $(".subtitles-fade.bottom");
-				subtitlesBottomFade.css("top", $(window).height() - subtitles.offset().top - subtitlesBottomFade.height() );
+				subtitles.height( $(window).height() - subtitles.offset().top - 14 );
+
 				// Jump to the active subtitle
 				subtitles.scrollTo( subtitles.find("li.active")[0] );
 			})
@@ -618,12 +616,9 @@ function showSubtitles( data ) {
 		}
 	}
 	
-	var subtitles = $(".subtitles");
-	subtitles.height( $(window).height() - subtitles[0].offsetTop - 14 );
-	// Position the div that fades the subtitles out when scrolling 
-	var subtitlesBottomFade = $(".subtitles-fade.bottom");
-	subtitlesBottomFade.css("top", $(window).height() - subtitles.offset().top - subtitlesBottomFade.height() );
-	
+	var subtitles = $(".subtitles")
+	subtitles.height( $(window).height() - subtitles.offset().top - 14 );
+
 	// Only turn on the custom scrolling logic if we're on a touch device
 	if ( $.support.touch ) {
 		// Reset to the starting scroll position
