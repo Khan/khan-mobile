@@ -533,7 +533,7 @@ function showSubtitles( data ) {
 	log( "Subtitles: " + JSON.stringify( data ) );
 
 	// Show or hide the interactive subtitles
-	var subtitles = $(".subtitles").toggle( !!data ),
+	var subtitles = $(".subtitles").toggle( !!(data && data.length) ),
 		player = $("video")[0],
 		isScroll = subtitles.hasClass("ui-scrollview-clip"),
 		subContainer = (isScroll ? subtitles.children("div") : subtitles);
@@ -559,9 +559,6 @@ function showSubtitles( data ) {
 			error.css( "opacity", 0 );
 		}, 3000);
 
-		// Empty out the old subtitles
-		subContainer.empty();
-		
 		return;
 	}
 
