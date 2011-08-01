@@ -189,7 +189,7 @@ if ( query.sidebar !== "no" ) {
 			hideReplay();
 			
 			// Start the video over at the beginning
-			var video = $("video")[0];
+			var video = $("video").show()[0];
 			video.currentTime = 0;
 			video.play();
 		});
@@ -215,7 +215,15 @@ if ( query.sidebar !== "no" ) {
 		
 		// Watch for when the video ends, to show the replay dialog
 		}).bind( "ended", function() {
-			showReplay();
+			// Hide the video gracefully
+			var video = $("video").css( "opacity", 0 );
+
+			// Show the replay button when animation is complete
+			setTimeout(function() {
+				video.hide().css( "opacity", 1 );
+
+				showReplay();
+			}, 2000 );
 		
 		// Handle when an error occurs loading the video
 		}).bind("error", function(e) {
