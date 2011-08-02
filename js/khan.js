@@ -564,6 +564,11 @@ function showSubtitles( data ) {
 
 	// Inject the subtitles
 	subContainer.html( tmpl( "subtitles-tmpl", { subtitles: data } ) );
+
+	// Make it easier to add some themeing to the subtitle rows
+	subContainer.find("li")
+		.first().addClass("first").end()
+		.last().addClass("last");
 	
 	// Watch for clicks on subtitles
 	// We need to bind directly to the list items so that

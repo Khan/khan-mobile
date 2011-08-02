@@ -163,10 +163,11 @@ html.no-sidebar .below-video .subtitles {
 	display: none;
 	position: relative;
 }
-html.no-sidebar .below-video .subtitles li:first-child {
+
+html.no-sidebar .below-video .subtitles li.first {
     margin-top: 15px;
 }
-html.no-sidebar .below-video .subtitles li:last-child {
+html.no-sidebar .below-video .subtitles li.last {
     margin-bottom: 18px;
 }
 
