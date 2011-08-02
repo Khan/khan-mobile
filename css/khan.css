@@ -349,7 +349,7 @@ html.no-sidebar .below-video h1 {
 
 /* Fix button padding with respect to icons. Default doesn't center properly. */
 .ui-btn-inner {
-	padding: 6px 12px 7px; /* Down from 25px which is pretty big */
+	padding: 5px 12px 6px; /* Down from 25px which is pretty big */
 }
 
 .ui-btn-icon-left .ui-btn-inner {
@@ -437,7 +437,7 @@ html.no-sidebar body {
     display: inline-block;
     line-height: 1.6em;
     text-align: center;
-    padding: .4em .8em .5em;
+    padding: .4em .8em .4em;
     margin: 0 0 0 .8em;
     color: white;
     font-size: .8em;
@@ -445,7 +445,7 @@ html.no-sidebar body {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     text-shadow: none;
     position: relative;
-    top: -.2em;
+    top: -.1em;
 }
 
 html.offline .energy-points-badge {
