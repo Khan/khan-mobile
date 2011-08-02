@@ -76,12 +76,21 @@ video, .overlay {
 	background-color: #000;
 	padding: 0;
 	margin: 0;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+}
+
+video {
+	-webkit-transition: opacity 2.0s ease-in;
+	z-index: 20;
 }
 
 .overlay {
 	color: #ddd;
 	text-shadow: none;
 	display: table; /* Vertically center the h2 */
+	z-index: 30;
 }
 
 .overlay .details {
@@ -107,6 +116,11 @@ video, .overlay {
 
 .overlay.replay {
 	background: rgba(0, 0, 0, 0.3);
+}
+
+.overlay.underlay {
+	z-index: 10;
+	background: #000
 	position: absolute;
 	top: 0px;
 	left: 0px;
@@ -149,10 +163,11 @@ html.no-sidebar .below-video .subtitles {
 	display: none;
 	position: relative;
 }
-html.no-sidebar .below-video .subtitles li:first-child {
+
+html.no-sidebar .below-video .subtitles li.first {
     margin-top: 15px;
 }
-html.no-sidebar .below-video .subtitles li:last-child {
+html.no-sidebar .below-video .subtitles li.last {
     margin-bottom: 18px;
 }
 

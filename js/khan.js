@@ -12,6 +12,7 @@ var data,
 	nextVideoId,
 	subInterval,
 	doJump = true,
+	scrollResume,
 	videoStats,
 	offline = false,
 	userId,
@@ -188,7 +189,7 @@ if ( query.sidebar !== "no" ) {
 			hideReplay();
 			
 			// Start the video over at the beginning
-			var video = $("video")[0];
+			var video = $("video").show()[0];
 			video.currentTime = 0;
 			video.play();
 		});
@@ -214,7 +215,15 @@ if ( query.sidebar !== "no" ) {
 		
 		// Watch for when the video ends, to show the replay dialog
 		}).bind( "ended", function() {
-			showReplay();
+			// Hide the video gracefully
+			var video = $("video").css( "opacity", 0 );
+
+			// Show the replay button when animation is complete
+			setTimeout(function() {
+				video.hide().css( "opacity", 1 );
+
+				showReplay();
+			}, 2000 );
 		
 		// Handle when an error occurs loading the video
 		}).bind("error", function(e) {
@@ -524,9 +533,10 @@ function showSubtitles( data ) {
 	log( "Subtitles: " + JSON.stringify( data ) );
 
 	// Show or hide the interactive subtitles
-	var subtitles = $(".subtitles").toggle( !!data ),
+	var subtitles = $(".subtitles").toggle( !!(data && data.length) ),
 		player = $("video")[0],
-		isScroll = subtitles.hasClass("ui-scrollview-clip");
+		isScroll = subtitles.hasClass("ui-scrollview-clip"),
+		subContainer = (isScroll ? subtitles.children("div") : subtitles);
 	
 	// Stop updating the old subtitle updater
 	clearInterval( subInterval );
@@ -536,7 +546,7 @@ function showSubtitles( data ) {
 	
 	// If they don't exist, back out
 	// Or if we have a malformed subtitle start time
-	if ( !data || data[ data.length - 1 ].start_time < 0 ) {
+	if ( !data || !data.length || data[ data.length - 1 ].start_time < 0 ) {
 		var error = $(".subtitles-error").css( "opacity", 0 ).show();
 
 		// Fade in the error message
@@ -548,12 +558,17 @@ function showSubtitles( data ) {
 		setTimeout(function() {
 			error.css( "opacity", 0 );
 		}, 3000);
-		
+
 		return;
 	}
-	
-	(isScroll ? subtitles.children("div") : subtitles).html(
-		tmpl( "subtitles-tmpl", { subtitles: data } ) );
+
+	// Inject the subtitles
+	subContainer.html( tmpl( "subtitles-tmpl", { subtitles: data } ) );
+
+	// Make it easier to add some themeing to the subtitle rows
+	subContainer.find("li")
+		.first().addClass("first").end()
+		.last().addClass("last");
 	
 	// Watch for clicks on subtitles
 	// We need to bind directly to the list items so that
@@ -561,6 +576,10 @@ function showSubtitles( data ) {
 	subtitles.find("a").bind("click", function( e ) {
 		// Stop from visiting the link
 		e.preventDefault();
+
+		// Resume scrolling from this position
+		doJump = true;
+		clearInterval( scrollResume );
 		
 		// Grab the time to jump to from the subtitle
 		pendingSeek = parseFloat( $(e.target).parent().data( "time" ) );
@@ -606,13 +625,15 @@ function showSubtitles( data ) {
 	
 	// Jump to a specific subtitle (either via click or automatically)
 	function subtitleJump( nextLI ) {
-		if ( doJump && nextLI !== curLI ) {
+		if ( nextLI !== curLI ) {
 			$(nextLI).addClass("active");
 			$(curLI).removeClass("active");
 			curLI = nextLI;
 
 			// Adjust the viewport to animate to the new position
-			subtitles.scrollTo( curLI );
+			if ( doJump ) {
+				subtitles.scrollTo( curLI );
+			}
 		}
 	}
 	
@@ -631,10 +652,15 @@ function showSubtitles( data ) {
 			subtitles
 				.scrollview({ direction: "y" })
 				.bind( "scrollstart", function() {
+					clearInterval( scrollResume );
+
 					doJump = false;
 				})
 				.bind( "scrollstop", function() {
-					doJump = true;
+					// Wait 30 seconds before resuming auto-scrolling
+					scrollResume = setTimeout(function() {
+						doJump = true;
+					}, 30000);
 				});
 		}
 	}
