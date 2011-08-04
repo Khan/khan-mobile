@@ -284,6 +284,9 @@ if ( query.sidebar !== "no" ) {
 
 				// Jump to the active subtitle
 				subtitles.scrollTo( subtitles.find("li.active")[0] );
+				
+				// Show more of the video description if we have enough window height available
+				$(".video-description").css("-webkit-line-clamp", $(window).height() > 800 ? "4" : "2" );
 			})
 			// Also update immediately
 			.resize();
