@@ -134,7 +134,15 @@ video {
 	/* Hide h1 below video, unless it's inside .no-sidebar */
 	display: none;
 }
-
+.below-video p.video-description {
+    margin: 1em 0;
+    overflow: hidden;
+    text-overflow: ellipsis; 
+    /* Only show two lines of the description (in webkit) and elide it */
+    display: -webkit-box; 
+    -webkit-line-clamp: 2; 
+    -webkit-box-orient: vertical;
+}
 html.no-sidebar .below-video .subtitles-area {
     position: relative;
 }

@@ -523,7 +523,7 @@ function setCurrentVideo( id, force ) {
 	// Display information about the video
 	$(".below-video")
 		.find("h1").text( video[ "title" ] ).end()
-		.find("p").text( video[ "description" ] );
+		.find(".video-description").text( video[ "description" ] );
 	
 	// Update the download indicator
 	updateStatus();
@@ -687,7 +687,7 @@ function updateStatus() {
 		.find(".ui-btn-text").text( downloadStatus ?
 				downloadStatus.offline_url ?
 					"Downloaded" :
-					"Downloading... (" + Math.round(downloadStatus.download_progress * 100) + "%)" :
+					"(" + Math.round(downloadStatus.download_progress * 100) + "%)" :
 				"Download" );
 }
 
