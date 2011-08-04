@@ -283,7 +283,7 @@ if ( query.sidebar !== "no" ) {
 				subtitles.height( $(window).height() - subtitles.offset().top - 14 );
 
 				// Jump to the active subtitle
-				subtitles.scrollTo( subtitles.find("li.active")[0] );
+				subtitles.scrollTo( subtitles.find(".subtitle.active")[0] );
 			})
 			// Also update immediately
 			.resize();
@@ -543,7 +543,7 @@ function showSubtitles( data ) {
 	
 	// Hide the subtitle loading message
 	$(".subtitles-loading").hide();
-	
+
 	// If they don't exist, back out
 	// Or if we have a malformed subtitle start time
 	if ( !data || !data.length || data[ data.length - 1 ].start_time < 0 ) {
@@ -566,7 +566,7 @@ function showSubtitles( data ) {
 	subContainer.html( tmpl( "subtitles-tmpl", { subtitles: data } ) );
 
 	// Make it easier to add some themeing to the subtitle rows
-	subContainer.find("li")
+	subContainer.find(".subtitle")
 		.first().addClass("first").end()
 		.last().addClass("last");
 	
@@ -596,7 +596,7 @@ function showSubtitles( data ) {
 	});
 	
 	// Get the subtitles and hilite the first one
-	var li = subtitles.find("li"),
+	var li = subtitles.find(".subtitle"),
 		curLI = li.eq(0).addClass("active")[0];
 	
 	// Continually update the active subtitle position

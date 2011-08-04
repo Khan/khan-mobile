@@ -153,9 +153,6 @@ html.no-sidebar .below-video .subtitles-area {
     bottom: -1px;
     -webkit-transform: rotate(180deg);
 }
-html.no-sidebar .below-video .subtitles .subtitles-area {
-    padding: 8px;
-}
 html.no-sidebar .below-video .subtitles {
 	height: 300px;
 	padding: 0;
@@ -164,34 +161,34 @@ html.no-sidebar .below-video .subtitles {
 	position: relative;
 }
 
-html.no-sidebar .below-video .subtitles li.first {
+html.no-sidebar .below-video .subtitles .subtitle.first {
     margin-top: 15px;
 }
-html.no-sidebar .below-video .subtitles li.last {
+html.no-sidebar .below-video .subtitles .subtitle.last {
     margin-bottom: 18px;
 }
 
-html.no-sidebar .below-video .subtitles li {
+html.no-sidebar .below-video .subtitles .subtitle {
 	list-style: none;
 	padding: 3px;
 	border: 1px solid transparent;
 	overflow: hidden;
 }
 
-html.no-sidebar .below-video .subtitles li.active {
+html.no-sidebar .below-video .subtitles .subtitle.active {
 	background: #EEE;
 	border: 1px solid #CCC;
 	border-radius: 5px;
 }
 
-html.no-sidebar .below-video .subtitles li span.time {
+html.no-sidebar .below-video .subtitles .subtitle span.time {
 	color: #777;
 	margin-right: 10px;
 	display: block;
 	float: left;
 }
 
-html.no-sidebar .below-video .subtitles li a {
+html.no-sidebar .below-video .subtitles .subtitle a {
 	color: #000;
 	text-decoration: none;
 	display: block;
