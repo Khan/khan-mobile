@@ -44,22 +44,29 @@ VideoStats.prototype = {
 		// Listen to state changes in player to detect final end of video
 		this.listenToPlayerStateChange();
 		
-		// If the player isn't ready yet or if it is replaced in the future,
-		// listen to the state changes once it is ready/replaced.
-		$(this).bind("playerready", function() {
-			this.listenToPlayerStateChange();
-		});
-
 		if (!this.fIntervalStarted)
 		{
+			// If the player isn't ready yet or if it is replaced in the future,
+			// listen to the state changes once it is ready/replaced.
+			$(this).bind("playerready", function() {
+				this.listenToPlayerStateChange();
+			});
+
 			// Every 10 seconds check to see if we've crossed over our percent
 			// granularity logging boundary
 			var self = this;
-			setInterval(function() {
+			this.fIntervalStarted = setInterval(function() {
 				self.playerStateChange(-2);
 			}, 10000);
-			this.fIntervalStarted = true;
 		}
+	},
+
+	stopLoggingProgress: function() {
+		$(this).unbind( "playerready" );
+
+		clearInterval( this.fIntervalStarted );
+
+		this.fIntervalStarted = 0;
 	},
 
 	listenToPlayerStateChange: function() {

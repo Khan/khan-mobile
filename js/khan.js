@@ -480,6 +480,10 @@ function setCurrentVideo( id, force ) {
 	});
 	
 	// Hook in video tracking
+	if ( videoStats ) {
+		videoStats.stopLoggingProgress();
+	}
+
 	videoStats = new VideoStats( id, player );
 	videoStats.prepareVideoPlayer();
 	videoStats.startLoggingProgress();
