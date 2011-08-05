@@ -151,7 +151,7 @@ html.no-sidebar .below-video .subtitles-area {
     height: 20px;
     position: absolute;
     left: 0;
-    right: 15px;
+    right: 10px;
     z-index: 10;
 }
 .subtitles-fade.top {
@@ -180,6 +180,7 @@ html.no-sidebar .below-video .subtitles .subtitle {
 	list-style: none;
 	padding: 3px;
 	border: 1px solid transparent;
+	margin-right: 10px;
 	overflow: hidden;
 }
 
