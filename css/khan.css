@@ -153,6 +153,7 @@ html.no-sidebar .below-video .subtitles-area {
     left: 0;
     right: 10px;
     z-index: 10;
+    pointer-events: none;
 }
 .subtitles-fade.top {
     top: -1px;
