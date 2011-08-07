@@ -543,7 +543,7 @@ function showSubtitles( data ) {
 	var subtitles = $(".subtitles").toggle( !!(data && data.length) ),
 		player = $("video")[0],
 		isScroll = subtitles.hasClass("ui-scrollview-clip"),
-		subContainer = (isScroll ? subtitles.children("div") : subtitles);
+		subContainer = (isScroll ? subtitles.children("div.ui-scrollview-view") : subtitles);
 	
 	// Stop updating the old subtitle updater
 	clearInterval( subInterval );
