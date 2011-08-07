@@ -502,6 +502,11 @@ function setCurrentVideo( id, force ) {
 		// Check the offline cache as well
 		pendingSeek = storage.seek[ id ] || status && status.user_video && status.user_video.last_second_watched || null;
 		
+		// Prevent subtitles jumping to the end if the video has been watched
+		if ( pendingSeek + 5 >= video.duration ) {
+			pendingSeek = null;
+		}
+		
 		// Make sure the player is displayed
 		$(player).show();
 		
