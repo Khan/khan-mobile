@@ -344,11 +344,10 @@ function updateQuery( q ) {
 		name = added[i];
 		
 		if ( queryWatch[ name ] ) {
+			log( "updateQuery: " + name );
 			queryWatch[ name ]( query[ name ] );
 		}
 	}
-    
-	log( "updateQuery: " + q );
 	
 	return true;
 }
