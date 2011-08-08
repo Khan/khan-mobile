@@ -13,6 +13,7 @@ var data,
 	subInterval,
 	doJump = true,
 	scrollResume,
+	scrollingProgrammatically = false,
 	videoStats,
 	offline = false,
 	userId,
@@ -53,9 +54,6 @@ if ( query.sidebar !== "no" ) {
 		// We're not showing the sidebar or doing the splitview
 		$("html").removeClass("splitview").addClass("no-sidebar");
 		$("#menu").remove();
-		
-		// Assume that we're on an iPad, or similar, so disable scrolling
-		$(document).bind( "touchmove", false );
 		
 		// Remove the extra main panel
 		$("#main > div").unwrap();
@@ -643,31 +641,46 @@ function showSubtitles( data ) {
 		}
 	}
 	
-	var subtitles = $(".subtitles")
+	var subtitles = $(".subtitles");
 	subtitles.height( $(window).height() - subtitles.offset().top - 14 );
 
 	// Only turn on the custom scrolling logic if we're on a touch device
 	if ( $.support.touch ) {
 		// Reset to the starting scroll position
 		if ( isScroll ) {
-			subtitles.scrollview( "scrollTo", 0, 0, 200 );
+			subtitles.scrollTo( 0 );
 		
 		// We need to enable it explicitly for the subtitles
 		// as we're loading it dynamically
 		} else {
-			subtitles
-				.scrollview({ direction: "y" })
-				.bind( "scrollstart", function() {
-					clearInterval( scrollResume );
+			if ( typeof subtitles[0].style.webkitOverflowScrolling === "undefined" ) {
+				subtitles
+					.scrollview({ direction: "y" })
+					.bind( "scrollstart", function() {
+						clearInterval( scrollResume );
 
-					doJump = false;
-				})
-				.bind( "scrollstop", function() {
-					// Wait 30 seconds before resuming auto-scrolling
-					scrollResume = setTimeout(function() {
-						doJump = true;
-					}, 30000);
-				});
+						doJump = false;
+					})
+					.bind( "scrollstop", function() {
+						// Wait 30 seconds before resuming auto-scrolling
+						scrollResume = setTimeout(function() {
+							doJump = true;
+						}, 30000);
+					});
+			} else {
+				subtitles.scroll( function() {
+					// A scrollTop animation triggers the scroll event so make sure we're not animating
+					if ( !scrollingProgrammatically ) {
+						clearInterval( scrollResume );
+						doJump = false;
+
+						// Wait 30 seconds before resuming auto-scrolling
+						scrollResume = setTimeout(function() {
+							doJump = true;
+						}, 30000);
+					}
+				} );
+			}
 		}
 	}
 }
@@ -837,24 +850,34 @@ function pad( num ) {
 	return num < 10 ? "0" + num : num;
 }
 
-jQuery.fn.scrollTo = function( elem ) {
-	if ( !elem ) {
+jQuery.fn.scrollTo = function( top ) {
+	if ( top == null ) {
 		return this;
+	} else if ( top.offsetTop != null ) {
+		top = top.offsetTop;
 	}
 	
 	// Set the positioning to be positioned 45 pixels down
 	// (allowing the user to read the two previous lines)
-	var pos = Math.max( elem.offsetTop - 45, 0 );
+	var pos = Math.max( top - 45, 0 );
 	
 	// Make sure that we don't end with whitespace at the bottom
 	pos = Math.min( this[0].scrollHeight - this[0].offsetHeight, pos );
 	
 	// Adjust the viewport to animate to the new position
-	if ( jQuery.support.touch ) {
+	if ( jQuery.support.touch && this.hasClass("ui-scrollview-clip") ) {
 		this.scrollview( "scrollTo", 0, pos, 200 );
 	
 	} else {
-		this.stop().animate( { scrollTop: pos }, 200 );
+		scrollingProgrammatically = true;
+		this.stop().animate( { scrollTop: pos }, {
+			duration: 200,
+			complete: function() {
+				// We seem to get one "scroll" event after complete is called
+				// Use a timeout in hopes that this gets run after that happens
+				setTimeout( function() { scrollingProgrammatically = false; }, 1 );
+			}
+		} );
 	}
 	
 	return this;
