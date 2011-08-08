@@ -165,7 +165,8 @@ html.no-sidebar .below-video .subtitles-area {
 html.no-sidebar .below-video .subtitles {
 	height: 300px;
 	padding: 0;
-	overflow-y: auto;
+	overflow-y: scroll;
+	-webkit-overflow-scrolling: touch;
 	display: none;
 	position: relative;
 }
