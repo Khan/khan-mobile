@@ -393,29 +393,13 @@ function loadPlaylists( result ) {
 }
 
 // Notify the app that something has occurred
-var pendingUpdates = [];
 function updateNativeHost( update ) {
 	if ( window.location.protocol.indexOf( "http" ) !== 0 ) {
-		// If you set window.location more than once in the same event loop,
-		// only the last one is actually processed by UIWebView. Manage a 
-		// queue to work around this problem.
-		
-		pendingUpdates.push( update );
-		// If this is the only update in the queue, schedule a send
-		if ( pendingUpdates.length == 1 ) {
-			setTimeout( sendPendingUpdate, 1 );
-		}
-	}
-}
-
-function sendPendingUpdate() {
-	if ( pendingUpdates.length == 0 ) return;
-	
-	var update = pendingUpdates.shift(); // FIFO
-	window.location = "khan://update?" + $.param(update);
-	
-	if ( pendingUpdates.length ) {
-		setTimeout( sendPendingUpdate, 1 );
+	    // Setting window.location is a bad idea; see 
+	    // https://github.com/Khan/khan-mobile/issues/47
+		$("<iframe />", {
+		    src: "khan://update?" + $.param(update)
+		}).appendTo("body");
 	}
 }
 
