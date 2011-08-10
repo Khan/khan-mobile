@@ -188,8 +188,15 @@ if ( query.sidebar !== "no" ) {
 			
 			// Start the video over at the beginning
 			var video = $("video").show()[0];
-			video.currentTime = 0;
-			video.play();
+			try {
+				video.currentTime = 0;
+				video.play();
+			} catch( e ) {
+				// TODO ignore for now
+				// This has been shown to throw
+				// exceptions (as it is documented to,
+				// if called in the wrong state)
+			}
 		});
 		
 		// Allow the user to watch the next video
