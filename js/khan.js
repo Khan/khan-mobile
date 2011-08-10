@@ -406,6 +406,15 @@ function updateNativeHost( update ) {
 	    // https://github.com/Khan/khan-mobile/issues/47
 		$("<iframe />", {
 		    src: "khan://update?" + $.param(update)
+		}).load(function() {
+			// Remove iframe from document after it loads,
+			// otherwise we hit the 1000-iframe limit.
+			// Removing immediately on load triggers error,
+			// so use setTimeout.
+			// TODO this still doesn't solve the issue...
+			setTimeout(function(){
+				$(this).remove();
+			}, 100);
 		}).appendTo("body");
 	}
 }
