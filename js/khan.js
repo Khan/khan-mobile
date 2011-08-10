@@ -206,9 +206,6 @@ if ( query.sidebar !== "no" ) {
 			
 			// Notify the app that we're switching to another video
 			updateNativeHost( {video: nextVideoId} );
-			
-			// Switch to the next video
-			setCurrentVideo( nextVideoId );
 		});
 		
 		// Notify the app when the user hits play
@@ -431,6 +428,15 @@ function setCurrentVideo( id, force ) {
 		status = videoStatus[ id ];
 	
 	if ( !video ) {
+		if ( query.playlist && query.playlist.videos && query.playlist.videos.length ) {
+			var firstVideoId = query.playlist.videos[0].youtube_id;
+			
+			log( "Video " + id + " not found, playing " + firstVideoId + " instead." );
+			
+			// Notify the app that we're switching to another video
+			updateNativeHost( {video: firstVideoId} );
+		}
+		
 		return;
 	}
 	
@@ -444,7 +450,7 @@ function setCurrentVideo( id, force ) {
 	
 	// Find the next video to show
 	// TODO: Determine which playlist we're current focused on.
-	var playlist = playlists[ video.playlists[0] ];
+	var playlist = playlists[ video.playlists[0] ];	
 	nextVideoId = playlist && playlist.videos.length > video.position ? playlist.videos[ video.position ].youtube_id : null;
 	
 	// Show or hide the Next Video button
