@@ -208,14 +208,11 @@ if ( query.sidebar !== "no" ) {
 			
 			// Notify the app that we're switching to another video
 			updateNativeHost( {video: nextVideoId} );
-<<<<<<< HEAD
 			
 			// Switch to the next video
 			setCurrentVideo( nextVideoId );
 			
 			// TODO play the next video when it's ready
-=======
->>>>>>> f539dd284f63b9eb9131bc326025c70551014281
 		});
 		
 		// Notify the app when the user hits play
