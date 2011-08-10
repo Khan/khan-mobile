@@ -309,7 +309,9 @@ function saveWatch( opt ) {
 				opt.success( data );
 			}
 		},
-		error: function() {
+		error: function( xhr, status ) {
+			log( "save error: " + status );
+			
 			if ( opt.error ) {
 				opt.error();
 			}

@@ -265,6 +265,8 @@ if ( query.sidebar !== "no" ) {
 			// Remember the video seek position
 			storage.seek[ curVideoId ] = currentTime;
 			
+			log( "New Position: " + currentTime );
+			
 			// Store seek position offline
 			saveStorage();
 		
