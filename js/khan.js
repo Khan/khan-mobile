@@ -17,8 +17,7 @@ var data,
 	videoStats,
 	offline = false,
 	userId,
-	nativeIframe,
-	nativeQueue = [],
+	nativeIframes = [],
 	oauth = { consumerKey: "", consumerSecret: "", token: "", tokenSecret: "" };
 
 // Load in query string from URL
@@ -401,27 +400,27 @@ function loadPlaylists( result ) {
 	}
 }
 
+function newIframe() {
+	return $("<iframe>").appendTo("body").load(function(){
+		var f = this;
+		setTimeout(function(){
+			nativeIframes.push(f);
+		}, 100);
+	})[0];
+}
+
 // Notify the app that something has occurred
 function updateNativeHost( update ) {
 	if ( window.location.protocol.indexOf( "http" ) !== 0 ) {
 		// Setting window.location is a bad idea; see 
-	    // https://github.com/Khan/khan-mobile/issues/47
-		if ( nativeIframe === undefined ) {
-			nativeIframe = $("<iframe>").appendTo("body")[0];
-		}
+		// https://github.com/Khan/khan-mobile/issues/47
+		// Instead use iframes, but recycle them to avoid
+		// hitting the 1000-frame WebKit cap
 		
-		nativeQueue.push( update );
+		var iframe = ( nativeIframes.length ? nativeIframes.pop() : newIframe() );
+		iframe.src = "khan://update?" + $.param( update );
 	}
 }
-
-// If requests are sent too quickly there is potential for the
-// previous request to be aborted, so we use a queue and stagger
-// the requests instead
-setInterval(function() {
-	if ( nativeQueue.length > 0 && nativeIframe ) {
-		nativeIframe.src = "khan://update?" + $.param( nativeQueue.shift() );
-	}
-}, 250);
 
 // Display a video given the specified ID
 function setCurrentVideo( id, force ) {
