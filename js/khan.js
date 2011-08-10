@@ -555,7 +555,7 @@ function setCurrentVideo( id, force ) {
 }
 
 function showSubtitles( data ) {
-	log( "Subtitles: " + data ? data.length : "null" );
+	log( "Subtitles: " + (data ? data.length : "null") );
 
 	// Show or hide the interactive subtitles
 	var subtitles = $(".subtitles").toggle( !!(data && data.length) ),
