@@ -530,9 +530,10 @@ function setCurrentVideo( id, force ) {
 	}
 	
 	// Display information about the video
+	// For description, use '|| ""' because .text( null ) does nothing
 	$(".below-video")
 		.find("h1").text( video[ "title" ] ).end()
-		.find(".video-description").text( video[ "description" ] );
+		.find(".video-description").text( video[ "description" ] || "" );
 	
 	// Update the download indicator
 	updateStatus();
