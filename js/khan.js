@@ -17,6 +17,8 @@ var data,
 	videoStats,
 	offline = false,
 	userId,
+	nativeIframe,
+	nativeQueue = [],
 	oauth = { consumerKey: "", consumerSecret: "", token: "", tokenSecret: "" };
 
 // Load in query string from URL
@@ -402,22 +404,24 @@ function loadPlaylists( result ) {
 // Notify the app that something has occurred
 function updateNativeHost( update ) {
 	if ( window.location.protocol.indexOf( "http" ) !== 0 ) {
-	    // Setting window.location is a bad idea; see 
+		// Setting window.location is a bad idea; see 
 	    // https://github.com/Khan/khan-mobile/issues/47
-		$("<iframe />", {
-		    src: "khan://update?" + $.param(update)
-		}).load(function() {
-			// Remove iframe from document after it loads,
-			// otherwise we hit the 1000-iframe limit.
-			// Removing immediately on load triggers error,
-			// so use setTimeout.
-			// TODO this still doesn't solve the issue...
-			setTimeout(function(){
-				$(this).remove();
-			}, 100);
-		}).appendTo("body");
+		if ( nativeIframe === undefined ) {
+			nativeIframe = $("<iframe>").appendTo("body")[0];
+		}
+		
+		nativeQueue.push( update );
 	}
 }
+
+// If requests are sent too quickly there is potential for the
+// previous request to be aborted, so we use a queue and stagger
+// the requests instead
+setInterval(function() {
+	if ( nativeQueue.length > 0 && nativeIframe ) {
+		nativeIframe.src = "khan://update?" + $.param( nativeQueue.shift() );
+	}
+}, 250);
 
 // Display a video given the specified ID
 function setCurrentVideo( id, force ) {
