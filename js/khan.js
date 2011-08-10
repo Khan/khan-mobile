@@ -8,6 +8,7 @@ var data,
 	storage = { seek: {}, watch: {} },
 	pendingSeek, // http://adamernst.com/post/6570213273/seeking-an-html5-video-player-on-the-ipad
 	seekFn,
+	curPlaylistId,
 	curVideoId,
 	nextVideoId,
 	subInterval,
@@ -113,6 +114,7 @@ if ( query.sidebar !== "no" ) {
 			// Load the playlist data for later use
 			var playlist = JSON.parse( json );
 			loadPlaylists( [ playlist ] );
+			curPlaylistId = playlist.youtube_id;
 			return playlist;
 		});
 		
@@ -209,6 +211,8 @@ if ( query.sidebar !== "no" ) {
 			
 			// Switch to the next video
 			setCurrentVideo( nextVideoId );
+			
+			// TODO play the next video when it's ready
 		});
 		
 		// Notify the app when the user hits play
@@ -319,6 +323,9 @@ $(document).delegate( "#playlists a", "mousedown", function() {
 
 // Watch for clicks on videos in a playlist meny
 $(document).delegate( "ul.playlist a", "mousedown", function() {
+	var container = $(this).closest( "div.playlist" )[0];
+	curPlaylistId = container.id.substr( container.id.indexOf("list-") + 7 );
+	
 	// Grab the Youtube ID for the video and generate the page
 	setCurrentVideo( this.href.substr( this.href.indexOf("#video-") + 7 ) );
 });
@@ -384,7 +391,7 @@ function loadPlaylists( result ) {
 
 	// Build up an index of the playlists for fast reference
 	for ( var p = 0, pl = data.length; p < pl; p++ ) {
-		playlists[ data[p].title ] = data[p];
+		playlists[ data[p].youtube_id ] = data[p];
 
 		// Do the same thing for the videos
 		var vids = data[p].videos;
@@ -443,8 +450,7 @@ function setCurrentVideo( id, force ) {
 	curVideoId = id;
 	
 	// Find the next video to show
-	// TODO: Determine which playlist we're current focused on.
-	var playlist = playlists[ video.playlists[0] ];
+	var playlist = playlists[ curPlaylistId ];
 	nextVideoId = playlist && playlist.videos.length > video.position ? playlist.videos[ video.position ].youtube_id : null;
 	
 	// Show or hide the Next Video button
