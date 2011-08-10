@@ -349,8 +349,9 @@ function updateQuery( q ) {
 	for ( var i = 0, l = added.length; i < l; i++ ) {
 		name = added[i];
 		
+		log( "updateQuery: " + name );
+		
 		if ( queryWatch[ name ] ) {
-			log( "updateQuery: " + name );
 			queryWatch[ name ]( query[ name ] );
 		}
 	}
@@ -383,11 +384,7 @@ function loadPlaylists( result ) {
 
 	// Build up an index of the playlists for fast reference
 	for ( var p = 0, pl = data.length; p < pl; p++ ) {
-		if ( !data[p].youtube_id ) {
-			data[p].youtube_id = data[p].title;
-		}
-		
-		playlists[ data[p].youtube_id ] = data[p];
+		playlists[ data[p].title ] = data[p];
 
 		// Do the same thing for the videos
 		var vids = data[p].videos;
