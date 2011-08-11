@@ -66,7 +66,7 @@ ul.playlist .ui-btn-icon-right .ui-icon {
 	margin-top: -16px;
 }
 
-video, .overlay {
+video, .overlay, .underlay {
 	width: 100%;
 	height: 100%;
 	/* Video element has a phantom bottom border that can't be removed unless
@@ -82,23 +82,29 @@ video, .overlay {
 }
 
 video {
-	-webkit-transition: opacity 2.0s ease-in;
 	z-index: 20;
 }
 
 .overlay {
 	color: #ddd;
+	background-color: rgba(0, 0, 0, 0.5);
 	text-shadow: none;
 	display: table; /* Vertically center the h2 */
 	z-index: 30;
+	opacity: 0;
+	visibility: hidden;
+}
+
+.overlay.shown {
+	-webkit-transition: opacity 0.5s ease-in-out;
+	opacity: 1;
+	visibility: visible;
 }
 
 .overlay .details {
 	text-align: center;
 	display: table-cell;
 	vertical-align: middle;
-	opacity: 1.0;
-	-webkit-transition: opacity 0.3s ease-in;
 }
 
 .overlay img {
@@ -114,16 +120,9 @@ video {
 	margin-top: 0;
 }
 
-.overlay.replay {
-	background: rgba(0, 0, 0, 0.3);
-}
-
-.overlay.underlay {
+.underlay {
 	z-index: 10;
 	background: #000
-	position: absolute;
-	top: 0px;
-	left: 0px;
 }
 
 .below-video {

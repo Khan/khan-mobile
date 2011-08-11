@@ -7,6 +7,7 @@ var data,
 	queryWatch = {},
 	storage = { seek: {}, watch: {} },
 	pendingSeek, // http://adamernst.com/post/6570213273/seeking-an-html5-video-player-on-the-ipad
+	playWhenReady = false,
 	seekFn,
 	curPlaylistId,
 	curVideoId,
@@ -187,7 +188,7 @@ if ( query.sidebar !== "no" ) {
 		
 		// Allow the user to replay the current video
 		$(".replay-button").bind( "vclick", function() {
-			hideReplay();
+			hideOverlays();
 			
 			// Start the video over at the beginning
 			var video = $("video").show()[0];
@@ -204,15 +205,14 @@ if ( query.sidebar !== "no" ) {
 		
 		// Allow the user to watch the next video
 		$(".next-button").bind( "vclick", function() {
-			hideReplay();
+			hideOverlays();
 			
 			// Notify the app that we're switching to another video
 			updateNativeHost( {video: nextVideoId} );
 			
 			// Switch to the next video
+			playWhenReady = true;
 			setCurrentVideo( nextVideoId );
-			
-			// TODO play the next video when it's ready
 		});
 		
 		// Notify the app when the user hits play
@@ -225,15 +225,7 @@ if ( query.sidebar !== "no" ) {
 		
 		// Watch for when the video ends, to show the replay dialog
 		}).bind( "ended", function() {
-			// Hide the video gracefully
-			var video = $("video").css( "opacity", 0 );
-
-			// Show the replay button when animation is complete
-			setTimeout(function() {
-				video.hide().css( "opacity", 1 );
-
-				showReplay();
-			}, 2000 );
+			showOverlay( $(".replay") );
 		
 		// Handle when an error occurs loading the video
 		}).bind("error", function(e) {
@@ -259,6 +251,14 @@ if ( query.sidebar !== "no" ) {
 		// Try to jump to a seeked position in a video
 		}).bind( "loadstart progress stalled loadedmetadata loadeddata canplay canplaythrough playing waiting durationchange" , function() {
 			seek( this );
+		
+		// Play if requested
+		}).bind( "canplay" , function() {
+			if ( playWhenReady ) {
+				this.play();
+				playWhenReady = false;
+			}
+			
 		
 		// Remember the last position of the video, for resuming later on
 		}).bind( "timeupdate", function() {
@@ -519,12 +519,8 @@ function setCurrentVideo( id, force ) {
 			pendingSeek = null;
 		}
 		
-		// Make sure the player is displayed
-		$(player).show();
-		
-		// Hide any displayed error messages and replay overlay
-		hideError();
-		hideReplay();
+		// Hide any displayed overlays
+		hideOverlays();
 		
 		// Show a loading message
 		$(".loading").show();
@@ -742,64 +738,30 @@ function isSeekable( seekableRanges ) {
 	return false;
 }
 
+function showOverlay( o ) {
+	// We have to remove controls from the video, otherwise 
+	// touch events are captured and you can't touch the
+	// buttons we overlay on it.
+	$("video").removeAttr( "controls" );
+	$(o).addClass( "shown" );
+}
+
+function hideOverlays() {
+	$(".overlay").removeClass( "shown" );
+	$("video").attr( "controls", true );
+}
+
 // Show an error message to the user
 function showError( title, msg ) {
-	// Show the error message overlay
-	var player = $("video")[0],
-		details = $(".error").show()
-			// Set the text of the error message
-			.find("h2").text( title ).end()
-			.find("p").text( msg ).end()
-			.find(".details");
-	
 	// Force the video to pause, just in case
+	var player = $("video")[0];
 	if ( !player.paused ) {
 		player.pause();
 	}
 	
-	// You can't immediately animate an object that's just been shown.
-	// http://www.greywyvern.com/?post=337
-	// If you can find a better way, please do.
-	setTimeout(function() {
-		details.css( "opacity", 1 );
-	}, 1);
-}
-
-// Hide the error message dialog
-function hideError() {
-	$(".error").hide()
-		
-		// Reset the opacity of the details
-		// (for the CSS animation)
-		.find(".details").css( "opacity", 0 );
-}
-
-// Show an replay overlay to the user
-function showReplay() {
-	// Show the replay overlay
-	var player = $("video")[0],
-		details = $(".replay").show().find(".details");
-	
-	// Force the video to pause, just in case
-	if ( !player.paused ) {
-		player.pause();
-	}
-	
-	// You can't immediately animate an object that's just been shown.
-	// http://www.greywyvern.com/?post=337
-	// If you can find a better way, please do.
-	setTimeout(function() {
-		details.css( "opacity", 1 );
-	}, 1);
-}
-
-// Hide the error message dialog
-function hideReplay() {
-	$(".replay").hide()
-		
-		// Reset the opacity of the details
-		// (for the CSS animation)
-		.find(".details").css( "opacity", 0 );
+	var e = $(".error").find("h2").text( title ).end()
+			.find("p").text( msg ).end();
+	showOverlay( e );
 }
 
 // Update point display
