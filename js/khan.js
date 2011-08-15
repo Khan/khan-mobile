@@ -723,7 +723,7 @@ function updateStatus() {
 		.find(".ui-btn-text").text( downloadStatus ?
 				downloadStatus.offline_url ?
 					"Downloaded" :
-					"(" + Math.round(downloadStatus.download_progress * 100) + "%)" :
+					Math.round(downloadStatus.download_progress * 100) + "%" :
 				"Download" );
 }
 
