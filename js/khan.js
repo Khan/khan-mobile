@@ -650,6 +650,17 @@ function showSubtitles( data ) {
 			$(nextLI).addClass("active");
 			$(curLI).removeClass("active");
 			curLI = nextLI;
+			
+			// Resume jumping if the subtitle view is positioned over the active subtitle
+			if ( !doJump ) {
+				var offsetTop = curLI.offsetTop,
+					scrollTop = -1 * subtitles.data("scrollview")._sy;
+				
+				if ( offsetTop >= scrollTop && offsetTop <= scrollTop + subtitles[0].offsetHeight ) {
+					clearInterval( scrollResume );
+					doJump = true;
+				}
+			}
 
 			// Adjust the viewport to animate to the new position
 			if ( doJump ) {
