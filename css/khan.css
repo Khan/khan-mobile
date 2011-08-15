@@ -202,6 +202,9 @@ html.no-sidebar .below-video .subtitles .subtitle a {
 	color: #000;
 	text-decoration: none;
 	display: block;
+	text-indent: -.3em;
+	padding-left: 2.4em;
+	line-height: 1.3em;
 }
 
 html.no-sidebar .below-video .subtitles-loading, html.no-sidebar .below-video .subtitles-error {
@@ -325,6 +328,19 @@ html.no-sidebar .below-video h1 {
 	color: 					#fff;
 }
 .ui-btn-hover-k {
+/* Make the hover state consistent with the up state. */
+	border: 1px solid 		#415e08;
+	color: 					#fff;
+	text-shadow: 0 -1px 0 	#293b05;
+	background: 			#415e08;
+	background-image: -moz-linear-gradient(top, 
+							#8aac57, 
+							#5c8b14);
+	background-image: -webkit-gradient(linear,left top,left bottom,
+		color-stop(0, 		#8aac57),
+		color-stop(1, 		#5c8b14));
+	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#8aac57', EndColorStr='#5c8b14')";
+/* Leaving the original definition here so we can bring it back later.
 	border: 1px solid 		#315e08;
 	color: 					#fff;
 	text-shadow: 0 -1px 0 	#293b05;
@@ -336,6 +352,7 @@ html.no-sidebar .below-video h1 {
 		color-stop(0, 		#80BC10),
 		color-stop(1, 		#70A40E));
 	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#80BC10', EndColorStr='#70A40E')";
+*/
 }
 .ui-btn-hover-k a.ui-link-inherit {
 	color: 					#fff;
