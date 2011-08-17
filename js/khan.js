@@ -480,7 +480,7 @@ function setCurrentVideo( id, force ) {
 	
 	// Start by hiding the subtitles while we're loading
 	$(".subtitles").hide();
-	$(".subtitles-error").hide();
+	$(".subtitles-error, .subtitles-none").hide();
 	
 	// Show the loading indicator
 	var loading = $(".subtitles-loading").css("opacity", 0).show();
@@ -567,7 +567,7 @@ function loadSubtitles() {
 function showSubtitles( data ) {
 	log( "Subtitles: " + (data ? data.length : "null") );
 	
-	subtitlesFailed = !(data && data.length);
+	subtitlesFailed = !data;
 
 	// Show or hide the interactive subtitles
 	var subtitles = $(".subtitles").toggle( !subtitlesFailed ),
@@ -582,19 +582,27 @@ function showSubtitles( data ) {
 	$(".subtitles-loading").hide();
 
 	// If they don't exist, back out
-	// Or if we have a malformed subtitle start time
-	if ( !data || !data.length || data[ data.length - 1 ].start_time < 0 ) {
+	if ( !data ) {
 		var error = $(".subtitles-error").css( "opacity", 0 ).show();
 
 		// Fade in the error message
 		setTimeout(function() {
 			error.css( "opacity", 1 );
 		}, 1);
+
+		return;
+	
+	// Or if we have no subtitles or a malformed subtitle start time
+	} else if ( !data.length || data[ data.length - 1 ].start_time < 0 ) {
+		// Don't show the subtitles
+		subtitles.hide();
 		
-		// Fade it out at the end
+		var none = $(".subtitles-none").css( "opacity", 0 ).show();
+
+		// Fade in the none message
 		setTimeout(function() {
-			error.css( "opacity", 0 );
-		}, 3000);
+			none.css( "opacity", 1 );
+		}, 1);
 
 		return;
 	}

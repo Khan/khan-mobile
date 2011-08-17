@@ -205,7 +205,9 @@ html.no-sidebar .below-video .subtitles .subtitle a {
 	line-height: 1.3em;
 }
 
-html.no-sidebar .below-video .subtitles-loading, html.no-sidebar .below-video .subtitles-error {
+html.no-sidebar .below-video .subtitles-loading,
+html.no-sidebar .below-video .subtitles-error,
+html.no-sidebar .below-video .subtitles-none {
 	display: none;
 	margin: 0 auto;
 	width: 300px;
