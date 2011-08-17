@@ -16,6 +16,7 @@ var data,
 	doJump = true,
 	scrollResume,
 	scrollingProgrammatically = false,
+	subtitlesFailed = false,
 	videoStats,
 	offline = false,
 	userId,
@@ -151,6 +152,12 @@ if ( query.sidebar !== "no" ) {
 			
 			// Sync with the server, if we can
 			offlineSync();
+			
+			// If we're now online and the subtitles didn't load
+			// then we try loading them again
+			if ( !offline && subtitlesFailed ) {
+				loadSubtitles();
+			}
 		});
 		
 		// Toggle the video playing
@@ -483,16 +490,7 @@ function setCurrentVideo( id, force ) {
 		loading.css("opacity", 1);
 	}, 1);
 	
-	// Load in the subtitle data for the video
-	$.ajax({
-		url: "kasubtitles://" + id + "/",
-		dataType: "json",
-		success: showSubtitles,
-		error: function() {
-			// Pass in no arguments to trigger an error
-			showSubtitles();
-		}
-	});
+	loadSubtitles();
 	
 	// Hook in video tracking
 	if ( videoStats ) {
@@ -553,11 +551,26 @@ function setCurrentVideo( id, force ) {
 	updateStatus();
 }
 
+function loadSubtitles() {
+	// Load in the subtitle data for the video
+	$.ajax({
+		url: "kasubtitles://" + curVideoId + "/",
+		dataType: "json",
+		success: showSubtitles,
+		error: function() {
+			// Pass in no arguments to trigger an error
+			showSubtitles();
+		}
+	});
+}
+
 function showSubtitles( data ) {
 	log( "Subtitles: " + (data ? data.length : "null") );
+	
+	subtitlesFailed = !(data && data.length);
 
 	// Show or hide the interactive subtitles
-	var subtitles = $(".subtitles").toggle( !!(data && data.length) ),
+	var subtitles = $(".subtitles").toggle( !subtitlesFailed ),
 		player = $("video")[0],
 		isScroll = subtitles.hasClass("ui-scrollview-clip"),
 		subContainer = (isScroll ? subtitles.children("div.ui-scrollview-view") : subtitles);
