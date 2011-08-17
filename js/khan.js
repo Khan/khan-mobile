@@ -135,6 +135,14 @@ if ( query.sidebar !== "no" ) {
 			if ( curVideoStatus ) {
 				updateStatus();
 				updatePoints();
+				
+				// If we're getting an empty URL back from the app that means
+				// that the user deleted the offline video
+				// We need to revert to the live video instead
+				if ( curVideoStatus.download_status && curVideoStatus.download_status.offline_url === "" &&
+						$("video")[0].src.indexOf("file:") === 0 ) {
+					setCurrentVideo( curVideoId, true );
+				}
 			}
 		});
 		
