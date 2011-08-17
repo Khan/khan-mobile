@@ -629,6 +629,9 @@ function showSubtitles( data ) {
 	subtitles.find("a").bind("click", function( e ) {
 		// Stop from visiting the link
 		e.preventDefault();
+		
+		// Hide any displayed overlays
+		hideOverlays();
 
 		// Resume scrolling from this position
 		doJump = true;
