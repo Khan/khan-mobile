@@ -64,6 +64,7 @@ ul.playlist .ui-btn-icon-right .ui-icon {
 	left: 50%;
 	margin-left: -16px;
 	margin-top: -16px;
+	z-index: 40;
 }
 
 video, .overlay, .underlay {
