@@ -306,9 +306,6 @@ if ( query.sidebar !== "no" ) {
 				// Adjust the height of the subtitle viewport
 				var subtitles = $(".subtitles");
 				subtitles.height( $(window).height() - subtitles.offset().top - 14 );
-				subtitles.find(".subtitle a").each( function() {
-				    $(this).css( "margin-left", $(this).siblings(".time").outerWidth( true ) );
-				});
 
 				// Jump to the active subtitle
 				subtitles.scrollTo( subtitles.find(".subtitle.active")[0] );
