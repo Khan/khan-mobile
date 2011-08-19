@@ -250,9 +250,6 @@ if ( query.sidebar !== "no" ) {
 			// Cancel any pending seeks since the video is broken
 			pendingSeek = null;
 			
-			// Hide the video
-			$(this).hide();
-			
 			// Hide the loading overlay
 			$(".loading").hide();
 			
