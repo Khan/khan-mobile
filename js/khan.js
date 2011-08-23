@@ -16,6 +16,7 @@ var data,
 	doJump = true,
 	scrollResume,
 	scrollingProgrammatically = false,
+	autoResume = false,
 	subtitlesFailed = false,
 	videoStats,
 	offline = false,
@@ -686,8 +687,18 @@ function showSubtitles( data ) {
 					scrollTop = -1 * subtitles.data("scrollview")._sy;
 				
 				if ( offsetTop >= scrollTop && offsetTop <= scrollTop + subtitles[0].offsetHeight ) {
-					clearInterval( scrollResume );
-					doJump = true;
+					if ( !autoResume ) {
+						clearInterval( scrollResume );
+					}
+
+					// Make sure we start again in 5s
+					autoResume = true;
+
+					// Wait 5s before resuming auto-scrolling
+					scrollResume = setTimeout(function() {
+						autoResume = false;
+						doJump = true;
+					}, 5000);
 				}
 			}
 
@@ -722,6 +733,8 @@ function showSubtitles( data ) {
 						doJump = false;
 					})
 					.bind( "scrollstop", function() {
+						clearInterval( scrollResume );
+
 						// Wait 30 seconds before resuming auto-scrolling
 						scrollResume = setTimeout(function() {
 							doJump = true;
