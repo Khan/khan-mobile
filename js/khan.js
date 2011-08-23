@@ -885,10 +885,11 @@ jQuery.fn.scrollTo = function( top ) {
 	
 	// Set the positioning to be positioned 45 pixels down
 	// (allowing the user to read the two previous lines)
-	var pos = Math.max( top - 45, 0 );
+	var height = this[0].offsetHeight,
+		pos = Math.max( top - (height / 2), 0 );
 	
 	// Make sure that we don't end with whitespace at the bottom
-	pos = Math.min( this[0].scrollHeight - this[0].offsetHeight, pos );
+	pos = Math.min( this[0].scrollHeight - height, pos );
 	
 	// Adjust the viewport to animate to the new position
 	if ( jQuery.support.touch && this.hasClass("ui-scrollview-clip") ) {
