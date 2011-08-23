@@ -71,6 +71,9 @@ if ( query.sidebar !== "no" ) {
 		// Set the active page to the current page
 		$.mobile.activePage = $("#home");
 		
+		// Load initial user storage for anonymous user
+		loadStorage();
+		
 		// Handle OAuth-related matters
 		addQueryWatch( "user", function( value ) {
 			// User has logged in
@@ -864,14 +867,11 @@ function seek( video ) {
 }
 
 function loadStorage() {
-	storage = JSON.parse( userId && window.localStorage[ userId ] || '{"seek":{},"watch":{}}' );
+	storage = JSON.parse( window.localStorage[ userId || "anon" ] || '{"seek":{},"watch":{}}' );
 }
 
 function saveStorage() {
-	// Save the data if the user is logged in
-	if ( userId ) {
-		window.localStorage[ userId ] = JSON.stringify( storage );
-	}
+	window.localStorage[ userId || "anon" ] = JSON.stringify( storage );
 }
 
 // Log out details to the screen
