@@ -126,10 +126,6 @@ video {
 	background: #000
 }
 
-.below-video {
-	margin: 15px;
-}
-
 .below-video h1 {
 	/* Hide h1 below video, unless it's inside .no-sidebar */
 	display: none;
@@ -145,22 +141,7 @@ video {
 }
 html.no-sidebar .below-video .subtitles-area {
     position: relative;
-}
-.subtitles-fade.top, .subtitles-fade.bottom {
-    background: transparent url(../img/caption-fade.png) repeat-x;
-    height: 20px;
-    position: absolute;
-    left: 0;
-    right: 10px;
-    z-index: 10;
-    pointer-events: none;
-}
-.subtitles-fade.top {
-    top: -1px;
-}
-.subtitles-fade.bottom {
-    bottom: -1px;
-    -webkit-transform: rotate(180deg);
+    padding: 0 15px;
 }
 html.no-sidebar .below-video .subtitles {
 	height: 300px;
@@ -210,23 +191,30 @@ html.no-sidebar .below-video .subtitles-loading,
 html.no-sidebar .below-video .subtitles-error,
 html.no-sidebar .below-video .subtitles-none {
 	display: none;
-	margin: 0 auto;
+	margin: 60px auto 0;
 	width: 300px;
-	background: #AAA;
 	border-radius: 5px;
-	padding: 5px;
-	color: #FFF;
+	padding: 10px 5px;
 	text-align: center;
 	-webkit-transition: opacity 0.3s ease-in;
 	text-shadow: none;
 	z-index: 11;
 	position: relative;
+	
+	color: #8bad3f;
+	text-shadow: 0 1px 0 #fdfff3;
+	background: #f5fede;
+	border: 1px solid #b6cc74;
+	-webkit-box-shadow: inset 0px 0px 3px rgba(0,0,0,.22);
 }
 
 html.no-sidebar .below-video .title-and-points {
     display: block;
-    position: relative;
-    top: -6px;
+    height: 44px;
+    background: -webkit-gradient(linear, left top, left bottom, from(#f5fede), to(#e1e8cb));
+    border-top: 1px solid #d1e886;
+    border-bottom: 1px solid #aabe6c;
+    -webkit-box-shadow: 0px 2px 6px rgba(0,0,0,.22);
 }
 
 html.no-sidebar .below-video .title-and-points .energy-points-badge {
@@ -241,6 +229,10 @@ html.no-sidebar .below-video .title {
 	overflow: hidden;
 	font-size: 1em;
 	padding-top: .2em;
+	color: #8bad3f;
+	text-shadow: 0 1px 0 #fdfff3;
+	margin-left: 15px;
+	padding-top: 11px;
 }
 html.no-sidebar .below-video h1 {
 	display: inline;
@@ -254,8 +246,8 @@ html.no-sidebar .below-video h1 {
 
 .actions {
 	float: right;
-	margin-top: -0.5em;
-	margin-right: -5px;
+	margin-right: 15px;
+	padding-top: 8px;
 	position: relative;
 	z-index: 2;
 }

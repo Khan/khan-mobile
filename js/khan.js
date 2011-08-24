@@ -309,7 +309,7 @@ if ( query.sidebar !== "no" ) {
 				
 				// Adjust the height of the subtitle viewport
 				var subtitles = $(".subtitles");
-				subtitles.height( $(window).height() - subtitles.offset().top - 14 );
+				subtitles.height( $(window).height() - subtitles.offset().top );
 
 				// Jump to the active subtitle
 				subtitles.scrollTo( subtitles.find(".subtitle.active")[0] );
@@ -582,13 +582,17 @@ function showSubtitles( data ) {
 	var subtitles = $(".subtitles").toggle( !subtitlesFailed ),
 		player = $("video")[0],
 		isScroll = subtitles.hasClass("ui-scrollview-clip"),
-		subContainer = (isScroll ? subtitles.children("div.ui-scrollview-view") : subtitles);
+		subContainer = (isScroll ? subtitles.children("div.ui-scrollview-view") : subtitles),
+		description = $(".below-video > .subtitles-area > .video-description");
 	
 	// Stop updating the old subtitle updater
 	clearInterval( subInterval );
 	
 	// Hide the subtitle loading message
 	$(".subtitles-loading").hide();
+	
+	// Show video description in case subtitles don't exist
+	description.show();
 
 	// If they don't exist, back out
 	if ( !data ) {
@@ -616,8 +620,12 @@ function showSubtitles( data ) {
 		return;
 	}
 
-	// Inject the subtitles
-	subContainer.html( tmpl( "subtitles-tmpl", { subtitles: data } ) );
+	// Inject the subtitles and move description to scrollable area
+	subContainer.html( tmpl( "subtitles-tmpl", { subtitles: data } ) )
+	    .prepend( description.clone() );
+	    
+	// Hide description after moving into subtitles area
+	description.hide();
 
 	// Make it easier to add some themeing to the subtitle rows
 	subContainer.find(".subtitle")
@@ -716,7 +724,7 @@ function showSubtitles( data ) {
 	}
 	
 	var subtitles = $(".subtitles");
-	subtitles.height( $(window).height() - subtitles.offset().top - 14 );
+	subtitles.height( $(window).height() - subtitles.offset().top );
 	subtitles.find(".subtitle a").each( function() {
 	    $(this).css( "margin-left", $(this).siblings(".time").outerWidth( true ) );
 	});
