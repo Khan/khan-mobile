@@ -308,17 +308,19 @@ html.no-sidebar .below-video h1 {
 	font-weight: bold;
 }
 .ui-btn-up-k {
-	border: 1px solid 		#415e08;
+	border: 1px solid 		#405A20;
+	border-top-color:       #1E2515;
+	border-bottom-color:    #334F0F;
 	color: 					#fff;
-	text-shadow: 0 -1px 0 	#293b05;
+	text-shadow: 0 -1px 0 	#425c24;
 	background: 			#415e08;
 	background-image: -moz-linear-gradient(top, 
-							#8aac57, 
-							#5c8b14);
-	background-image: -webkit-gradient(linear,left top,left bottom,
-		color-stop(0, 		#8aac57),
-		color-stop(1, 		#5c8b14));
-	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#8aac57', EndColorStr='#5c8b14')";
+							#7ca44c, 
+							#538516);
+	background-image: -webkit-gradient( linear,left top,left bottom, 
+	                        color-stop(0, #7ca44c), 
+	                        color-stop(1, #538516));
+	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#7ca44c', EndColorStr='#538516')";
 }
 .ui-btn-up-k a.ui-link-inherit {
 	color: 					#fff;
@@ -359,12 +361,12 @@ html.no-sidebar .below-video h1 {
 	text-shadow: 0 -1px 0 	#293b05;
 	background: 			#415e08;
 	background-image: -moz-linear-gradient(top, 
-							#5c8b14, 
-							#8aac57);
+							#749348, 
+							#3f6c00);
 	background-image: -webkit-gradient(linear,left top,left bottom,
-		color-stop(0, 		#5c8b14),
-		color-stop(1, 		#8aac57));
-	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#5c8b14', EndColorStr='#8aac57')";
+		color-stop(0, 		#749348),
+		color-stop(1, 		#3f6c00));
+	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#749348', EndColorStr='#3f6c00')";
 }
 .ui-btn-down-k a.ui-link-inherit {
 	color: 					#fff;
@@ -385,6 +387,16 @@ html.no-sidebar .below-video h1 {
 /* Fix button padding with respect to icons. Default doesn't center properly. */
 .ui-btn-inner {
 	padding: 5px 12px 6px; /* Down from 25px which is pretty big */
+}
+
+.actions .ui-btn-inner {
+    padding-bottom: 5px;
+    border-color: #607B3D;
+    border-bottom: 1px solid #4f8015;
+}
+.actions .ui-btn-down-k .ui-btn-inner {
+    border-top-color: #5e763c;
+    border-bottom-color: #3d6800;
 }
 
 .ui-btn-icon-left .ui-btn-inner {
