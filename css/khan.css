@@ -482,19 +482,19 @@ html.no-sidebar body {
 .energy-points-badge {
     background: #005987;
     display: inline-block;
-    line-height: 1.6em;
+    line-height: 1.8em;
     text-align: center;
     padding: .4em .8em .4em;
-    margin: .6em 0 0 .8em;
+    margin: 1.1em 0 0 .8em;
     color: white;
-    font-size: .8em;
+    font-size: .6em;
     font-weight: bold;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     text-shadow: none;
     position: relative;
     top: -.1em;
     
-    text-shadow: 0 -1px 0 rgba(0,0,0,.8);
+    text-shadow: 0 -1px 0 rgba(0,0,0,.6);
 }
 
 html.offline .energy-points-badge {
