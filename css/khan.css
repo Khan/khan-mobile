@@ -470,7 +470,7 @@ html.no-sidebar body {
     line-height: 1.6em;
     text-align: center;
     padding: .4em .8em .4em;
-    margin: 0 0 0 .8em;
+    margin: .6em 0 0 .8em;
     color: white;
     font-size: .8em;
     font-weight: bold;
@@ -478,6 +478,8 @@ html.no-sidebar body {
     text-shadow: none;
     position: relative;
     top: -.1em;
+    
+    text-shadow: 0 -1px 0 rgba(0,0,0,.8);
 }
 
 html.offline .energy-points-badge {
