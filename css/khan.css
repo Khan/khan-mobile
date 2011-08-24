@@ -141,7 +141,10 @@ video {
 }
 html.no-sidebar .below-video .subtitles-area {
     position: relative;
-    padding: 0 15px;
+    padding: 0 0 0 15px;
+}
+.below-video .subtitles-area .subtitles, .below-video .video-description {
+    padding-right: 15px;
 }
 html.no-sidebar .below-video .subtitles {
 	height: 300px;
@@ -163,7 +166,7 @@ html.no-sidebar .below-video .subtitles .subtitle {
 	list-style: none;
 	padding: 3px;
 	border: 1px solid transparent;
-	margin-right: 10px;
+	margin-right: 15px;
 	overflow: hidden;
 }
 
