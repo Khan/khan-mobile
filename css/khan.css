@@ -141,10 +141,10 @@ video {
 }
 html.no-sidebar .below-video .subtitles-area {
     position: relative;
-    padding: 0 0 0 15px;
+    padding: 0 0 0 12px;
 }
 .below-video .subtitles-area .subtitles, .below-video .video-description {
-    padding-right: 15px;
+    padding: 0 15px 0 3px;
 }
 html.no-sidebar .below-video .subtitles {
 	height: 300px;
