@@ -185,6 +185,15 @@ if ( query.sidebar !== "no" ) {
 			// Tell the app to start downloading the file
 			updateNativeHost( {download: curVideoId} );
 		});
+
+		// Watch for the Exercise button being clicked
+		$(".exercise").bind( "vclick", function() {
+			// Hide everything related to subtitles
+			$(".subtitles-area, .subtitles-loading, .subtitles-error, .subtitles-none").hide();
+			$(".exercise-frame").attr({
+				src: "exercises/exercises/addition_1.html?layout=lite"
+			}).show();
+		});
 		
 		// Watch for the Share button being clicked
 		$(".share").bind( "vclick", function() {
@@ -304,18 +313,25 @@ if ( query.sidebar !== "no" ) {
 		$(window)
 			// Make sure the video container is the right size ratio
 			.resize(function() {
+				var height = $(window).height();
+
 				// Make sure the video is kept to the proper aspect ratio
-				$(".video-wrap").height( $(window).width() / 16.0 * 9.0 );
+				$(".video-wrap").height( height / 16.0 * 9.0 );
 				
 				// Adjust the height of the subtitle viewport
-				var subtitles = $(".subtitles");
-				subtitles.height( $(window).height() - subtitles.offset().top );
+				var subtitles = $(".subtitles"),
+					top = subtitles.offset().top;
+
+				subtitles.height( height - top );
 
 				// Jump to the active subtitle
 				subtitles.scrollTo( subtitles.find(".subtitle.active")[0] );
+
+				// Adjust the height of the exercise viewport
+				$(".exercise-frame").height( height - top ).width( $(window).width() );
 				
 				// Show more of the video description if we have enough window height available
-				$(".video-description").css("-webkit-line-clamp", $(window).height() > 800 ? "4" : "2" );
+				$(".video-description").css("-webkit-line-clamp", height > 800 ? "4" : "2" );
 			})
 			// Also update immediately
 			.resize();

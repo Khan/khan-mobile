@@ -226,7 +226,7 @@ html.no-sidebar .below-video .title-and-points .energy-points-badge {
 }
     
 html.no-sidebar .below-video .title {
-    float: left;
+	float: left;
 	text-overflow: ellipsis;
 	max-width: 350px;
 	overflow: hidden;
@@ -240,7 +240,12 @@ html.no-sidebar .below-video .title {
 html.no-sidebar .below-video h1 {
 	display: inline;
 	font-size: 1.2em;
-    white-space: nowrap;
+	white-space: nowrap;
+}
+
+html.no-sidebar .below-video .exercise-frame {
+	width: 100%;
+	display: none;
 }
 
 .below-video h1 + p {
