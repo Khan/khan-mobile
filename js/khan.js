@@ -522,7 +522,8 @@ function setCurrentVideo( id, force ) {
 		
 		// Get the cached seek position, if one exists
 		// Check the offline cache as well
-		pendingSeek = storage.seek[ id ] || status && status.user_video && status.user_video.last_second_watched || null;
+		// Take the maximum of the two positions
+		pendingSeek = Math.max(storage.seek[ id ] || 0, status && status.user_video && status.user_video.last_second_watched || 0) || null;
 		
 		// Prevent subtitles jumping to the end if the video has been watched
 		if ( pendingSeek + 5 >= video.duration ) {
