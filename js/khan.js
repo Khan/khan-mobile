@@ -3,8 +3,7 @@ var data,
 	videos = {},
 	videoStatus = {},
 	query = {},
-	queryProcess = {},
-	queryWatch = {},
+	queryWatch = [],
 	storage = { seek: {}, watch: {} },
 	pendingSeek, // http://adamernst.com/post/6570213273/seeking-an-html5-video-player-on-the-ipad
 	playWhenReady = false,
@@ -114,20 +113,37 @@ if ( query.sidebar !== "no" ) {
 			offlineSync();
 		});
 		
+		// Handle swapping between online/offline mode
+		// Do this early on so that by the time we try to load a video, we 
+		// know the offline status
+		addQueryWatch( "offline", function( value ) {
+			offline = value === "yes";
+			
+			// Toggle a global offline class for tweaking style
+			$("html").toggleClass( "offline", offline );
+			
+			// Sync with the server, if we can
+			offlineSync();
+			
+			// If we're now online and the subtitles didn't load
+			// then we try loading them again
+			if ( !offline && subtitlesFailed ) {
+				loadSubtitles();
+			}
+		});
+		
 		// Watch for when playlist data is passed in
 		// load the data for later usage
-		addQueryProcess( "playlist", function( json ) {
+		addQueryWatch( "playlist", function( json ) {
 			// Load the playlist data for later use
 			var playlist = JSON.parse( json );
 			loadPlaylists( [ playlist ] );
 			curPlaylistId = playlist.youtube_id;
-			return playlist;
 		});
 		
-		// When a video is triggered, display it
-		addQueryWatch( "video", setCurrentVideo );
-		
-		// Information about a video being downloaded
+		// Information about a video being downloaded.
+		// Do this after playlist so that we know the videos in the current 
+		// playlist (otherwise we discard video_status info as irrelevant)
 		addQueryWatch( "video_status", function( json ) {
 			var updatedVideos = JSON.parse( json );
 			
@@ -150,26 +166,14 @@ if ( query.sidebar !== "no" ) {
 			}
 		});
 		
+		// When a video is triggered, display it
+		// Do this after video_status so that we know if a video has an 
+		// offline url before we attempt to load it for the first time.
+		addQueryWatch( "video", setCurrentVideo );
+		
 		// Turn on/off logging
 		addQueryWatch( "log", function( value ) {
 			$(".log").toggle( value === "yes" );
-		});
-		
-		// Handle swapping between online/offline mode
-		addQueryWatch( "offline", function( value ) {
-			offline = value === "yes";
-			
-			// Toggle a global offline class for tweaking style
-			$("html").toggleClass( "offline", offline );
-			
-			// Sync with the server, if we can
-			offlineSync();
-			
-			// If we're now online and the subtitles didn't load
-			// then we try loading them again
-			if ( !offline && subtitlesFailed ) {
-				loadSubtitles();
-			}
 		});
 		
 		// Toggle the video playing
@@ -365,39 +369,28 @@ function updateQuery( q ) {
 		name = d(e[1]);
 		value = d(e[2]);
 		
-		query[ name ] = queryProcess[ name ] ? 
-			queryProcess[ name ]( value ) :
-			value;
+		query[ name ] = value;
 		
 		added.push( name );
 	}
 	
-	for ( var i = 0, l = added.length; i < l; i++ ) {
-		name = added[i];
+	for ( var i = 0, l = queryWatch.length; i < l; i++ ) {
+		var name = queryWatch[ i ][ 0 ];
+		var fn = queryWatch[ i ][ 1 ];
 		
-		log( "updateQuery: " + name );
-		
-		if ( queryWatch[ name ] ) {
-			queryWatch[ name ]( query[ name ] );
+		if ( added.indexOf( name ) != -1 ) {
+			fn( query[ name ] );
 		}
 	}
 	
 	return true;
 }
 
-function addQueryProcess( name, fn ) {
-	queryProcess[ name ] = fn;
-	
-	if ( query[ name ] ) {
-		query[ name ] = queryProcess[ name ]( query[ name ] );
-	}
-}
-
 function addQueryWatch( name, fn ) {
-	queryWatch[ name ] = fn;
+	queryWatch.push( [ name, fn ] );
 	
 	if ( query[ name ] ) {
-		queryWatch[ name ]( query[ name ] );
+		fn( query[ name ] );
 	}
 }
 
