@@ -193,10 +193,13 @@ if ( query.sidebar !== "no" ) {
 		// Watch for the Exercise button being clicked
 		$(".exercise").bind( "vclick", function() {
 			// Hide everything related to subtitles
-			$(".subtitles-area, .subtitles-loading, .subtitles-error, .subtitles-none").hide();
+			$(".subtitles-area, .subtitles-loading, .subtitles-error, .subtitles-none, .video-below").hide();
 			$(".exercise-frame").attr({
 				src: "exercises/exercises/addition_1.html?layout=lite"
 			}).show();
+			$(".exercise-below h1").text( "Addition 1" );
+			$(".exercise-below").show();
+			$(".video-wrap").slideUp( 300 );
 		});
 		
 		// Watch for the Share button being clicked
