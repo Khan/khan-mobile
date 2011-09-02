@@ -243,9 +243,16 @@ html.no-sidebar .below-video h1 {
 	white-space: nowrap;
 }
 
+html.no-sidebar .below-video.exercise-below {
+	display: none;
+}
+
+html.no-sidebar .below-video .exercise-frame-wrap {
+	overflow: hidden;
+}
+
 html.no-sidebar .below-video .exercise-frame {
 	width: 100%;
-	display: none;
 }
 
 .below-video h1 + p {

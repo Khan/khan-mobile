@@ -194,12 +194,20 @@ if ( query.sidebar !== "no" ) {
 		$(".exercise").bind( "vclick", function() {
 			// Hide everything related to subtitles
 			$(".subtitles-area, .subtitles-loading, .subtitles-error, .subtitles-none, .video-below").hide();
-			$(".exercise-frame").attr({
-				src: "exercises/exercises/addition_1.html?layout=lite"
-			}).show();
+			
 			$(".exercise-below h1").text( "Addition 1" );
 			$(".exercise-below").show();
-			$(".video-wrap").slideUp( 300 );
+			
+			$(".exercise-frame")
+				.attr( "src", "exercises/exercises/addition_1.html?layout=lite" );
+			
+			$(".exercise-frame-wrap")
+				.height( $(window).height() - 50 ); // $(".exercise-below .title-and-points").height()
+			
+			$(".video-wrap").slideUp( 300, function() {
+				log( "HEIGHT: " + $(".exercise-frame").height() );
+				log( "TRUEHEIGHT: " + ($(window).height() - $(".exercise-below .actions").height()) );
+			} );
 		});
 		
 		// Watch for the Share button being clicked
@@ -565,7 +573,7 @@ function setCurrentVideo( id, force ) {
 	
 	// Display information about the video
 	// For description, use '|| ""' because .text( null ) does nothing
-	$(".below-video")
+	$(".video-below")
 		.find("h1").text( video[ "title" ] ).end()
 		.find(".video-description").text( video[ "description" ] || "" );
 	
@@ -596,7 +604,7 @@ function showSubtitles( data ) {
 		player = $("video")[0],
 		isScroll = subtitles.hasClass("ui-scrollview-clip"),
 		subContainer = (isScroll ? subtitles.children("div.ui-scrollview-view") : subtitles),
-		description = $(".below-video > .subtitles-area > .video-description");
+		description = $(".video-below > .subtitles-area > .video-description");
 	
 	// Stop updating the old subtitle updater
 	clearInterval( subInterval );
