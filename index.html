@@ -1,5 +1,5 @@
 <!DOCTYPE html> 
-<html> 
+<html class="lite"> 
 <head>
 	<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
 	<meta name="apple-mobile-web-app-capable" content="yes" />
@@ -11,6 +11,8 @@
 	<link rel="stylesheet" href="css/jquery.mobile.scrollview.css" />
 	<link rel="stylesheet" href="css/jquery.mobile.grids.collapsible.css" />
 	<link rel="stylesheet" href="css/khan.css" />
+	<link rel="stylesheet" href="exercises/css/khan-site.css" />
+	<link rel="stylesheet" href="exercises/css/khan-exercise.css" />
 	
 	<script type="text/javascript" src="js/jquery-1.5.2.min.js"></script>
 	
@@ -29,6 +31,12 @@
 	<script type="text/javascript" src="js/tmpl.js"></script>
 	<script type="text/javascript" src="js/videotrack.js"></script>
 	<script type="text/javascript" src="js/khan.js"></script>
+	
+	<script>
+		var userExercise = {};
+		var urlBase = "exercises/";
+	</script>
+	<script type="text/javascript" src="exercises/khan-exercise.js"></script>
 </head> 
 <body>
 	<!-- The menu panel, will hold all navigation. -->

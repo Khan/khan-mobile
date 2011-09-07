@@ -189,20 +189,21 @@ if ( query.sidebar !== "no" ) {
 			// Tell the app to start downloading the file
 			updateNativeHost( {download: curVideoId} );
 		});
+		
+		$(".exercise-frame-wrap").load("exercises/exercises/khan-exercise.html");
 
 		// Watch for the Exercise button being clicked
-		$(".exercise").bind( "vclick", function() {
+		$(".exercise").bind( "vclick click", function() {
 			// Hide everything related to subtitles
 			$(".subtitles-area, .subtitles-loading, .subtitles-error, .subtitles-none, .video-below").hide();
 			
 			$(".exercise-below h1").text( "Addition 1" );
 			$(".exercise-below").show();
 			
-			$(".exercise-frame")
-				.attr( "src", "exercises/exercises/addition_1.html?layout=lite" );
-			
-			$(".exercise-frame-wrap")
-				.height( $(window).height() - 50 ); // $(".exercise-below .title-and-points").height()
+			$("<div>")
+				.data( "name", "addition_1" )
+				.appendTo( ".exercise-frame-wrap" )
+				.each( Khan.loadExercise );
 			
 			$(".video-wrap").slideUp( 300, function() {
 				log( "HEIGHT: " + $(".exercise-frame").height() );
