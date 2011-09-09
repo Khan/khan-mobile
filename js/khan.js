@@ -193,7 +193,7 @@ if ( query.sidebar !== "no" ) {
 		$(".exercise-frame-wrap").load("exercises/exercises/khan-exercise.html");
 
 		// Watch for the Exercise button being clicked
-		$(".exercise").bind( "vclick click", function() {
+		$(".show-exercise").bind( "vclick click", function() {
 			// Hide everything related to subtitles
 			$(".subtitles-area, .subtitles-loading, .subtitles-error, .subtitles-none, .video-below").hide();
 			

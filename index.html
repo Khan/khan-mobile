@@ -14,7 +14,7 @@
 	<link rel="stylesheet" href="exercises/css/khan-site.css" />
 	<link rel="stylesheet" href="exercises/css/khan-exercise.css" />
 	
-	<script type="text/javascript" src="js/jquery-1.5.2.min.js"></script>
+	<script type="text/javascript" src="js/jquery-1.6.3.min.js"></script>
 	
 	<!-- Support simulated, iPad-like, menus -->
 	<script type="text/javascript" src="js/jquery.mobile.splitview.js"></script>
@@ -34,7 +34,7 @@
 	
 	<script>
 		var userExercise = {};
-		var urlBase = "exercises/";
+		var urlBaseOverride = "exercises/";
 	</script>
 	<script type="text/javascript" src="exercises/khan-exercise.js"></script>
 </head> 
@@ -80,7 +80,7 @@
 				<div class="below-video video-below">
 					<div class="actions">
 					    <div data-role="controlgroup" data-type="horizontal" class="video-button-group">
-    					  <a data-role="button" data-inline="true" data-theme="k" data-icon="grid" class="exercise">Exercise</a>
+    					  <a data-role="button" data-inline="true" data-theme="k" data-icon="grid" class="show-exercise">Exercise</a>
     					  <a data-role="button" data-inline="true" data-theme="k" data-icon="khan-share" class="share">Share</a>
     						<a data-role="button" data-inline="true" data-theme="k" data-icon="khan-download" class="save">Download</a>
 						</div>
@@ -104,7 +104,7 @@
 					<div class="actions">
 					    <div data-role="controlgroup" data-type="horizontal" class="video-button-group">
     					  <a data-role="button" data-inline="true" data-theme="k" data-icon="grid" class="hint">Hint</a>
-    					  <a data-role="button" data-inline="true" data-theme="k" data-icon="grid" class="exercise">More Exercises</a>
+    					  <a data-role="button" data-inline="true" data-theme="k" data-icon="grid" class="show-exercise">More Exercises</a>
     					  <a data-role="button" data-inline="true" data-theme="k" data-icon="khan-share" class="show-video">Back to Video</a>
 						</div>
 					</div>
