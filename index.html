@@ -6,21 +6,17 @@
 	<meta name="apple-mobile-web-app-status-bar-style" content="black" />
 	<meta name="format-detection" content="telephone=no">
 	<title>Khan Academy</title> 
-	<link rel="stylesheet" href="css/jquery.mobile-1.0a4.1.css" />
-	<link rel="stylesheet" href="css/jquery.mobile.splitview.css" />
+	<link rel="stylesheet" href="css/jquery.mobile-1.0b3.css" />
 	<link rel="stylesheet" href="css/jquery.mobile.scrollview.css" />
 	<link rel="stylesheet" href="css/jquery.mobile.grids.collapsible.css" />
 	<link rel="stylesheet" href="css/khan.css" />
 	<link rel="stylesheet" href="exercises/css/khan-site.css" />
 	<link rel="stylesheet" href="exercises/css/khan-exercise.css" />
 	
-	<script type="text/javascript" src="js/jquery-1.6.3.min.js"></script>
-	
-	<!-- Support simulated, iPad-like, menus -->
-	<script type="text/javascript" src="js/jquery.mobile.splitview.js"></script>
+	<script type="text/javascript" src="js/jquery-1.6.3.js"></script>
 	
 	<!-- Load jQuery Mobile itself -->
-	<script type="text/javascript" src="js/jquery.mobile-1.0a4.1.js"></script>
+	<script type="text/javascript" src="js/jquery.mobile-1.0b3.js"></script>
 	
 	<!-- Needed for browsers that don't support fixed positioning. -->
 	<script type="text/javascript" src="js/jquery.easing.1.3.js"></script>
@@ -39,17 +35,6 @@
 	<script type="text/javascript" src="exercises/khan-exercise.js"></script>
 </head> 
 <body>
-	<!-- The menu panel, will hold all navigation. -->
-	<div data-role="panel" id="menu" data-id="menu" data-hash="crumbs">
-		<div data-role="page" id="playlists-page">
-			<div data-role="header" data-theme="k">
-				<h1>Playlists</h1>
-			</div>
-
-			<div data-role="content" id="playlists-content" data-loading="true"></div>
-		</div>
-	</div>
-	
 	<!-- The main panel, will show videos and exercises. -->
 	<div data-role="panel" data-id="main" id="main" data-hash="false">
 		<div data-role="page" id="home">
