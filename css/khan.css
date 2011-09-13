@@ -462,6 +462,10 @@ html.no-sidebar body {
 	-webkit-touch-callout: none;
 }
 
+input, select, button {
+	-webkit-user-select: auto;
+}
+
 .ui-btn {
 	-webkit-tap-highlight-color: rgba(0,0,0,0);
 }
