@@ -217,6 +217,11 @@ if ( query.sidebar !== "no" ) {
 			$(".video-wrap").slideDown( 300 );
 		});
 		
+		// Watch for the Hint button being clicked
+		$(".show-hint").bind( "vclick click", function() {
+			$("#hint").click();
+		});
+		
 		// Watch for the Share button being clicked
 		$(".share").bind( "vclick", function() {
 			// Collect the dimensions of the button
