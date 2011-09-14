@@ -200,6 +200,8 @@ if ( query.sidebar !== "no" ) {
 			$(".exercise-below h1").text( "Addition 1" );
 			$(".exercise-below").show();
 			
+			$("#workarea").empty();
+			
 			$("<div>")
 				.data( "name", "addition_1" )
 				.appendTo( ".exercise-frame-wrap" )
