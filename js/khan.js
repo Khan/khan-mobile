@@ -205,10 +205,16 @@ if ( query.sidebar !== "no" ) {
 				.appendTo( ".exercise-frame-wrap" )
 				.each( Khan.loadExercise );
 			
-			$(".video-wrap").slideUp( 300, function() {
-				log( "HEIGHT: " + $(".exercise-frame").height() );
-				log( "TRUEHEIGHT: " + ($(window).height() - $(".exercise-below .actions").height()) );
-			} );
+			$(".video-wrap").slideUp( 300 );
+		});
+		
+		// Watch for the Show Video button being clicked
+		$(".show-video").bind( "vclick click", function() {
+			// Hide everything related to subtitles
+			$(".subtitles-area, .video-below").show();
+			$(".exercise-below").hide();
+			
+			$(".video-wrap").slideDown( 300 );
 		});
 		
 		// Watch for the Share button being clicked
