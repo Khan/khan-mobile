@@ -193,7 +193,7 @@ if ( query.sidebar !== "no" ) {
 		$(".exercise-frame-wrap").load("exercises/exercises/khan-exercise.html");
 
 		// Watch for the Exercise button being clicked
-		$(".show-exercise").bind( "vclick click", function() {
+		$(".show-exercise").bind( "vclick", function() {
 			// Hide everything related to subtitles
 			$(".subtitles-area, .subtitles-loading, .subtitles-error, .subtitles-none, .video-below").hide();
 			
@@ -202,16 +202,36 @@ if ( query.sidebar !== "no" ) {
 			
 			$("#workarea").empty();
 			
-			$("<div>")
-				.data( "name", "addition_1" )
-				.appendTo( ".exercise-frame-wrap" )
-				.each( Khan.loadExercise );
+			// TODO: Show loading indicator
+				
+			$.oauth($.extend( {}, oauth, {
+				type: "GET",
+				url: "http://www.khanacademy.org/api/v1/user/exercises/addition_1",
+				timeout: 5000,
+				dataType: "json",
+				success: function( data ) {
+					if ( data ) {
+						userExercise = data;
+						data.exercise_model.sha1 = data.exercise;
+						
+						$("<div>")
+							.data( "name", "addition_1" )
+							.appendTo( ".exercise-frame-wrap" )
+							.each( Khan.loadExercise );
+					} else {
+						// TODO: Show error message
+					}
+				},
+				error: function( xhr, status ) {
+					// TODO: Show error message
+				}
+			}) );
 			
 			$(".video-wrap").slideUp( 300 );
 		});
 		
 		// Watch for the Show Video button being clicked
-		$(".show-video").bind( "vclick click", function() {
+		$(".show-video").bind( "vclick", function() {
 			// Hide everything related to subtitles
 			$(".subtitles-area, .video-below").show();
 			$(".exercise-below").hide();
@@ -220,7 +240,7 @@ if ( query.sidebar !== "no" ) {
 		});
 		
 		// Watch for the Hint button being clicked
-		$(".show-hint").bind( "vclick click", function() {
+		$(".show-hint").bind( "vclick", function() {
 			$("#hint").click();
 		});
 		
