@@ -215,6 +215,8 @@ if ( query.sidebar !== "no" ) {
 						data.exercise_model.sha1 = data.exercise;
 						data.tablet = true;
 						
+						Khan.prepareUserExercise( data );
+						
 						$("<div>")
 							.data( "name", "addition_1" )
 							.appendTo( ".exercise-frame-wrap" )
