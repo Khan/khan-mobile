@@ -213,6 +213,7 @@ if ( query.sidebar !== "no" ) {
 					if ( data ) {
 						userExercise = data;
 						data.exercise_model.sha1 = data.exercise;
+						data.tablet = true;
 						
 						$("<div>")
 							.data( "name", "addition_1" )
