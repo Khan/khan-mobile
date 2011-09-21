@@ -230,7 +230,9 @@ if ( query.sidebar !== "no" ) {
 				}
 			}) );
 			
-			$(".video-wrap").slideUp( 300 );
+			$(".video-wrap").slideUp( 300, function() {
+				$(".exercise-below").addClass( "fixed" );
+			});
 		});
 		
 		// Watch for the Show Video button being clicked
@@ -238,6 +240,7 @@ if ( query.sidebar !== "no" ) {
 			// Hide everything related to subtitles
 			$(".subtitles-area, .video-below").show();
 			$(".exercise-below").hide();
+			$(".exercise-below").removeClass( "fixed" );
 			
 			$(".video-wrap").slideDown( 300 );
 		});

@@ -247,6 +247,13 @@ html.no-sidebar .below-video.exercise-below {
 	display: none;
 }
 
+html.no-sidebar .below-video.exercise-below.fixed {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+}
+
 html.no-sidebar .below-video .exercise-frame-wrap {
 	overflow: hidden;
 }
