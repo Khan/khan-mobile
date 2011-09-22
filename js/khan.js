@@ -190,7 +190,13 @@ if ( query.sidebar !== "no" ) {
 			updateNativeHost( {download: curVideoId} );
 		});
 		
-		$(".exercise-frame-wrap").load("exercises/exercises/khan-exercise.html");
+		$(".exercise-frame-wrap").load("exercises/exercises/khan-exercise.html", function() {
+			$("<div class='streak-point-bar'></div>")
+				.prependTo( this )
+				.append( $("#streak-bar-container, #answer_area") );
+			
+			$("#answercontent .info-box-header").text( "Answer:" );
+		});
 
 		// Watch for the Exercise button being clicked
 		$(".show-exercise").bind( "vclick", function() {
