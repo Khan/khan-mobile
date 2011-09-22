@@ -21,6 +21,7 @@ var data,
 	offline = false,
 	userId,
 	nativeIframes = [],
+	curExercises = [ { name: "addition_1", display_name: "Addition 1" } ],
 	oauth = { consumerKey: "", consumerSecret: "", token: "", tokenSecret: "" };
 
 // Load in query string from URL
@@ -200,10 +201,17 @@ if ( query.sidebar !== "no" ) {
 
 		// Watch for the Exercise button being clicked
 		$(".show-exercise").bind( "vclick", function() {
+			if ( !curExercises || !curExercises.length ) {
+				return false;
+			}
+			
+			// TODO: Make this dependent upon a drop-down selection
+			var exercise = curExercises[0];
+			
 			// Hide everything related to subtitles
 			$(".subtitles-area, .subtitles-loading, .subtitles-error, .subtitles-none, .video-below").hide();
 			
-			$(".exercise-below h1").text( "Addition 1" );
+			$(".exercise-below h1").text( exercise.display_name );
 			$(".exercise-below").show();
 			
 			$("#workarea").empty();
@@ -212,7 +220,7 @@ if ( query.sidebar !== "no" ) {
 				
 			$.oauth($.extend( {}, oauth, {
 				type: "GET",
-				url: "http://www.khanacademy.org/api/v1/user/exercises/addition_1",
+				url: "http://www.khanacademy.org/api/v1/user/exercises/" + exercise.name,
 				timeout: 5000,
 				dataType: "json",
 				success: function( data ) {
@@ -224,7 +232,7 @@ if ( query.sidebar !== "no" ) {
 						Khan.prepareUserExercise( data );
 						
 						$("<div>")
-							.data( "name", "addition_1" )
+							.data( "name", exercise.name )
 							.appendTo( ".exercise-frame-wrap" )
 							.each( Khan.loadExercise );
 					} else {
@@ -542,6 +550,27 @@ function setCurrentVideo( id, force ) {
 	
 	// Remember the ID of the video that we're playing
 	curVideoId = id;
+	
+	$(".show-exercise").addClass("ui-disabled");
+	
+	$.oauth($.extend( {}, oauth, {
+		type: "GET",
+		url: "http://www.khanacademy.org/api/v1/videos/" + curVideoId + "/exercises",
+		timeout: 5000,
+		dataType: "json",
+		success: function( data ) {
+			curExercises = data;
+			
+			if ( data && data.length ) {
+				$(".show-exercise").removeClass("ui-disabled");
+			}
+			
+			log( JSON.stringify( data ) );
+		},
+		error: function( xhr, status ) {
+			// TODO: Show error message
+		}
+	}) );
 	
 	// Find the next video to show
 	var playlist = playlists[ curPlaylistId ];
