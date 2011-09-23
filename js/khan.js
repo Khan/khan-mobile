@@ -509,6 +509,12 @@ function setCurrentVideo( id, force ) {
 	
 	// If a file was found, play it
 	if ( url ) {
+		// Hide any displayed overlays
+		hideOverlays();
+		
+		// Make sure the video player is visible
+		$(player).show();
+		
 		// Load it into the player
 		// Note: we re-use the existing player to save on resources
 		player.src = url;
@@ -522,9 +528,6 @@ function setCurrentVideo( id, force ) {
 		if ( pendingSeek + 5 >= video.duration ) {
 			pendingSeek = null;
 		}
-		
-		// Hide any displayed overlays
-		hideOverlays();
 		
 		// Show a loading message
 		$(".loading").show();
@@ -812,7 +815,7 @@ function showOverlay( o ) {
 
 function hideOverlays() {
 	$(".overlay").removeClass( "shown" );
-	$("video").attr( "controls", true );
+	$("video").attr( "controls", "controls" );
 }
 
 // Show an error message to the user
