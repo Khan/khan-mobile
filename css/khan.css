@@ -133,10 +133,10 @@ video {
 .below-video p.video-description {
     margin: 1em 0;
     overflow: hidden;
-    text-overflow: ellipsis; 
+    text-overflow: ellipsis;
     /* Only show two lines of the description (in webkit) and elide it */
-    display: -webkit-box; 
-    -webkit-line-clamp: 2; 
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
 }
 html.no-sidebar .below-video .subtitles-area {
@@ -203,7 +203,7 @@ html.no-sidebar .below-video .subtitles-none {
 	text-shadow: none;
 	z-index: 11;
 	position: relative;
-	
+
 	color: #8bad3f;
 	text-shadow: 0 1px 0 #fdfff3;
 	background: #f5fede;
@@ -224,7 +224,7 @@ html.no-sidebar .below-video .title-and-points .energy-points-badge {
     float: left;
 	display: none;
 }
-    
+
 html.no-sidebar .below-video .title {
     float: left;
 	text-overflow: ellipsis;
@@ -264,8 +264,8 @@ html.no-sidebar .below-video h1 {
 	color: 					#fff;
 	font-weight: bold;
 	text-shadow: 0 -1px 1px #415e08;
-	background-image: -moz-linear-gradient(top, 
-							#78a90c, 
+	background-image: -moz-linear-gradient(top,
+							#78a90c,
 							#608d0c);
 	background-image: -webkit-gradient(linear,left top,left bottom,
 		color-stop(0, 		#78a90c),
@@ -315,11 +315,11 @@ html.no-sidebar .below-video h1 {
 	color: 					#fff;
 	text-shadow: 0 -1px 0 	#425c24;
 	background: 			#415e08;
-	background-image: -moz-linear-gradient(top, 
-							#7ca44c, 
+	background-image: -moz-linear-gradient(top,
+							#7ca44c,
 							#538516);
-	background-image: -webkit-gradient( linear,left top,left bottom, 
-	                        color-stop(0, #7ca44c), 
+	background-image: -webkit-gradient( linear,left top,left bottom,
+	                        color-stop(0, #7ca44c),
 	                        color-stop(1, #538516));
 	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#7ca44c', EndColorStr='#538516')";
 }
@@ -332,8 +332,8 @@ html.no-sidebar .below-video h1 {
 	color: 					#fff;
 	text-shadow: 0 -1px 0 	#293b05;
 	background: 			#415e08;
-	background-image: -moz-linear-gradient(top, 
-							#80BC10, 
+	background-image: -moz-linear-gradient(top,
+							#80BC10,
 							#70A40E);
 	background-image: -webkit-gradient(linear,left top,left bottom,
 		color-stop(0, 		#80BC10),
@@ -349,8 +349,8 @@ html.no-sidebar .below-video h1 {
 	color: 					#fff;
 	text-shadow: 0 -1px 0 	#293b05;
 	background: 			#415e08;
-	background-image: -moz-linear-gradient(top, 
-							#749348, 
+	background-image: -moz-linear-gradient(top,
+							#749348,
 							#3f6c00);
 	background-image: -webkit-gradient(linear,left top,left bottom,
 		color-stop(0, 		#749348),
@@ -439,8 +439,8 @@ html.no-sidebar body {
 	/* If we don't set the body's background color to the same as .ui-body-k,
 	   an artifact (with body's color) appears when rotating the device. */
 	background-color: #fefffc;
-	 /* Need explicit font size to size subtitles appropriately. Need 
-	    !important to override jQuery Mobile's separate text size for 
+	 /* Need explicit font size to size subtitles appropriately. Need
+	    !important to override jQuery Mobile's separate text size for
 	    landscape/portrait. */
 	font-size: 1.0em !important;
 }
@@ -482,7 +482,7 @@ html.no-sidebar body {
     text-shadow: none;
     position: relative;
     top: -.1em;
-    
+
     text-shadow: 0 -1px 0 rgba(0,0,0,.6);
 }
 

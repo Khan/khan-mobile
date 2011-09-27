@@ -2,7 +2,7 @@ function VideoStats( id, player ) {
 	this.curVideoId = id;
 	this.player = player;
 }
-	
+
 VideoStats.prototype = {
 	dPercentGranularity: 0.05,
 	dPercentLastSaved: 0.0,
@@ -43,7 +43,7 @@ VideoStats.prototype = {
 
 		// Listen to state changes in player to detect final end of video
 		this.listenToPlayerStateChange();
-		
+
 		if (!this.fIntervalStarted)
 		{
 			// If the player isn't ready yet or if it is replaced in the future,
@@ -71,19 +71,19 @@ VideoStats.prototype = {
 
 	listenToPlayerStateChange: function() {
 		if (!this.player || this.player.fStateChangeHookAttached) return;
-		
+
 		var status = this;
-		
+
 		if (!this.fAlternativePlayer) {
 			window.onYouTubePlayerStateChange = function(state) {
 			    status.playerStateChange(state);
 			};
-			
+
 			// YouTube player is ready, add event listener
 			this.player.addEventListener("onStateChange", "onYouTubePlayerStateChange");
 
 		} else {
-			
+
 			$(this.player).bind( "play", function() {
 				status.playerStateChange( 1 );
 			}).bind( "pause", function() {
@@ -92,7 +92,7 @@ VideoStats.prototype = {
 				status.playerStateChange( 0 );
 			});
 		}
-		
+
 		// Multiple calls should be idempotent
 		this.player.fStateChangeHookAttached = true;
 	},
@@ -133,11 +133,11 @@ VideoStats.prototype = {
 			id = this.curVideoId,
 			secondsWatched = this.getSecondsWatchedRestrictedByPageTime(),
 			lastSecondWatched = this.getSecondsWatched();
-		
+
 		// Save the watch position data for later
 		storage.watch[ id ] = { secondsWatched: secondsWatched, lastSecondWatched: lastSecondWatched };
 		saveStorage();
-		
+
 		if ( !offline ) {
 			log("save:3");
 			saveWatch({
@@ -154,9 +154,9 @@ VideoStats.prototype = {
 					self.dtSinceSave = dtSinceSaveBeforeError;
 				}
 			});
-			
+
 			this.dtSinceSave = new Date();
-		
+
 		// Make sure that we resume trying to save
 		} else {
 			log("save:4");
@@ -169,17 +169,17 @@ VideoStats.prototype = {
 		log("finishSave:0");
 		this.fSaving = false;
 		this.dPercentLastSaved = percent;
-		
+
 		if ( !dict_json ) {
 			return;
 		}
-		
+
 		if ( typeof updateNativeHost === "function" && dict_json.action_results ) {
 			log("finishSave: updating native host");
 			updateNativeHost( {action_results: JSON.stringify( dict_json.action_results )} );
 			log("finishSave: updated native host");
 		}
-		
+
 		// XXX: From the old way of tracking points - not relevant any more?
 		if (dict_json.video_points && dict_json.user_points_html)
 		{
@@ -188,7 +188,7 @@ VideoStats.prototype = {
 			$(".video-energy-points-current", jelPoints).text(dict_json.video_points);
 			$("#user-points-container").html(dict_json.user_points_html);
 		}
-		
+
 		// Update point display
 		// TODO verify that current user (oauth) hasn't changed since request
 		// began
@@ -206,7 +206,7 @@ VideoStats.prototype = {
 
 		this.player = $("#flvPlayer").get(0);
 		if (!this.player) return;
-		
+
 		var self = this;
 
 		// Simulate the necessary YouTube APIs for the alternative player
@@ -215,7 +215,7 @@ VideoStats.prototype = {
 
 		this.fAlternativePlayer = true;
 	},
-	
+
 	prepareVideoPlayer: function() {
 		this.player = $("video").get(0);
 		if (!this.player) return;
@@ -250,10 +250,10 @@ function onYouTubePlayerReady(playerID) {
 		VideoControls.player = player;
 		$(VideoControls).trigger('playerready');
 	}
-	
-	// The UniSub (aka mirosubs) widget replaces the YouTube player with a copy 
-	// and that will cause onYouTubePlayerReady() to be called again.  So, we trigger 
-	// 'playerready' events on any objects that are using the player so that they can 
+
+	// The UniSub (aka mirosubs) widget replaces the YouTube player with a copy
+	// and that will cause onYouTubePlayerReady() to be called again.  So, we trigger
+	// 'playerready' events on any objects that are using the player so that they can
 	// take appropriate action to use the new player.
 	var stats = new VideoStats( playerID, player );
 	$(stats).trigger('playerready');
@@ -264,7 +264,7 @@ function offlineSync() {
 	if ( !offline && oauth.token && oauth.consumerKey ) {
 		for ( var id in storage.watch ) {
 			var watched = storage.watch[ id ];
-			
+
 			// We have the data, time to sync it
 			if ( watched ) {
 				saveWatch({
@@ -272,7 +272,7 @@ function offlineSync() {
 					lastSecondWatched: watched.lastSecondWatched,
 					secondsWatched: watched.secondsWatched
 				});
-			
+
 			// Data no longer exists, strike from the sync queue
 			} else {
 				clearSync( id );
@@ -287,10 +287,10 @@ function saveWatch( opt ) {
 		if ( opt.error ) {
 			opt.error();
 		}
-		
+
 		return;
 	}
-	
+
 	$.oauth($.extend( {}, oauth, {
 		type: "POST",
 		url: "http://www.khanacademy.org/api/v1/user/videos/" + opt.id + "/log",
@@ -304,14 +304,14 @@ function saveWatch( opt ) {
 			// Synced with server, wipe out sync queue
 			log("save success");
 			clearSync( opt.id );
-			
+
 			if ( opt.success ) {
 				opt.success( data );
 			}
 		},
 		error: function( xhr, status ) {
 			log( "save error: " + status );
-			
+
 			if ( opt.error ) {
 				opt.error();
 			}
