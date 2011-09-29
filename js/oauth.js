@@ -825,9 +825,6 @@ try {
 		if (options.url.indexOf('?') > -1)
 			options.url = options.url.substr(0, options.url.indexOf('?'));
 		
-
-		options.cache = false;
-		
 		return options;
 	}
 })(window, document, jQuery);

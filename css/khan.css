@@ -226,7 +226,7 @@ html.no-sidebar .below-video .title-and-points .energy-points-badge {
 }
     
 html.no-sidebar .below-video .title {
-    float: left;
+	float: left;
 	text-overflow: ellipsis;
 	max-width: 350px;
 	overflow: hidden;
@@ -240,7 +240,26 @@ html.no-sidebar .below-video .title {
 html.no-sidebar .below-video h1 {
 	display: inline;
 	font-size: 1.2em;
-    white-space: nowrap;
+	white-space: nowrap;
+}
+
+html.no-sidebar .below-video.exercise-below {
+	display: none;
+}
+
+html.no-sidebar .below-video.exercise-below.fixed {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+}
+
+html.no-sidebar .below-video .exercise-frame-wrap {
+	overflow: hidden;
+}
+
+html.no-sidebar .below-video .exercise-frame {
+	width: 100%;
 }
 
 .below-video h1 + p {
@@ -253,6 +272,16 @@ html.no-sidebar .below-video h1 {
 	padding-top: 8px;
 	position: relative;
 	z-index: 2;
+}
+
+.streak-point-bar {
+	background: #EEE;
+	height: 50px;
+	width: 100%;
+	position: relative;
+	margin-bottom: 10px;
+	border-bottom: 1px solid #BBB;
+	-webkit-box-shadow: 0px 2px 6px rgba(0,0,0,.22);
 }
 
 /* JQuery Mobile Khan Skin
@@ -448,6 +477,10 @@ html.no-sidebar body {
 * {
 	-webkit-user-select: none;
 	-webkit-touch-callout: none;
+}
+
+input, select, button {
+	-webkit-user-select: auto;
 }
 
 .ui-btn {

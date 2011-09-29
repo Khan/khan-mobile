@@ -21,6 +21,7 @@ var data,
 	offline = false,
 	userId,
 	nativeIframes = [],
+	curExercises = [ { name: "addition_1", display_name: "Addition 1" } ],
 	oauth = { consumerKey: "", consumerSecret: "", token: "", tokenSecret: "" };
 
 // Load in query string from URL
@@ -190,6 +191,79 @@ if ( query.sidebar !== "no" ) {
 			updateNativeHost( {download: curVideoId} );
 		});
 		
+		$(".exercise-frame-wrap").load("exercises/exercises/khan-exercise.html", function() {
+			$("<div class='streak-point-bar'></div>")
+				.prependTo( this )
+				.append( $("#streak-bar-container, #answer_area") );
+			
+			$("#answercontent .info-box-header").text( "Answer:" );
+		});
+
+		// Watch for the Exercise button being clicked
+		$(".show-exercise").bind( "vclick", function() {
+			if ( !curExercises || !curExercises.length ) {
+				return false;
+			}
+			
+			// TODO: Make this dependent upon a drop-down selection
+			var exercise = curExercises[0];
+			
+			// Hide everything related to subtitles
+			$(".subtitles-area, .subtitles-loading, .subtitles-error, .subtitles-none, .video-below").hide();
+			
+			$(".exercise-below h1").text( exercise.display_name );
+			$(".exercise-below").show();
+			
+			$("#workarea").empty();
+			
+			// TODO: Show loading indicator
+				
+			$.oauth($.extend( {}, oauth, {
+				type: "GET",
+				url: "http://www.khanacademy.org/api/v1/user/exercises/" + exercise.name,
+				timeout: 5000,
+				dataType: "json",
+				success: function( data ) {
+					if ( data ) {
+						userExercise = data;
+						data.exercise_model.sha1 = data.exercise;
+						data.tablet = true;
+						
+						Khan.prepareUserExercise( data );
+						
+						$("<div>")
+							.data( "name", exercise.name )
+							.appendTo( ".exercise-frame-wrap" )
+							.each( Khan.loadExercise );
+					} else {
+						// TODO: Show error message
+					}
+				},
+				error: function( xhr, status ) {
+					// TODO: Show error message
+				}
+			}) );
+			
+			$(".video-wrap").slideUp( 300, function() {
+				$(".exercise-below").addClass( "fixed" );
+			});
+		});
+		
+		// Watch for the Show Video button being clicked
+		$(".show-video").bind( "vclick", function() {
+			// Hide everything related to subtitles
+			$(".subtitles-area, .video-below").show();
+			$(".exercise-below").hide();
+			$(".exercise-below").removeClass( "fixed" );
+			
+			$(".video-wrap").slideDown( 300 );
+		});
+		
+		// Watch for the Hint button being clicked
+		$(".show-hint").bind( "vclick", function() {
+			$("#hint").click();
+		});
+		
 		// Watch for the Share button being clicked
 		$(".share").bind( "vclick", function() {
 			// Collect the dimensions of the button
@@ -308,18 +382,25 @@ if ( query.sidebar !== "no" ) {
 		$(window)
 			// Make sure the video container is the right size ratio
 			.resize(function() {
+				var height = $(window).height();
+
 				// Make sure the video is kept to the proper aspect ratio
-				$(".video-wrap").height( $(window).width() / 16.0 * 9.0 );
+				$(".video-wrap").height( height / 16.0 * 9.0 );
 				
 				// Adjust the height of the subtitle viewport
-				var subtitles = $(".subtitles");
-				subtitles.height( $(window).height() - subtitles.offset().top );
+				var subtitles = $(".subtitles"),
+					top = subtitles.offset().top;
+
+				subtitles.height( height - top );
 
 				// Jump to the active subtitle
 				subtitles.scrollTo( subtitles.find(".subtitle.active")[0] );
+
+				// Adjust the height of the exercise viewport
+				$(".exercise-frame").height( height - top ).width( $(window).width() );
 				
 				// Show more of the video description if we have enough window height available
-				$(".video-description").css("-webkit-line-clamp", $(window).height() > 800 ? "4" : "2" );
+				$(".video-description").css("-webkit-line-clamp", height > 800 ? "4" : "2" );
 			})
 			// Also update immediately
 			.resize();
@@ -470,6 +551,27 @@ function setCurrentVideo( id, force ) {
 	// Remember the ID of the video that we're playing
 	curVideoId = id;
 	
+	$(".show-exercise").addClass("ui-disabled");
+	
+	$.oauth($.extend( {}, oauth, {
+		type: "GET",
+		url: "http://www.khanacademy.org/api/v1/videos/" + curVideoId + "/exercises",
+		timeout: 5000,
+		dataType: "json",
+		success: function( data ) {
+			curExercises = data;
+			
+			if ( data && data.length ) {
+				$(".show-exercise").removeClass("ui-disabled");
+			}
+			
+			log( JSON.stringify( data ) );
+		},
+		error: function( xhr, status ) {
+			// TODO: Show error message
+		}
+	}) );
+	
 	// Find the next video to show
 	var playlist = playlists[ curPlaylistId ];
 	nextVideoId = playlist && playlist.videos.length > video.position ? playlist.videos[ video.position ].youtube_id : null;
@@ -549,7 +651,7 @@ function setCurrentVideo( id, force ) {
 	
 	// Display information about the video
 	// For description, use '|| ""' because .text( null ) does nothing
-	$(".below-video")
+	$(".video-below")
 		.find("h1").text( video[ "title" ] ).end()
 		.find(".video-description").text( video[ "description" ] || "" );
 	
@@ -580,7 +682,7 @@ function showSubtitles( data ) {
 		player = $("video")[0],
 		isScroll = subtitles.hasClass("ui-scrollview-clip"),
 		subContainer = (isScroll ? subtitles.children("div.ui-scrollview-view") : subtitles),
-		description = $(".below-video > .subtitles-area > .video-description");
+		description = $(".video-below > .subtitles-area > .video-description");
 	
 	// Stop updating the old subtitle updater
 	clearInterval( subInterval );
