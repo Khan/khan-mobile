@@ -89,6 +89,11 @@ if ( query.sidebar !== "no" ) {
 				
 				// Get the user storage
 				loadStorage();
+				
+				// Allow the user to do an exercise if one exists
+				if ( userExercise ) {
+					$(".show-exercise").removeClass("ui-disabled");
+				}
 			
 			// User is logging out
 			} else {
@@ -98,6 +103,11 @@ if ( query.sidebar !== "no" ) {
 				
 				// Reset the storage object
 				loadStorage();
+				
+				if ( $(".exercise-below").is(":visible") ) {
+					$(".show-video").click();
+					$(".show-exercise").addClass( "ui-disabled" );
+				}
 			}
 			
 			// Sync with the server on load
@@ -561,7 +571,7 @@ function setCurrentVideo( id, force ) {
 		success: function( data ) {
 			curExercises = data;
 			
-			if ( data && data.length ) {
+			if ( data && data.length && oauth.token ) {
 				$(".show-exercise").removeClass("ui-disabled");
 			}
 			
