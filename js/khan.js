@@ -30,7 +30,7 @@ updateQuery( window.location.search.substring(1) );
 // Temporarily disable loading of pages based upon URL
 // TODO: Make this relevant, possibly delay loading of jQuery Mobile until
 //       the data has been loaded from the server.
-if ( query.sidebar !== "no" ) {
+if ( query.sidebar === "yes" ) {
 	$.mobile.hashListeningEnabled = false;
 
 	$(function() {
