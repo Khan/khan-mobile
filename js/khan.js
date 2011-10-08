@@ -136,9 +136,11 @@ if ( query.sidebar !== "no" ) {
 		// load the data for later usage
 		addQueryWatch( "playlist", function( json ) {
 			// Load the playlist data for later use
-			var playlist = JSON.parse( json );
-			loadPlaylists( [ playlist ] );
-			curPlaylistId = playlist.youtube_id;
+			if ( json ) {
+				var playlist = JSON.parse( json );
+				loadPlaylists( [ playlist ] );
+				curPlaylistId = playlist.youtube_id;
+			}
 		});
 		
 		// Information about a video being downloaded.
