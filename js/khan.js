@@ -30,7 +30,7 @@ updateQuery( window.location.search.substring(1) );
 // Temporarily disable loading of pages based upon URL
 // TODO: Make this relevant, possibly delay loading of jQuery Mobile until
 //       the data has been loaded from the server.
-if ( query.sidebar !== "no" ) {
+if ( query.sidebar === "yes" ) {
 	$.mobile.hashListeningEnabled = false;
 
 	$(function() {
@@ -147,9 +147,11 @@ if ( query.sidebar !== "no" ) {
 		// load the data for later usage
 		addQueryWatch( "playlist", function( json ) {
 			// Load the playlist data for later use
-			var playlist = JSON.parse( json );
-			loadPlaylists( [ playlist ] );
-			curPlaylistId = playlist.youtube_id;
+			if ( json ) {
+				var playlist = JSON.parse( json );
+				loadPlaylists( [ playlist ] );
+				curPlaylistId = playlist.youtube_id;
+			}
 		});
 		
 		// Information about a video being downloaded.
@@ -621,6 +623,12 @@ function setCurrentVideo( id, force ) {
 	
 	// If a file was found, play it
 	if ( url ) {
+		// Hide any displayed overlays
+		hideOverlays();
+		
+		// Make sure the video player is visible
+		$(player).show();
+		
 		// Load it into the player
 		// Note: we re-use the existing player to save on resources
 		player.src = url;
@@ -634,9 +642,6 @@ function setCurrentVideo( id, force ) {
 		if ( pendingSeek + 5 >= video.duration ) {
 			pendingSeek = null;
 		}
-		
-		// Hide any displayed overlays
-		hideOverlays();
 		
 		// Show a loading message
 		$(".loading").show();
@@ -924,7 +929,7 @@ function showOverlay( o ) {
 
 function hideOverlays() {
 	$(".overlay").removeClass( "shown" );
-	$("video").attr( "controls", true );
+	$("video").attr( "controls", "controls" );
 }
 
 // Show an error message to the user

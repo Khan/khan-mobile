@@ -487,15 +487,15 @@ input, select, button {
 	-webkit-tap-highlight-color: rgba(0,0,0,0);
 }
 
-.ui-icon-khan-subtitles {
+.ui-icon.ui-icon-khan-subtitles {
     background-image: url(../img/subtitles.png);
 }
 
-.ui-icon-khan-download {
+.ui-icon.ui-icon-khan-download {
     background-image: url(../img/download.png);
 }
 
-.ui-icon-khan-share {
+.ui-icon.ui-icon-khan-share {
     background-image: url(../img/share.png);
 }
 
