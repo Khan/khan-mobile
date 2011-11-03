@@ -29,7 +29,7 @@ updateQuery( window.location.search.substring(1) );
 // Temporarily disable loading of pages based upon URL
 // TODO: Make this relevant, possibly delay loading of jQuery Mobile until
 //       the data has been loaded from the server.
-if ( query.sidebar !== "no" ) {
+if ( query.sidebar === "yes" ) {
 	$.mobile.hashListeningEnabled = false;
 
 	$(function() {
@@ -57,7 +57,6 @@ if ( query.sidebar !== "no" ) {
 	$(function() {
 		// We're not showing the sidebar or doing the splitview
 		$("html").removeClass("splitview").addClass("no-sidebar");
-		$("#menu").remove();
 		
 		// Remove the extra main panel
 		$("#main > div").unwrap();
@@ -311,7 +310,7 @@ if ( query.sidebar !== "no" ) {
 			// Make sure the video container is the right size ratio
 			.resize(function() {
 				// Make sure the video is kept to the proper aspect ratio
-				$(".video-wrap").height( $(window).width() / 16.0 * 9.0 );
+				$(".video-wrap").height( $('#home').width() / 16.0 * 9.0 );
 				
 				// Adjust the height of the subtitle viewport
 				var subtitles = $(".subtitles");
