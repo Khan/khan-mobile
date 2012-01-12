@@ -507,7 +507,7 @@ function setCurrentVideo( id, force ) {
 	
 	// Get the video file URL to play
 	var url = status && status.download_status && status.download_status.offline_url ||
-		video.download_urls && video.download_urls.mp4 || null;
+		video.download_urls && video.download_urls.m3u8 || null;
 	
 	// If a file was found, play it
 	if ( url ) {
@@ -780,7 +780,7 @@ function updateStatus() {
 	
 	// Disable if downloading or downloaded
 	// Or if there's no video to download
-	if ( downloadStatus || !(video.download_urls && video.download_urls.mp4) ) {
+	if ( downloadStatus || !(video.download_urls && video.download_urls.m3u8) ) {
 		disable = true;
 	}
 
