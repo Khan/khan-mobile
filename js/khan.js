@@ -244,7 +244,7 @@ if ( query.sidebar === "yes" ) {
 			updateNativeHost( {playing: "yes"} );
 
 			// Make sure any overlays are hidden when we start playing a video
-			hideOverlay();
+			hideOverlays();
 		
 		// Notify the app when the user hits pause
 		}).bind( "pause", function() {
