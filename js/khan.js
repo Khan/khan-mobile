@@ -803,6 +803,11 @@ function updateStatus() {
 
 // Check to see if a pending seek is able to be resumed
 function isSeekable( seekableRanges ) {
+	//on android, videos appear to always have seekableRanges of this format. Allow a seek.
+	if (seekableRanges.length == 1 && seekableRanges.start(0) == 0 && seekableRanges.end(0) == 1) {
+		return true;
+	}
+
 	for ( var i = 0, l = seekableRanges.length; i < l; i++ ) {
 		if ( seekableRanges.start(i) <= pendingSeek && pendingSeek <= seekableRanges.end(i) ) {
 			return true;
