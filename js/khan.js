@@ -506,7 +506,8 @@ function setCurrentVideo( id, force ) {
 	
 	// Get the video file URL to play
 	var url = status && status.download_status && status.download_status.offline_url ||
-		video.download_urls && video.download_urls.m3u8 || null;
+		m3u8Supported() && video.download_urls && video.download_urls.m3u8 || 
+		video.download_urls && video.download_urls.mp4 || null;
 	
 	// If a file was found, play it
 	if ( url ) {
@@ -770,6 +771,11 @@ function showSubtitles( data ) {
 	}
 }
 
+function m3u8Supported() {
+	var result = $("video")[0].canPlayType('application/vnd.apple.mpegurl;codecs="avc1.42E01E"');
+	return result == "probably";
+}
+
 // Update the indicator of how downloads are going
 function updateStatus() {
 	var status = videoStatus[ curVideoId ],
@@ -779,7 +785,7 @@ function updateStatus() {
 	
 	// Disable if downloading or downloaded
 	// Or if there's no video to download
-	if ( downloadStatus || !(video.download_urls && video.download_urls.m3u8) ) {
+	if ( downloadStatus || !(video.download_urls && (video.download_urls.mp4 || (m3u8Supported() && video.download_urls.m3u8)))) {
 		disable = true;
 	}
 
