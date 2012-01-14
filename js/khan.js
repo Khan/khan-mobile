@@ -786,7 +786,7 @@ function updateStatus() {
 	
 	// Disable if downloading or downloaded
 	// Or if there's no video to download
-	if ( downloadStatus || !(video.download_urls && (video.download_urls.mp4 || (m3u8Supported() && video.download_urls.m3u8)))) {
+	if ( downloadStatus || !(video.download_urls && video.download_urls.mp4)) {
 		disable = true;
 	}
 
