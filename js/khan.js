@@ -17,6 +17,7 @@ var data,
 	scrollingProgrammatically = false,
 	autoResume = false,
 	subtitlesFailed = false,
+	fallbackOnMP4 = true,
 	videoStats,
 	offline = false,
 	userId,
@@ -181,6 +182,10 @@ if ( query.sidebar !== "no" ) {
 		// Toggle the video playing
 		addQueryWatch( "playing", function( value ) {
 			$("video")[0][ value === "no" ? "pause" : "play" ]();
+		});
+		
+		addQueryWatch( "fallback_mp4", function( value ) {
+			fallbackOnMP4 = (value === "yes");
 		});
 		
 		// Watch for the Save/Download button being clicked
@@ -508,7 +513,7 @@ function setCurrentVideo( id, force ) {
 	// Get the video file URL to play
 	var url = status && status.download_status && status.download_status.offline_url ||
 		m3u8Supported() && video.download_urls && video.download_urls.m3u8 || 
-		video.download_urls && video.download_urls.mp4 || null;
+		fallbackOnMP4 && video.download_urls && video.download_urls.mp4 || null;
 	
 	// If a file was found, play it
 	if ( url ) {
