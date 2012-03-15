@@ -466,6 +466,26 @@ html.no-sidebar body {
     background-image: url(../img/share.png);
 }
 
+@media only screen and (-webkit-min-device-pixel-ratio: 2) {
+	.ui-icon-khan-subtitles,
+	.ui-icon-khan-download,
+	.ui-icon-khan-share {
+		background-size: 100%;
+	}
+
+	.ui-icon-khan-subtitles {
+	    background-image: url(../img/subtitles@2x.png);
+	}
+
+	.ui-icon-khan-download {
+	    background-image: url(../img/download@2x.png);
+	}
+
+	.ui-icon-khan-share {
+	    background-image: url(../img/share@2x.png);
+	}
+}
+
 .video-button-group { display: inline; }
 
 .energy-points-badge {
