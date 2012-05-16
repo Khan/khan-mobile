@@ -396,7 +396,7 @@ function updateQuery( q ) {
 function addQueryWatch( name, fn ) {
 	queryWatch.push( [ name, fn ] );
 	
-	if ( query[ name ] ) {
+	if ( query[ name ] != null ) {
 		fn( query[ name ] );
 	}
 }

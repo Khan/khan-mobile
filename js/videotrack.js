@@ -310,8 +310,13 @@ function saveWatch( opt ) {
 			}
 		},
 		error: function( xhr, status ) {
-			log( "save error: " + status );
-			
+			log( "save error: " + status + " with http status " + xhr.status );
+
+			if ( xhr.status === 401 ) {
+				// Probably an expired OAuth token (FB expires after 2 months)
+				updateNativeHost({ signout: "yes" });
+			}
+
 			if ( opt.error ) {
 				opt.error();
 			}
