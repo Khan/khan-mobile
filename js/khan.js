@@ -35,7 +35,7 @@ if ( query.sidebar !== "no" ) {
 
 	$(function() {
 		// Pull in all the playlist and video data
-		$.getJSON( "http://www.khanacademy.org/api/videolibrary?callback=?", function( result ) {
+		$.getJSON( "http://www.khanacademy.org/api/v1/playlists/library/list?callback=?", function( result ) {
 			// Load the playlist data for later use
 			loadPlaylists( result );
 		
@@ -410,7 +410,7 @@ function loadPlaylists( result ) {
 
 	// Build up an index of the playlists for fast reference
 	for ( var p = 0, pl = data.length; p < pl; p++ ) {
-		playlists[ data[p].youtube_id ] = data[p];
+		playlists[ data[p].id ] = data[p];
 
 		// Do the same thing for the videos
 		var vids = data[p].videos;

@@ -111,7 +111,7 @@
 			<li class="ui-btn ui-btn-icon-right ui-li ui-btn-up-c" data-theme="c">
 				<div class="ui-btn-inner ui-li">
 					<div class="ui-btn-text">
-						<a href="#list-<%= list.youtube_id %>" class="ui-link-inherit">
+						<a href="#list-<%= list.id %>" class="ui-link-inherit">
 							<h3 class="ui-li-heading"><%= list.title %></h3>
 							<p class="ui-li-desc"><%= list.description %></p>
 						</a>
@@ -125,7 +125,7 @@
 
 	<!-- Template for constructing a page (w/ listview) of videos. -->
 	<script type="text/html" id="playlist-tmpl">
-		<div data-role="page" id="list-<%= youtube_id %>" data-url="list-<%= youtube_id %>" class="playlist">
+		<div data-role="page" id="list-<%= id %>" data-url="list-<%= id %>" class="playlist">
 			<div data-role="header" data-theme="k">
 				<h1><%= title %></h1>
 			</div>
