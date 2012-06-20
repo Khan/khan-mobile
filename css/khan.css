@@ -86,6 +86,11 @@ video {
 	z-index: 20;
 }
 
+iframe {
+	/* We use iframes to communicate with the native host */
+	display: none;
+}
+
 .overlay {
 	color: #ddd;
 	background-color: rgba(0, 0, 0, 0.5);
