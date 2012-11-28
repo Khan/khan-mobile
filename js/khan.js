@@ -652,7 +652,7 @@ function showSubtitles( data ) {
 		clearInterval( scrollResume );
 		
 		// Grab the time to jump to from the subtitle
-		pendingSeek = parseFloat( $(e.target).parent().data( "time" ) );
+		pendingSeek = parseFloat( $(e.target).parent().data( "milliseconds" ) ) / 1000;
 		
 		// Start playing the video, if we haven't done so already
 		seekFn = function() {
@@ -676,8 +676,8 @@ function showSubtitles( data ) {
 		// We need to round the number to fix floating point issues
 		var curTime = (pendingSeek || player.currentTime).toFixed(2);
 		
-		for ( var i = 1, l = li.length; i < l; i++ ) {
-			var liTime = $(li[i]).data("time");
+		for ( var i = 0, l = li.length; i < l; i++ ) {
+			var liTime = parseFloat($(li[i]).data("milliseconds")) / 1000;
 			
 			// We're looking for the next highest element before backtracking
 			if ( liTime > curTime && liTime !== curTime ) {
