@@ -113,7 +113,7 @@
 	<script type="text/html" id="subtitles-tmpl">
 		<%each sub in subtitles %>
 			<% if ( sub.text ) { %>
-				<div class="subtitle" data-time="<%= sub.start_time %>"><span class="time"><%= Math.floor(Math.round(sub.start_time) / 60) %>:<%= pad( Math.round(sub.start_time) % 60 ) %></span> <a href=""><%= sub.text %></a></div>
+				<div class="subtitle" data-milliseconds="<%= sub.start_time %>"><span class="time"><%= Math.floor(sub.start_time / 60000) %>:<%= pad( Math.floor(sub.start_time / 1000) % 60 ) %></span> <a href=""><%= sub.text %></a></div>
 			<% } %>
 		<% } %>
 	</script>
