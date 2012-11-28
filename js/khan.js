@@ -676,7 +676,7 @@ function showSubtitles( data ) {
 		// We need to round the number to fix floating point issues
 		var curTime = (pendingSeek || player.currentTime).toFixed(2);
 		
-		for ( var i = 0, l = li.length; i < l; i++ ) {
+		for ( var i = 1, l = li.length; i < l; i++ ) {
 			var liTime = parseFloat($(li[i]).data("milliseconds")) / 1000;
 			
 			// We're looking for the next highest element before backtracking
