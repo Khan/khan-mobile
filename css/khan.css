@@ -139,6 +139,7 @@ iframe {
     margin: 1em 0;
     overflow: hidden;
     text-overflow: ellipsis;
+    padding: 0 0 0 12px;
     /* Only show two lines of the description (in webkit) and elide it */
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -146,7 +147,7 @@ iframe {
 }
 html.no-sidebar .below-video .subtitles-area {
     position: relative;
-    padding: 0 0 0 12px;
+    padding: 0;
 }
 .below-video .subtitles-area .subtitles, .below-video .video-description {
     padding: 0 15px 0 3px;
@@ -171,19 +172,19 @@ html.no-sidebar .below-video .subtitles .subtitle {
 	list-style: none;
 	padding: 3px;
 	border: 1px solid transparent;
-	margin-right: 15px;
+	margin-right: 0px;
 	overflow: hidden;
 }
 
 html.no-sidebar .below-video .subtitles .subtitle.active {
 	background: #EEE;
-	border: 1px solid #CCC;
-	border-radius: 5px;
+	border-top: 1px solid #CCC;
+	border-bottom: 1px solid #CCC;
 }
 
 html.no-sidebar .below-video .subtitles .subtitle span.time {
 	color: #777;
-	margin-right: 10px;
+	margin: 0px 10px;
 	display: block;
 	float: left;
 }
@@ -219,7 +220,7 @@ html.no-sidebar .below-video .subtitles-none {
 html.no-sidebar .below-video .title-and-points {
     display: block;
     height: 44px;
-    background: -webkit-gradient(linear, left top, left bottom, from(#f5fede), to(#e1e8cb));
+    background: #f5fede;
     border-top: 1px solid #d1e886;
     border-bottom: 1px solid #aabe6c;
     -webkit-box-shadow: 0px 2px 6px rgba(0,0,0,.22);
@@ -231,15 +232,15 @@ html.no-sidebar .below-video .title-and-points .energy-points-badge {
 }
 
 html.no-sidebar .below-video .title {
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     float: left;
 	text-overflow: ellipsis;
-	max-width: 350px;
+	max-width: 430px;
 	overflow: hidden;
 	font-size: 1em;
 	padding-top: .2em;
 	color: #8bad3f;
-	text-shadow: 0 1px 0 #fdfff3;
-	margin-left: 15px;
+	margin-left: 8px;
 	padding-top: 11px;
 }
 html.no-sidebar .below-video h1 {
@@ -254,7 +255,6 @@ html.no-sidebar .below-video h1 {
 
 .actions {
 	float: right;
-	margin-right: 15px;
 	padding-top: 8px;
 	position: relative;
 	z-index: 2;
@@ -264,69 +264,47 @@ html.no-sidebar .below-video h1 {
 -----------------------------------------------------------------------------------------------------------*/
 
 .ui-bar-k {
-	border: 1px solid 		#567d0a;
-	background: 			#608d0c;
-	color: 					#fff;
-	font-weight: bold;
-	text-shadow: 0 -1px 1px #415e08;
-	background-image: -moz-linear-gradient(top,
-							#78a90c,
-							#608d0c);
-	background-image: -webkit-gradient(linear,left top,left bottom,
-		color-stop(0, 		#78a90c),
-		color-stop(1, 		#608d0c));
-	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#78a90c', EndColorStr='#608d0c')";
+	color: 					#608d0c;
+	text-shadow:            none;
 }
 .ui-bar-k,
 .ui-bar-k input,
 .ui-bar-k select,
 .ui-bar-k textarea,
 .ui-bar-k button {
-	font-family: Helvetica, Arial, sans-serif;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 .ui-bar-k .ui-link-inherit {
-	color: 					#fff;
+	color: 					#608d0c;
 }
 .ui-bar-k .ui-link {
-	color: 					#7cc4e7;
+	color: 					#608d0c;
 	font-weight: bold;
 }
 
 .ui-body-k {
 	border: 1px solid 		#B3B3B3;
-	color: 					#333333;
-	text-shadow: 0 1px 0 	#fff;
-	background: 			#fefffc;
+	color: 					#608d0c;
+	text-shadow:            none;
 }
 .ui-body-k,
 .ui-body-k input,
 .ui-body-k select,
 .ui-body-k textarea,
 .ui-body-k button {
-	font-family: Helvetica, Arial, sans-serif;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 .ui-body-k .ui-link-inherit {
-	color: 					#333333;
+	color: 					#608d0c;
 }
 .ui-body-k .ui-link {
-	color: 					#293218;
+	color: 					#608d0c;
 	font-weight: bold;
 }
 /* Make the hover state consistent with the up state. */
 .ui-btn-up-k, .ui-btn-hover-k {
-	border: 1px solid 		#405A20;
-	border-top-color:       #1E2515;
-	border-bottom-color:    #334F0F;
-	color: 					#fff;
-	text-shadow: 0 -1px 0 	#425c24;
-	background: 			#415e08;
-	background-image: -moz-linear-gradient(top,
-							#7ca44c,
-							#538516);
-	background-image: -webkit-gradient( linear,left top,left bottom,
-	                        color-stop(0, #7ca44c),
-	                        color-stop(1, #538516));
-	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#7ca44c', EndColorStr='#538516')";
+	color: 					#608d0c;
+	text-shadow:            none;
 }
 .ui-btn-up-k a.ui-link-inherit, .ui-btn-hover-k a.ui-link-inherit {
 	color: 					#fff;
@@ -350,25 +328,16 @@ html.no-sidebar .below-video h1 {
 }
 */
 .ui-btn-down-k {
-	border: 1px solid 		#315e08;
-	color: 					#fff;
-	text-shadow: 0 -1px 0 	#293b05;
-	background: 			#415e08;
-	background-image: -moz-linear-gradient(top,
-							#749348,
-							#3f6c00);
-	background-image: -webkit-gradient(linear,left top,left bottom,
-		color-stop(0, 		#749348),
-		color-stop(1, 		#3f6c00));
-	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#749348', EndColorStr='#3f6c00')";
+	color: 					#608d0c;
+	text-shadow:            none;
 }
 .ui-btn-down-k a.ui-link-inherit {
-	color: 					#fff;
+	color: 					#608d0c;
 }
 .ui-btn-up-k,
 .ui-btn-hover-k,
 .ui-btn-down-k {
-	font-family: Helvetica, Arial, sans-serif;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 	text-decoration: none;
 }
 
@@ -376,29 +345,24 @@ html.no-sidebar .below-video h1 {
 	-moz-box-shadow: 0 1px 0 rgba(255,255,255, .3);
 	-webkit-box-shadow: 0 1px 0 rgba(255,255,255, .3);
 	box-shadow: 0 1px 0 rgba(255,255,255, .3);
+    
 }
 
 /* Fix button padding with respect to icons. Default doesn't center properly. */
 .ui-btn-inner {
-	padding: 5px 12px 6px; /* Down from 25px which is pretty big */
+	padding: 5px 8px 6px 4px; /* Down from 25px which is pretty big */
 }
 
 .actions .ui-btn-inner {
     padding-bottom: 5px;
-    border-color: #607B3D;
-    border-bottom: 1px solid #4f8015;
-}
-.actions .ui-btn-down-k .ui-btn-inner {
-    border-top-color: #5e763c;
-    border-bottom-color: #3d6800;
 }
 
 .ui-btn-icon-left .ui-btn-inner {
-	padding-left: 36px; /* 18px icon width, 12px normal border, 6px padding between icon and text */
+	padding-left: 30px; /* 18px icon width, 6px normal border, 6px padding between icon and text */
 }
 
 .ui-btn-icon-left .ui-icon {
-	left: 12px;
+	left: 6px;
 }
 
 .ui-btn-icon-right .ui-btn-inner {
@@ -410,8 +374,7 @@ html.no-sidebar .below-video h1 {
 }
 
 .below-video .ui-btn-inner {
-	font-size: .8em;
-	font-weight: bold;
+	font-size: 1em;
 }
 
 /* jQuery Mobile Split View Customizations
@@ -499,7 +462,7 @@ html.no-sidebar body {
     line-height: 1.8em;
     text-align: center;
     padding: .4em .8em .4em;
-    margin: 1.1em 0 0 .8em;
+    margin: 1.1em 0 0 1em;
     color: white;
     font-size: .6em;
     font-weight: bold;
