@@ -136,7 +136,7 @@ iframe {
 	display: none;
 }
 .below-video p.video-description {
-    margin: 1em 0;
+    margin: 12px 0 16px;
     overflow: hidden;
     text-overflow: ellipsis;
     padding: 0 0 0 12px;
@@ -214,16 +214,15 @@ html.no-sidebar .below-video .subtitles-none {
 	text-shadow: 0 1px 0 #fdfff3;
 	background: #f5fede;
 	border: 1px solid #b6cc74;
-	-webkit-box-shadow: inset 0px 0px 3px rgba(0,0,0,.22);
 }
 
 html.no-sidebar .below-video .title-and-points {
     display: block;
     height: 44px;
     background: #f5fede;
-    border-top: 1px solid #d1e886;
-    border-bottom: 1px solid #aabe6c;
-    -webkit-box-shadow: 0px 2px 6px rgba(0,0,0,.22);
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 4px;
+    -webkit-box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 html.no-sidebar .below-video .title-and-points .energy-points-badge {
@@ -240,7 +239,7 @@ html.no-sidebar .below-video .title {
 	font-size: 1em;
 	padding-top: .2em;
 	color: #8bad3f;
-	margin-left: 8px;
+	margin-left: 14px;
 	padding-top: 11px;
 }
 html.no-sidebar .below-video h1 {
