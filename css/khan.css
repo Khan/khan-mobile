@@ -232,9 +232,9 @@ html.no-sidebar .below-video .title-and-points .energy-points-badge {
 
 html.no-sidebar .below-video .title {
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    float: left;
+	float: left;
 	text-overflow: ellipsis;
-	max-width: 420px;
+	max-width: 405px;
 	overflow: hidden;
 	font-size: 1em;
 	padding-top: .2em;
