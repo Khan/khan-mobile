@@ -217,34 +217,33 @@ html.no-sidebar .below-video .subtitles-none {
 }
 
 html.no-sidebar .below-video .title-and-points {
-    display: block;
-    height: 44px;
-    background: #f5fede;
-    border-bottom: 1px solid #ccc;
-    margin-bottom: 4px;
     -webkit-box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid #ccc;
+    display: block;
+    height: 66px;
+    line-height: 66px;
+    margin-bottom: 4px;
 }
 
 html.no-sidebar .below-video .title-and-points .energy-points-badge {
     float: left;
-	display: none;
+    display: none;
 }
 
 html.no-sidebar .below-video .title {
-	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-	float: left;
-	text-overflow: ellipsis;
-	max-width: 405px;
-	overflow: hidden;
-	font-size: 1em;
-	padding-top: .2em;
-	color: #8bad3f;
-	margin-left: 14px;
-	padding-top: 11px;
+    color: #555;
+    float: left;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 24px;
+    margin-left: 14px;
+    max-width: 405px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
+
 html.no-sidebar .below-video h1 {
-	display: inline;
-	font-size: 1.2em;
+    display: inline;
+    font-size: 1em;
     white-space: nowrap;
 }
 
@@ -254,7 +253,7 @@ html.no-sidebar .below-video h1 {
 
 .actions {
 	float: right;
-	padding-top: 8px;
+	padding-top: 18px;
 	position: relative;
 	z-index: 2;
 }
@@ -302,7 +301,7 @@ html.no-sidebar .below-video h1 {
 }
 /* Make the hover state consistent with the up state. */
 .ui-btn-up-k, .ui-btn-hover-k {
-	color: 					#608d0c;
+	color: 					#555;
 	text-shadow:            none;
 }
 .ui-btn-up-k a.ui-link-inherit, .ui-btn-hover-k a.ui-link-inherit {
@@ -419,6 +418,10 @@ html.no-sidebar body {
 
 .ui-btn {
 	-webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+
+.ui-icon {
+    background: #555;
 }
 
 .ui-icon-khan-subtitles {
