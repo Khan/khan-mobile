@@ -67,6 +67,10 @@ if ( query.sidebar !== "no" ) {
 		$("video").replaceWith(function() {
 			return $(this).clone();
 		});
+
+		// Hide UI elements on load so that there's no flash from "Khan
+		// Academy" to the actual title when we call setCurrentVideo
+		$(".below-video").find(".actions, h1").hide();
 		
 		// Set the active page to the current page
 		$.mobile.activePage = $("#home");
@@ -558,7 +562,7 @@ function setCurrentVideo( id, force ) {
 	// Display information about the video
 	// For description, use '|| ""' because .text( null ) does nothing
 	$(".below-video")
-		.find("h1").text( video[ "title" ] ).end()
+		.find("h1").text( video[ "title" ] ).show().end()
 		.find(".video-description").text( video[ "description" ] || "" );
 	
 	// Update the download indicator
@@ -805,6 +809,7 @@ function updateStatus() {
 					"Downloaded" :
 					Math.round(downloadStatus.download_progress * 100) + "%" :
 				"Download" );
+	$(".below-video .actions").show();
 }
 
 // Check to see if a pending seek is able to be resumed
