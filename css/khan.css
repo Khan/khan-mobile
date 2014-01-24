@@ -418,11 +418,8 @@ html.no-sidebar body {
 }
 
 .ui-icon {
-    background: #555;
-}
-
-.ui-icon-khan-subtitles {
-    background-image: url(../img/subtitles.png);
+    background: none;
+    border-radius: 0;
 }
 
 .ui-icon-khan-download {
@@ -438,10 +435,6 @@ html.no-sidebar body {
 	.ui-icon-khan-download,
 	.ui-icon-khan-share {
 		background-size: 100%;
-	}
-
-	.ui-icon-khan-subtitles {
-	    background-image: url(../img/subtitles@2x.png);
 	}
 
 	.ui-icon-khan-download {
