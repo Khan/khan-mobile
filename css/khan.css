@@ -199,21 +199,18 @@ html.no-sidebar .below-video .subtitles .subtitle a {
 html.no-sidebar .below-video .subtitles-loading,
 html.no-sidebar .below-video .subtitles-error,
 html.no-sidebar .below-video .subtitles-none {
+	background: #f6fbff;
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	color: #444;
 	display: none;
-	margin: 60px auto 0;
-	width: 300px;
-	border-radius: 5px;
-	padding: 10px 5px;
+	font-size: 18px;
+	margin: 80px auto 0;
+	padding: 15px;
 	text-align: center;
 	-webkit-transition: opacity 0.3s ease-in;
-	text-shadow: none;
+	width: 400px;
 	z-index: 11;
-	position: relative;
-
-	color: #8bad3f;
-	text-shadow: 0 1px 0 #fdfff3;
-	background: #f5fede;
-	border: 1px solid #b6cc74;
 }
 
 html.no-sidebar .below-video .title-and-points {
