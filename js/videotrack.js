@@ -64,6 +64,12 @@ VideoStats.prototype = {
 	stopLoggingProgress: function() {
 		$(this).unbind( "playerready" );
 
+		$(this.player)
+			.unbind("play")
+			.unbind("pause")
+			.unbind("ended");
+		this.player.fStateChangeHookAttached = false;
+
 		clearInterval( this.fIntervalStarted );
 
 		this.fIntervalStarted = 0;
