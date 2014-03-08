@@ -139,7 +139,13 @@ VideoStats.prototype = {
 			id = this.curVideoId,
 			secondsWatched = this.getSecondsWatchedRestrictedByPageTime(),
 			lastSecondWatched = this.getSecondsWatched();
-		
+
+		// Update dtSinceSave immediately after querying
+		// getSecondsWatchedRestrictedByPageTime -- otherwise whatever time
+		// elapses between querying and updating will not be recorded as user
+		// progress.
+		this.dtSinceSave = new Date();
+
 		// Save the watch position data for later
 		storage.watch[ id ] = { secondsWatched: secondsWatched, lastSecondWatched: lastSecondWatched };
 		saveStorage();
@@ -160,8 +166,6 @@ VideoStats.prototype = {
 					self.dtSinceSave = dtSinceSaveBeforeError;
 				}
 			});
-			
-			this.dtSinceSave = new Date();
 		
 		// Make sure that we resume trying to save
 		} else {
