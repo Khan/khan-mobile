@@ -210,7 +210,7 @@ if ( query.sidebar !== "no" ) {
 			
 			// Notify the app about what video should be shared and
 			// where to position the overlay
-			updateNativeHostForVideo("share", {youtubeID: curVideoId, share_location: JSON.stringify(location)} );
+			updateNativeHostForVideo("share", {youtubeID: curVideoId, share_location: location} );
 		});
 		
 		// Retry watching a video that has errored out
