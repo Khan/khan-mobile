@@ -21,7 +21,6 @@ var data,
 	videoStats,
 	offline = false,
 	userId,
-	nativeIframes = [],
 	oauth = { consumerKey: "", consumerSecret: "", token: "", tokenSecret: "" };
 
 // Load in query string from URL
@@ -424,28 +423,6 @@ function loadPlaylists( result ) {
 				videos[ vids[v].youtube_id ] = vids[v];
 			}
 		}
-	}
-}
-
-function newIframe() {
-	return $("<iframe>").appendTo("body").load(function(){
-		var f = this;
-		setTimeout(function(){
-			nativeIframes.push(f);
-		}, 100);
-	})[0];
-}
-
-// Notify the app that something has occurred
-function updateNativeHost( update ) {
-	if ( window.location.protocol.indexOf( "http" ) !== 0 ) {
-		// Setting window.location is a bad idea; see 
-		// https://github.com/Khan/khan-mobile/issues/47
-		// Instead use iframes, but recycle them to avoid
-		// hitting the 1000-frame WebKit cap
-		
-		var iframe = ( nativeIframes.length ? nativeIframes.pop() : newIframe() );
-		iframe.src = "khan://update?" + $.param( update );
 	}
 }
 
