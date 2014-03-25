@@ -198,7 +198,7 @@ if ( query.sidebar !== "no" ) {
 			$(this).addClass( "ui-disabled" );
 			
 			// Tell the app to start downloading the file
-			updateNativeHost( {download: curVideoId} );
+			updateNativeHostForVideo( "download", {"youtubeID": curVideoId} );
 		});
 		
 		// Watch for the Share button being clicked
@@ -211,7 +211,7 @@ if ( query.sidebar !== "no" ) {
 			
 			// Notify the app about what video should be shared and
 			// where to position the overlay
-			updateNativeHost( {share: curVideoId, share_location: JSON.stringify(location)} );
+			updateNativeHostForVideo("share", {youtubeID: curVideoId, share_location: JSON.stringify(location)} );
 		});
 		
 		// Retry watching a video that has errored out
@@ -251,15 +251,15 @@ if ( query.sidebar !== "no" ) {
 		
 		// Notify the app when the user hits play
 		$( "video" ).bind( "play", function() {
-			updateNativeHost( {playing: "yes"} );
+			updateNativeHostForVideo( "status", {playing: "yes"} );
 
 			// Make sure any overlays are hidden when we start playing a video
 			hideOverlays();
 		
 		// Notify the app when the user hits pause
 		}).bind( "pause", function() {
-			updateNativeHost( {playing: "no"} );
-		
+			updateNativeHost( "status", {playing: "no"} );
+
 		// Watch for when the video ends, to show the replay dialog
 		}).bind( "ended", function() {
 			showOverlay( $(".replay") );
@@ -447,6 +447,10 @@ function updateNativeHost( update ) {
 		var iframe = ( nativeIframes.length ? nativeIframes.pop() : newIframe() );
 		iframe.src = "khan://update?" + $.param( update );
 	}
+}
+
+function updateNativeHostForVideo( action, params ) {
+	updateNativeHost( "video", action, params);
 }
 
 // Display a video given the specified ID
