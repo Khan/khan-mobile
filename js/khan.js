@@ -237,6 +237,8 @@ if ( query.sidebar !== "no" ) {
 		});
 		
 		// Allow the user to watch the next video
+		/** TODO(laura): figure out how to bring this back (in native app
+		or in the web view)
 		$(".next-button").bind( "vclick", function() {
 			hideOverlays();
 			
@@ -247,7 +249,8 @@ if ( query.sidebar !== "no" ) {
 			playWhenReady = true;
 			setCurrentVideo( nextVideoId );
 		});
-		
+		*/
+
 		// Notify the app when the user hits play
 		$( "video" ).bind( "play", function() {
 			updateNativeHostForVideo( "status", {playing: "yes"} );
@@ -257,7 +260,7 @@ if ( query.sidebar !== "no" ) {
 		
 		// Notify the app when the user hits pause
 		}).bind( "pause", function() {
-			updateNativeHost( "status", {playing: "no"} );
+			updateNativeHostForVideo( "status", {playing: "no"} );
 
 		// Watch for when the video ends, to show the replay dialog
 		}).bind( "ended", function() {
@@ -442,15 +445,6 @@ function setCurrentVideo( id, force ) {
 		status = videoStatus[ id ];
 	
 	if ( !video ) {
-		if ( query.playlist && query.playlist.videos && query.playlist.videos.length ) {
-			var firstVideoId = query.playlist.videos[0].youtube_id;
-			
-			log( "Video " + id + " not found, playing " + firstVideoId + " instead." );
-			
-			// Notify the app that we're switching to another video
-			updateNativeHost( {video: firstVideoId} );
-		}
-		
 		return;
 	}
 	
