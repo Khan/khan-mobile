@@ -183,10 +183,10 @@ VideoStats.prototype = {
 		if ( !dict_json ) {
 			return;
 		}
-		
-		if ( typeof updateNativeHost === "function" && dict_json.action_results ) {
+
+		if ( typeof updateNativeHostForVideo === "function" && dict_json.action_results ) {
 			log("finishSave: updating native host");
-			updateNativeHost( {action_results: JSON.stringify( dict_json.action_results )} );
+			updateNativeHostForVideo( "action_results", dict_json.action_results );
 			log("finishSave: updated native host");
 		}
 		
