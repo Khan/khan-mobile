@@ -210,7 +210,7 @@ if ( query.sidebar !== "no" ) {
 			
 			// Notify the app about what video should be shared and
 			// where to position the overlay
-			updateNativeHostForVideo("share", {youtubeID: curVideoId, share_location: location} );
+			updateNativeHostForVideo( "share", {youtubeID: curVideoId, share_location: location} );
 		});
 		
 		// Retry watching a video that has errored out
@@ -887,7 +887,7 @@ function log( msg, states ) {
 	
 	// Delay display of log to prevent UI from breaking
 	setTimeout(function() {
-		logMessageToNativeHost(msg);
+		logMessageToNativeHost( msg );
 	}, 1);
 }
 
