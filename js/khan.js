@@ -21,7 +21,6 @@ var data,
 	videoStats,
 	offline = false,
 	userId,
-	nativeIframes = [],
 	oauth = { consumerKey: "", consumerSecret: "", token: "", tokenSecret: "" };
 
 // Load in query string from URL
@@ -198,7 +197,7 @@ if ( query.sidebar !== "no" ) {
 			$(this).addClass( "ui-disabled" );
 			
 			// Tell the app to start downloading the file
-			updateNativeHost( {download: curVideoId} );
+			updateNativeHostForVideo( "download", {"youtubeID": curVideoId} );
 		});
 		
 		// Watch for the Share button being clicked
@@ -211,7 +210,7 @@ if ( query.sidebar !== "no" ) {
 			
 			// Notify the app about what video should be shared and
 			// where to position the overlay
-			updateNativeHost( {share: curVideoId, share_location: JSON.stringify(location)} );
+			updateNativeHostForVideo( "share", {youtubeID: curVideoId, share_location: location} );
 		});
 		
 		// Retry watching a video that has errored out
@@ -238,6 +237,8 @@ if ( query.sidebar !== "no" ) {
 		});
 		
 		// Allow the user to watch the next video
+		/** TODO(laura): figure out how to bring this back (in native app
+		or in the web view)
 		$(".next-button").bind( "vclick", function() {
 			hideOverlays();
 			
@@ -248,18 +249,19 @@ if ( query.sidebar !== "no" ) {
 			playWhenReady = true;
 			setCurrentVideo( nextVideoId );
 		});
-		
+		*/
+
 		// Notify the app when the user hits play
 		$( "video" ).bind( "play", function() {
-			updateNativeHost( {playing: "yes"} );
+			updateNativeHostForVideo( "status", {playing: "yes"} );
 
 			// Make sure any overlays are hidden when we start playing a video
 			hideOverlays();
 		
 		// Notify the app when the user hits pause
 		}).bind( "pause", function() {
-			updateNativeHost( {playing: "no"} );
-		
+			updateNativeHostForVideo( "status", {playing: "no"} );
+
 		// Watch for when the video ends, to show the replay dialog
 		}).bind( "ended", function() {
 			showOverlay( $(".replay") );
@@ -427,26 +429,8 @@ function loadPlaylists( result ) {
 	}
 }
 
-function newIframe() {
-	return $("<iframe>").appendTo("body").load(function(){
-		var f = this;
-		setTimeout(function(){
-			nativeIframes.push(f);
-		}, 100);
-	})[0];
-}
-
-// Notify the app that something has occurred
-function updateNativeHost( update ) {
-	if ( window.location.protocol.indexOf( "http" ) !== 0 ) {
-		// Setting window.location is a bad idea; see 
-		// https://github.com/Khan/khan-mobile/issues/47
-		// Instead use iframes, but recycle them to avoid
-		// hitting the 1000-frame WebKit cap
-		
-		var iframe = ( nativeIframes.length ? nativeIframes.pop() : newIframe() );
-		iframe.src = "khan://update?" + $.param( update );
-	}
+function updateNativeHostForVideo( action, params ) {
+	updateNativeHostWithCategoryActions( "video", action, params );
 }
 
 // Display a video given the specified ID
@@ -461,15 +445,6 @@ function setCurrentVideo( id, force ) {
 		status = videoStatus[ id ];
 	
 	if ( !video ) {
-		if ( query.playlist && query.playlist.videos && query.playlist.videos.length ) {
-			var firstVideoId = query.playlist.videos[0].youtube_id;
-			
-			log( "Video " + id + " not found, playing " + firstVideoId + " instead." );
-			
-			// Notify the app that we're switching to another video
-			updateNativeHost( {video: firstVideoId} );
-		}
-		
 		return;
 	}
 	
@@ -912,7 +887,7 @@ function log( msg, states ) {
 	
 	// Delay display of log to prevent UI from breaking
 	setTimeout(function() {
-		updateNativeHost({log: msg});
+		logMessageToNativeHost( msg );
 	}, 1);
 }
 
