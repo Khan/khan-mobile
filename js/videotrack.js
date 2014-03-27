@@ -324,7 +324,7 @@ function saveWatch( opt ) {
 
 			if ( xhr.status === 401 ) {
 				// Probably an expired OAuth token (FB expires after 2 months)
-				updateNativeHost({ signout: "yes" });
+				signOutNativeHost();
 			}
 
 			if ( opt.error ) {
