@@ -887,7 +887,7 @@ function log( msg, states ) {
 	
 	// Delay display of log to prevent UI from breaking
 	setTimeout(function() {
-		updateNativeHost({log: msg});
+		logMessageToNativeHost(msg);
 	}, 1);
 }
 
