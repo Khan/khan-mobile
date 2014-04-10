@@ -417,8 +417,8 @@ html.no-sidebar body {
 	-webkit-tap-highlight-color: rgba(0,0,0,0);
 }
 
-.ui-icon {
-    background: none;
+.below-video .ui-icon {
+    background-color: transparent;
     border-radius: 0;
 }
 
