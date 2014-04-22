@@ -58,6 +58,14 @@ if ( query.sidebar !== "no" ) {
 		// We're not showing the sidebar or doing the splitview
 		$("html").removeClass("splitview").addClass("no-sidebar");
 		$("#menu").remove();
+
+		// If specified, add CSS class used to trigger fullscreen landscape
+		// view of video page.
+		// TODOX(kamens): remove this when fullscreen landscape becomes the
+		// default CSS/layout.
+		if (query.fullscreenLandscape) {
+			$("html").addClass("fullscreenLandscape");
+		}
 		
 		// Remove the extra main panel
 		$("#main > div").unwrap();
@@ -321,8 +329,14 @@ if ( query.sidebar !== "no" ) {
 		$(window)
 			// Make sure the video container is the right size ratio
 			.resize(function() {
-				// Make sure the video is kept to the proper aspect ratio
-				$(".video-wrap").height( $(window).width() / 16.0 * 9.0 );
+				if (!query.fullscreenLandscape) {
+					// Make sure the video is kept to the proper aspect ratio
+					// TODOX(kamens): remove this when fullscreenLandscape is
+					// the default. We don't worry about proper aspect ratio
+					// in this case, because empty black space around the video
+					// is ok if necessary to fill the screen w/ content.
+					$(".video-wrap").height( $(window).width() / 16.0 * 9.0 );
+				}
 				
 				// Adjust the height of the subtitle viewport
 				var subtitles = $(".subtitles");
@@ -607,7 +621,7 @@ function showSubtitles( data ) {
 	// Inject the subtitles and move description to scrollable area
 	subContainer.html( tmpl( "subtitles-tmpl", { subtitles: data } ) )
 	    .prepend( description.clone() );
-	    
+
 	// Hide description after moving into subtitles area
 	description.hide();
 

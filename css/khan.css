@@ -466,6 +466,21 @@ html.no-sidebar body {
     text-shadow: 0 -1px 0 rgba(0,0,0,.6);
 }
 
+/* 
+ * Tweak CSS styles for fullscreen landscape video w/ nav drawer closed
+ * TODOX(kamens): remove .fullscreenLandscape qualifier when these become
+ * default styles.
+ */
+html.fullscreenLandscape .below-video .title {
+	max-width: 550px;
+}
+
+html.fullscreenLandscape .video-wrap {
+	/* TODO(kamens): make video fill entire screen and let subtitles fill in on
+	 * demand when users presses some button. */
+	height: 70%;
+}
+
 html.offline .energy-points-badge {
 	opacity: 0.3;
 }
