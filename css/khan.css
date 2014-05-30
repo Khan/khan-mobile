@@ -481,10 +481,6 @@ html.fullscreenLandscape .video-wrap {
 	height: 70%;
 }
 
-html.offline .energy-points-badge {
-	opacity: 0.3;
-}
-
 /* Override jQuery's default rounding classes
 --------------------------------------------------------------------------------------------------------------------------*/
 /* corner rounding classes

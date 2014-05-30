@@ -82,7 +82,7 @@ VideoStats.prototype = {
 		
 		if (!this.fAlternativePlayer) {
 			window.onYouTubePlayerStateChange = function(state) {
-			    status.playerStateChange(state);
+				status.playerStateChange(state);
 			};
 			
 			// YouTube player is ready, add event listener
@@ -120,7 +120,9 @@ VideoStats.prototype = {
 			  this.save();
 			}
 		} else if (state == 1) { // play
-			this.dtSinceSave = new Date();
+			if (!this.dtSinceSave) {
+				this.dtSinceSave = new Date();
+			}
 		}
 		// If state is buffering, unstarted, or cued, don't do anything
 	},
@@ -146,33 +148,21 @@ VideoStats.prototype = {
 		// progress.
 		this.dtSinceSave = new Date();
 
-		// Save the watch position data for later
-		storage.watch[ id ] = { secondsWatched: secondsWatched, lastSecondWatched: lastSecondWatched };
-		saveStorage();
-		
-		if ( !offline ) {
-			log("save:3");
-			saveWatch({
-				id: id,
-				lastSecondWatched: lastSecondWatched,
-				secondsWatched: secondsWatched,
-				success: function( data ) {
-					self.finishSave(data, percent);
-				},
-				error: function() {
-					// Restore pre-error stats so user can still get full
-					// credit for video even if GAE timed out on a request
-					self.fSaving = false;
-					self.dtSinceSave = dtSinceSaveBeforeError;
-				}
-			});
-		
-		// Make sure that we resume trying to save
-		} else {
-			log("save:4");
-			this.fSaving = false;
-			this.dtSinceSave = dtSinceSaveBeforeError;
-		}
+		log("save:3");
+		saveWatch({
+			id: id,
+			lastSecondWatched: lastSecondWatched,
+			secondsWatched: secondsWatched,
+			success: function( data ) {
+				self.finishSave(data, percent);
+			},
+			error: function() {
+				// Restore pre-error stats so user can still get full
+				// credit for video even if GAE timed out on a request
+				self.fSaving = false;
+				self.dtSinceSave = dtSinceSaveBeforeError;
+			}
+		});
 	},
 
 	finishSave: function(dict_json, percent) {
@@ -269,28 +259,6 @@ function onYouTubePlayerReady(playerID) {
 	$(stats).trigger('playerready');
 }
 
-function offlineSync() {
-	// Coming back online, sync data with server
-	if ( !offline && oauth.token && oauth.consumerKey ) {
-		for ( var id in storage.watch ) {
-			var watched = storage.watch[ id ];
-			
-			// We have the data, time to sync it
-			if ( watched ) {
-				saveWatch({
-					id: id,
-					lastSecondWatched: watched.lastSecondWatched,
-					secondsWatched: watched.secondsWatched
-				});
-			
-			// Data no longer exists, strike from the sync queue
-			} else {
-				clearSync( id );
-			}
-		}
-	}
-}
-
 function saveWatch( opt ) {
 	// Don't attempt to save if we're logged out
 	if ( !oauth.token ) {
@@ -313,7 +281,6 @@ function saveWatch( opt ) {
 		success: function( data ) {
 			// Synced with server, wipe out sync queue
 			log("save success");
-			clearSync( opt.id );
 			
 			if ( opt.success ) {
 				opt.success( data );
@@ -332,11 +299,4 @@ function saveWatch( opt ) {
 			}
 		}
 	}) );
-}
-
-function clearSync( id ) {
-	if ( id ) {
-		delete storage.watch[ id ];
-		saveStorage();
-	}
 }

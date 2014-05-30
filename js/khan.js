@@ -19,7 +19,6 @@ var data,
 	subtitlesFailed = false,
 	fallbackOnMP4 = true,
 	videoStats,
-	offline = false,
 	userId,
 	oauth = { consumerKey: "", consumerSecret: "", token: "", tokenSecret: "" };
 
@@ -111,8 +110,6 @@ if ( query.sidebar !== "no" ) {
 				loadStorage();
 			}
 			
-			// Sync with the server on load
-			offlineSync();
 			updatePoints();
 		});
 		
@@ -120,28 +117,6 @@ if ( query.sidebar !== "no" ) {
 			var parts = value.split(",");
 			oauth.consumerKey = parts[0];
 			oauth.consumerSecret = parts[1];
-			
-			// Sync with the server on load
-			offlineSync();
-		});
-		
-		// Handle swapping between online/offline mode
-		// Do this early on so that by the time we try to load a video, we 
-		// know the offline status
-		addQueryWatch( "offline", function( value ) {
-			offline = value === "yes";
-			
-			// Toggle a global offline class for tweaking style
-			$("html").toggleClass( "offline", offline );
-			
-			// Sync with the server, if we can
-			offlineSync();
-			
-			// If we're now online and the subtitles didn't load
-			// then we try loading them again
-			if ( !offline && subtitlesFailed ) {
-				loadSubtitles();
-			}
 		});
 		
 		// Watch for when playlist data is passed in
@@ -884,7 +859,7 @@ function seek( video ) {
 }
 
 function loadStorage() {
-	storage = JSON.parse( window.localStorage[ userId || "anon" ] || '{"seek":{},"watch":{}}' );
+	storage = JSON.parse( window.localStorage[ userId || "anon" ] || '{"seek":{}}' );
 }
 
 function saveStorage() {
