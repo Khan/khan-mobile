@@ -808,19 +808,8 @@ function showError( title, msg ) {
 
 // Update point display
 function updatePoints() {
-	var curVideoStatus = videoStatus[ curVideoId ];
-	log("updatePoints, looked up video status for " + curVideoId);
-	if ( KAOAuthSettings.requestParams.consumerKey ) {
-		var points = 0;
-		if ( curVideoStatus && curVideoStatus.user_video && curVideoStatus.user_video.points ) {
-			points = curVideoStatus.user_video.points;
-		}
-		log("updatePoints, looked up points earned: " + points);
-		$(".energy-points-badge").show().text( points + " of 750" );
-		
-	} else {
-		$(".energy-points-badge").hide();
-	}
+	$(".energy-points-badge").hide();
+	return;
 }
 
 // Seek to a specific part of a video
