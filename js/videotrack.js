@@ -261,7 +261,7 @@ function onYouTubePlayerReady(playerID) {
 
 function saveWatch( opt ) {
 	// Don't attempt to save if we're logged out
-	if ( !oauth.token ) {
+	if ( !KAOAuthSettings.requestParams.consumerKey ) {
 		if ( opt.error ) {
 			opt.error();
 		}
@@ -269,9 +269,10 @@ function saveWatch( opt ) {
 		return;
 	}
 	
-	$.oauth($.extend( {}, oauth, {
+	$.oauth({
 		type: "POST",
-		url: "http://www.khanacademy.org/api/v1/user/videos/" + opt.id + "/log",
+		url: (KAOAuthSettings.baseURL + "/api/v1/user/videos/" + opt.id +
+            "/log"),
 		timeout: 5000,
 		dataType: "json",
 		data: {
@@ -298,5 +299,5 @@ function saveWatch( opt ) {
 				opt.error();
 			}
 		}
-	}) );
+	});
 }

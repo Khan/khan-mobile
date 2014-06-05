@@ -14,6 +14,9 @@
 
 	<script type="text/javascript" src="js/jquery-1.5.2.min.js"></script>
 
+	<script src="../../javascript/console-debugging.js"></script>
+	<script>ConsoleDebugging.init();</script>
+
 	<!-- Support simulated, iPad-like, menus -->
 	<script type="text/javascript" src="js/jquery.mobile.splitview.js"></script>
 
@@ -24,11 +27,20 @@
 	<script type="text/javascript" src="js/jquery.easing.1.3.js"></script>
 	<script type="text/javascript" src="js/jquery.mobile.scrollview.js"></script>
 
-	<!-- Main application logic -->
-	<script type="text/javascript" src="js/oauth.js"></script>
-	<script type="text/javascript" src="js/tmpl.js"></script>
-	<script type="text/javascript" src="js/videotrack.js"></script>
-	<script type="text/javascript" src="js/khan.js"></script>
+	<!-- Load require.js for including other shared JS packages -->
+	<script src="../khan-exercises/local-only/require.js"></script>
+	<script>
+	// Include our shared ka-oauth package for sending OAuth-authenticated API
+	// requests. Note that this breaks the encapsulation of this ThirdParty
+	// repo because it's using a file shared w/ our app's other webviews. This
+	// is an acceptable evil because A) we want to share JS between our app's
+	// webviews, and B) the video view will be rendered natively at some point
+	// in the not-too-distant future. This repo's days are numbered.
+	requirejs(["../../javascript/ka-oauth.js"], function() {
+		// Now require main application logic.
+		requirejs(["js/tmpl.js", "js/videotrack.js", "js/khan.js"]);
+	});
+	</script>
 </head>
 <body>
 	<!-- The menu panel, will hold all navigation. -->
@@ -71,21 +83,21 @@
 				</div>
 				<div class="below-video">
 					<div class="actions">
-					    <div data-role="controlgroup" data-type="horizontal" class="video-button-group">
-    					  <a data-role="button" data-inline="true" data-theme="k" data-icon="khan-share" class="share">Share</a>
-    						<a data-role="button" data-inline="true" data-theme="k" data-icon="khan-download" class="save">Download</a>
+						<div data-role="controlgroup" data-type="horizontal" class="video-button-group">
+						  <a data-role="button" data-inline="true" data-theme="k" data-icon="khan-share" class="share">Share</a>
+							<a data-role="button" data-inline="true" data-theme="k" data-icon="khan-download" class="save">Download</a>
 						</div>
 					</div>
 					<div class="title-and-points">
 					   <div class="title">
-					       <h1>Khan Academy</h1>
+						   <h1>Khan Academy</h1>
 					   </div>
 					   <div class="energy-points-badge ui-corner-all">0 of 750</div>
 					   <div style="clear:both;"></div>
-				    </div>
+					</div>
 					<div class="subtitles-area">
-					    <p class="video-description"></p>
-    					<div class="subtitles"></div>
+						<p class="video-description"></p>
+						<div class="subtitles"></div>
 					</div>
 					<div class="subtitles-loading">Loading Subtitles...</div>
 					<div class="subtitles-error">Whoops! There was an error loading subtitles for this video.</div>

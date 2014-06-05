@@ -19,8 +19,7 @@ var data,
 	subtitlesFailed = false,
 	fallbackOnMP4 = true,
 	videoStats,
-	userId,
-	oauth = { consumerKey: "", consumerSecret: "", token: "", tokenSecret: "" };
+	userId;
 
 // Load in query string from URL
 updateQuery( window.location.search.substring(1) );
@@ -84,15 +83,11 @@ if ( query.sidebar !== "no" ) {
 		// Load initial user storage for anonymous user
 		loadStorage();
 		
-		// Handle OAuth-related matters
+		// Handle user storage-related matters
 		addQueryWatch( "user", function( value ) {
 			// User has logged in
 			if ( value ) {
 				var user = JSON.parse( value );
-				
-				var parts = user.token.split(",");
-				oauth.token = parts[0];
-				oauth.tokenSecret = parts[1];
 				
 				// Get user ID
 				userId = user.user_data.user;
@@ -102,7 +97,6 @@ if ( query.sidebar !== "no" ) {
 			
 			// User is logging out
 			} else {
-				oauth.token = oauth.tokenSecret = "";
 				userId = null;
 				videoStatus = {};
 				
@@ -111,12 +105,6 @@ if ( query.sidebar !== "no" ) {
 			}
 			
 			updatePoints();
-		});
-		
-		addQueryWatch( "oauth_consumer", function( value ) {
-			var parts = value.split(",");
-			oauth.consumerKey = parts[0];
-			oauth.consumerSecret = parts[1];
 		});
 		
 		// Watch for when playlist data is passed in
@@ -822,7 +810,7 @@ function showError( title, msg ) {
 function updatePoints() {
 	var curVideoStatus = videoStatus[ curVideoId ];
 	log("updatePoints, looked up video status for " + curVideoId);
-	if ( oauth.token ) {
+	if ( KAOAuthSettings.requestParams.consumerKey ) {
 		var points = 0;
 		if ( curVideoStatus && curVideoStatus.user_video && curVideoStatus.user_video.points ) {
 			points = curVideoStatus.user_video.points;
