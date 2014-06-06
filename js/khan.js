@@ -103,8 +103,6 @@ if ( query.sidebar !== "no" ) {
 				// Reset the storage object
 				loadStorage();
 			}
-			
-			updatePoints();
 		});
 		
 		// Watch for when playlist data is passed in
@@ -130,9 +128,7 @@ if ( query.sidebar !== "no" ) {
 			// If the video is currently being played, update its status and points
 			var curVideoStatus = updatedVideos[ curVideoId ];
 			if ( curVideoStatus ) {
-				updateStatus();
-				updatePoints();
-				
+				updateStatus();		
 				// If we're getting an empty URL back from the app that means
 				// that the user deleted the offline video
 				// We need to revert to the live video instead
@@ -439,9 +435,6 @@ function setCurrentVideo( id, force ) {
 	
 	// Show or hide the Next Video button
 	$(".next-button").toggle( !!nextVideoId );
-	
-	// Update the user point display
-	updatePoints();
 	
 	// Start by hiding the subtitles while we're loading
 	$(".subtitles").hide();
@@ -804,12 +797,6 @@ function showError( title, msg ) {
 	var e = $(".error").find("h2").text( title ).end()
 			.find("p").text( msg ).end();
 	showOverlay( e );
-}
-
-// Update point display
-function updatePoints() {
-	$(".energy-points-badge").hide();
-	return;
 }
 
 // Seek to a specific part of a video
