@@ -213,18 +213,13 @@ html.no-sidebar .below-video .subtitles-none {
 	z-index: 11;
 }
 
-html.no-sidebar .below-video .title-and-points {
+html.no-sidebar .below-video .below-video-bar {
     -webkit-box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
     border-bottom: 1px solid #ccc;
     display: block;
     height: 46px;
     line-height: 66px;
     margin-bottom: 4px;
-}
-
-html.no-sidebar .below-video .title-and-points .energy-points-badge {
-    float: left;
-    display: none;
 }
 
 html.no-sidebar .below-video .title {
