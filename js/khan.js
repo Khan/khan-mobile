@@ -402,10 +402,6 @@ function loadPlaylists( result ) {
 	}
 }
 
-function updateNativeHostForVideo( action, params ) {
-	updateNativeHostWithCategoryActions( "video", action, params );
-}
-
 // Display a video given the specified ID
 function setCurrentVideo( id, force ) {
 	// Bail if we're already displaying it

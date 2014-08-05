@@ -36,7 +36,7 @@
 	// is an acceptable evil because A) we want to share JS between our app's
 	// webviews, and B) the video view will be rendered natively at some point
 	// in the not-too-distant future. This repo's days are numbered.
-	requirejs(["../../javascript/ka-oauth.js"], function() {
+	requirejs(["../../javascript/ka-oauth.js", "../../javascript/native-host.js"], function() {
 		// Now require main application logic.
 		requirejs(["js/tmpl.js", "js/videotrack.js", "js/khan.js"]);
 	});

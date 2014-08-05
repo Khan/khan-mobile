@@ -193,12 +193,11 @@ VideoStats.prototype = {
 		// TODO verify that current user (oauth) hasn't changed since request
 		// began
 		if ( ! videoStatus[ this.curVideoId ] ) {
-			videoStatus[ this.curVideoId ] = {}
+			videoStatus[ this.curVideoId ] = {};
 		}
 		videoStatus[ this.curVideoId ].user_video = dict_json.action_results.user_video;
 		log("finishSave: saved action_results.user_video for video id " + this.curVideoId);
 		log("points are " + dict_json.action_results.user_video.points);
-		updatePoints();
 		log("finishSave: updated points");
 	},
 
